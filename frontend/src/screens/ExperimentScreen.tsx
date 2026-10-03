@@ -1,8 +1,11 @@
-import { Check, CircleCheck, CircleDashed, CircleX, FileText, FlaskConical, PartyPopper, RotateCcw, Stethoscope } from 'lucide-react'
+import { FileText, RotateCcw, Stethoscope, Target, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { CaseHeader, CaseStat } from '@/components/case/CaseParts'
+import { MissionMap } from '@/components/case/MissionMap'
 import { MiniChart } from '@/components/MiniChart'
 import { PrimaryButton } from '@/components/PrimaryButton'
+import { XpPill } from '@/components/progress'
 import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState, LoadingState } from '@/components/states'
 import { Button } from '@/components/ui/button'
@@ -11,6 +14,7 @@ import { adherenceFor } from '@/lib/clues'
 import { addDays, formatDay } from '@/lib/dates'
 import { toCtx, useSession } from '@/lib/session'
 import type { Experiment, ExperimentResult } from '@/lib/types'
+import { XP } from '@/lib/progress'
 import { useApi } from '@/lib/useApi'
 import { cn } from '@/lib/utils'
 
@@ -20,8 +24,8 @@ export function ExperimentScreen() {
     return (
       <Screen>
         <EmptyState
-          title="No experiment running"
-          message="Detective mode suggests one when your energy has been low for a few days."
+          title="No mission running"
+          message="The detective suggests one when your energy has been low for a few days."
           action={
             <Button asChild>
               <Link to="/detective">Open detective mode</Link>
@@ -40,9 +44,13 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   const ctx = toCtx(session, { experiment })
   const { data, error, loading, retry } = useApi(`experiment:${JSON.stringify(ctx)}`, () => api.experiment(ctx))
 
-  const finish = () => {
+  const stop = () => {
     update({ experiment: null })
     navigate('/')
+  }
+  const closeCase = () => {
+    update({ experiment: null, closed: [...session.closed, session.today] })
+    navigate('/', { state: { gained: 'closed' } })
   }
   const restart = () => update({ experiment: { ...experiment, start: addDays(session.today, 1) } })
 
@@ -56,9 +64,10 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
     )
   else if (data?.status === 'improved')
     footer = (
-      <PrimaryButton onClick={finish}>
-        <CircleCheck aria-hidden />
+      <PrimaryButton onClick={closeCase}>
+        <Trophy aria-hidden />
         Keep the change
+        <XpPill amount={XP.closed} />
       </PrimaryButton>
     )
   else if (data?.status === 'not_enough_data')
@@ -69,37 +78,53 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
       </PrimaryButton>
     )
 
+  const finished = data && data.status !== 'running'
+  const answers = data
+    ? Array.from({ length: data.days_total }, (_, i) => adherenceFor(session, experiment.start, i + 1)).filter(Boolean)
+    : []
+  const stuck = answers.filter((a) => a === 'yes').length
+
   return (
     <Screen footer={footer}>
-      <section className="space-y-1">
-        <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-coral-700">
-          <FlaskConical aria-hidden className="size-4" />
-          Your 7-day experiment
-        </p>
-        <h1 className="text-2xl font-semibold leading-tight tracking-tight">{data?.title ?? 'Loading…'}</h1>
-        <p className="text-muted-foreground">
-          {formatDay(experiment.start)} – {formatDay(addDays(experiment.start, experiment.days - 1))}
-        </p>
-      </section>
+      <CaseHeader
+        title={data?.title ?? 'Your mission'}
+        step={finished ? 4 : 2}
+        stats={
+          data && (
+            <>
+              <CaseStat value={data.status === 'running' ? `${data.day}/${data.days_total}` : `${data.days_total}/${data.days_total}`} label="mission days" />
+              <CaseStat value={data.checkins_logged} label="check-ins" />
+              {answers.length > 0 ? (
+                <CaseStat value={stuck} label="days stuck to it" />
+              ) : (
+                <CaseStat value={data.energy_during ?? '–'} label="energy now" />
+              )}
+            </>
+          )
+        }
+      />
+      <p className="-mt-2 text-center text-sm text-muted-foreground">
+        {formatDay(experiment.start)} – {formatDay(addDays(experiment.start, experiment.days - 1))}
+      </p>
 
-      {loading && <LoadingState label="Checking your experiment" />}
+      {loading && <LoadingState label="Checking your mission" />}
       {error ? <ErrorState onRetry={retry} /> : null}
       {data && (
         <>
-          <DayTracker result={data} experiment={experiment} />
-          {data.status === 'running' ? <RunningCard result={data} /> : <ResultCard result={data} />}
+          {data.status === 'running' ? <RunningCard result={data} /> : <Verdict result={data} />}
+          <MissionMap result={data} experiment={experiment} />
           {data.chart && data.chart.points.length > 1 && (
-            <section className="rounded-2xl bg-card p-5 ring-1 ring-border">
+            <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
               <MiniChart
                 chart={data.chart}
                 title="Your energy, before and during"
-                caption="Dashed line = your energy in the 5 days before the experiment."
+                caption="Dashed line = your energy in the 5 days before the mission."
               />
             </section>
           )}
           {data.status === 'running' && (
-            <Button variant="ghost" className="w-full" onClick={finish}>
-              Stop the experiment
+            <Button variant="ghost" className="h-11 w-full" onClick={stop}>
+              Stop the mission
             </Button>
           )}
         </>
@@ -108,85 +133,71 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   )
 }
 
-const ADHERENCE_LABEL = { yes: 'stuck to the plan', partly: 'partly stuck to the plan', no: 'did not stick to the plan' }
-
-function DayTracker({ result, experiment }: { result: ExperimentResult; experiment: Experiment }) {
-  const { session } = useSession()
-  const answers = Array.from({ length: result.days_total }, (_, i) =>
-    i < result.day ? adherenceFor(session, experiment.start, i + 1) : undefined,
-  )
-  const answered = answers.filter(Boolean)
-  const stuck = answers.filter((a) => a === 'yes').length
-  return (
-    <section aria-label={`Day ${result.day} of ${result.days_total}`} className="rounded-2xl bg-card p-5 ring-1 ring-border">
-      <div className="flex items-center justify-between">
-        <p className="font-semibold">
-          {result.status === 'running'
-            ? result.day === 0
-              ? 'Starts tomorrow'
-              : `Day ${result.day} of ${result.days_total}`
-            : 'Finished'}
-        </p>
-        <p className="text-sm text-muted-foreground">{result.checkins_logged} check-ins</p>
-      </div>
-      <ol className="mt-3 grid grid-cols-7 gap-1.5">
-        {answers.map((answer, i) => {
-          const done = i < result.day
-          // A passed day nobody answered for is just "done" (plain check); "stuck to it" is green.
-          const Icon = answer === 'no' ? CircleX : answer === 'partly' ? CircleDashed : answer === 'yes' ? CircleCheck : Check
-          return (
-            <li
-              key={i}
-              aria-label={`Day ${i + 1}${done ? (answer ? `, you ${ADHERENCE_LABEL[answer]}` : ', done') : ''}`}
-              className={cn(
-                'grid h-10 place-items-center rounded-lg text-sm font-semibold',
-                !done && 'bg-navy-50 text-muted-foreground',
-                done && !answer && 'bg-navy-900 text-white',
-                answer === 'yes' && 'bg-green-700 text-white',
-                answer === 'partly' && 'bg-amber-50 text-amber-800 ring-1 ring-amber-800/30',
-                answer === 'no' && 'bg-coral-50 text-coral-700 ring-1 ring-coral-500/40',
-              )}
-            >
-              {done ? <Icon aria-hidden className="size-4" /> : i + 1}
-            </li>
-          )
-        })}
-      </ol>
-      {answered.length > 0 && (
-        <p className="mt-3 text-sm text-muted-foreground">
-          Mission check: stuck to the plan on {stuck} of {answered.length} {answered.length === 1 ? 'day' : 'days'} you told us about.
-        </p>
-      )}
-    </section>
-  )
-}
-
 function RunningCard({ result }: { result: ExperimentResult }) {
   return (
-    <section className="rounded-2xl bg-coral-50 p-5 ring-1 ring-coral-500/40">
-      <p className="font-semibold">{result.day === 0 ? 'Tomorrow is day 1' : 'Keep going'}</p>
-      <p className="mt-1">{result.summary}</p>
+    <section className="flex items-start gap-3 rounded-3xl bg-coral-50 p-5 ring-1 ring-coral-500/40">
+      <Target aria-hidden className="mt-0.5 size-6 shrink-0 text-coral-700" />
+      <div>
+        <p className="text-lg font-semibold">{result.day === 0 ? 'Starts tomorrow' : 'Keep going'}</p>
+        <p className="mt-0.5">{result.summary}</p>
+      </div>
     </section>
   )
 }
 
-function ResultCard({ result }: { result: ExperimentResult }) {
-  const improved = result.status === 'improved'
-  const notImproved = result.status === 'not_improved'
-  const Icon = improved ? PartyPopper : notImproved ? Stethoscope : RotateCcw
+const VERDICTS = {
+  improved: {
+    stamp: 'Case closed',
+    title: 'Mystery solved',
+    icon: Trophy,
+    card: 'bg-green-50 ring-green-700/30',
+    stampColor: 'border-green-700 text-green-700',
+    note: 'Keep the change. You found what was draining you.',
+  },
+  not_improved: {
+    stamp: 'To your doctor',
+    title: 'No clear improvement',
+    icon: Stethoscope,
+    card: 'bg-navy-50 ring-navy-900/20',
+    stampColor: 'border-coral-700 text-coral-700',
+    note: 'You did the right thing: you tried a safe change first. Your doctor now gets a one-page summary instead of a guess.',
+  },
+  not_enough_data: {
+    stamp: 'On hold',
+    title: 'Not enough check-ins',
+    icon: RotateCcw,
+    card: 'bg-navy-50 ring-navy-900/20',
+    stampColor: 'border-navy-700 text-navy-700',
+    note: 'We need at least 5 morning check-ins to judge it fairly.',
+  },
+} as const
+
+function Verdict({ result }: { result: ExperimentResult }) {
+  const verdict = VERDICTS[result.status as keyof typeof VERDICTS]
   return (
     <section
+      aria-labelledby="verdict"
       className={cn(
-        'rounded-2xl p-5 ring-1',
-        improved ? 'bg-green-50 ring-green-700/30' : 'bg-navy-50 ring-navy-900/20',
+        'relative overflow-hidden rounded-3xl p-5 ring-1 animate-in fade-in zoom-in-95 duration-500 motion-reduce:animate-none',
+        verdict.card,
       )}
     >
-      <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        <Icon aria-hidden className={cn('size-4', improved ? 'text-green-700' : 'text-navy-900')} />
-        Result
+      <span
+        aria-hidden
+        className={cn(
+          'absolute right-4 top-4 rotate-[-8deg] rounded-md border-2 px-2 py-0.5 text-sm font-black uppercase tracking-[0.16em]',
+          verdict.stampColor,
+        )}
+      >
+        {verdict.stamp}
+      </span>
+      <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-navy-700">
+        <verdict.icon aria-hidden className="size-4" />
+        Verdict
       </p>
-      <h2 className="mt-1.5 text-2xl font-semibold leading-tight">
-        {improved ? 'It worked' : notImproved ? 'No clear improvement' : 'Not enough check-ins'}
+      <h2 id="verdict" className="mt-1.5 pr-28 text-2xl font-semibold leading-tight">
+        {verdict.title}
+        <span className="sr-only">. {verdict.stamp}.</span>
       </h2>
       <p className="mt-2">{result.summary}</p>
       {(result.energy_before !== null || result.rhr_during !== null) && (
@@ -199,13 +210,14 @@ function ResultCard({ result }: { result: ExperimentResult }) {
           )}
         </dl>
       )}
+      <p className="mt-4 font-medium">{verdict.note}</p>
     </section>
   )
 }
 
 function Stat({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-xl bg-card p-3 ring-1 ring-border">
+    <div className="rounded-2xl bg-card p-3 ring-1 ring-border">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="mt-0.5 text-xl font-semibold tabular-nums">{value}</dd>
       <dd className="text-sm text-muted-foreground">{unit}</dd>

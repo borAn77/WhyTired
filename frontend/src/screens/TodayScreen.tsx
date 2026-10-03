@@ -87,12 +87,12 @@ function Today() {
   )
 
   const [levelUp, setLevelUp] = useState<string | null>(null)
-  const [toast, setToast] = useState(() => (location.state as { gained?: string } | null)?.gained === 'checkin')
+  const [toast, setToast] = useState(() => (location.state as { gained?: string } | null)?.gained ?? null)
   useEffect(() => {
     if (!toast) return
     // Clear the router state so a reload doesn't show the reward again.
     navigate('.', { replace: true, state: null })
-    const timer = window.setTimeout(() => setToast(false), 3500)
+    const timer = window.setTimeout(() => setToast(null), 3500)
     return () => window.clearTimeout(timer)
   }, [toast, navigate])
 
@@ -149,7 +149,9 @@ function Today() {
       </section>
 
       <ProgressCard session={session} />
-      {toast && <XpToast text={`+${XP.checkin} XP: check-in done`} />}
+      {toast && (
+        <XpToast text={toast === 'closed' ? `+${XP.closed} XP: case closed!` : `+${XP.checkin} XP: check-in done`} />
+      )}
 
       {checkedIn && coach.loading && <LoadingState label="Getting today's advice" />}
       {checkedIn && coach.error ? (

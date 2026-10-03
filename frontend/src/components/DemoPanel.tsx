@@ -49,6 +49,7 @@ export function DemoPanel() {
               done: {},
               missions: [],
               clues: {},
+              closed: [],
               experiment: null,
               today: DEMO_DAY,
             })

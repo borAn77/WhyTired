@@ -21,6 +21,7 @@ export interface SessionState {
   done: Record<ISODate, Recommendation> // days the user marked today's advice as done (XP only)
   missions: ISODate[] // start dates of accepted experiments (XP only)
   clues: Record<ISODate, DayClues> // answers to the follow-up cards (tips only, never sent to the API)
+  closed: ISODate[] // days a case was closed because the experiment worked (XP only)
 }
 
 export const DEFAULT_SESSION: SessionState = {
@@ -37,6 +38,7 @@ export const DEFAULT_SESSION: SessionState = {
   done: {},
   missions: [],
   clues: {},
+  closed: [],
 }
 
 export interface SessionApi {

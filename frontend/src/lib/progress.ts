@@ -3,8 +3,9 @@ import type { SessionState } from './session'
 
 // Motivation layer, kept in the browser only: the rule engine never sees XP or streaks.
 // XP rewards the habit (checking in, following the advice, trying the experiment), never more
-// training, and a rest day earns exactly as much as a hard day.
-export const XP = { checkin: 10, done: 20, mission: 50 } as const
+// training, and a rest day earns exactly as much as a hard day. Closing a case (the experiment
+// worked) is the biggest reward.
+export const XP = { checkin: 10, done: 20, mission: 50, closed: 100 } as const
 
 const LEVELS = ['Rookie', 'Sleuth', 'Detective', 'Inspector', 'Chief inspector']
 const XP_PER_LEVEL = 100
@@ -13,7 +14,8 @@ export function totalXp(session: SessionState): number {
   return (
     Object.keys(session.checkins).length * XP.checkin +
     Object.keys(session.done).length * XP.done +
-    session.missions.length * XP.mission
+    session.missions.length * XP.mission +
+    session.closed.length * XP.closed
   )
 }
 
