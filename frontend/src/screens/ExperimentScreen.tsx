@@ -1,4 +1,4 @@
-import { FileText, RotateCcw, Stethoscope, Sunrise, Target, Trophy } from 'lucide-react'
+import { FileText, RotateCcw, Stethoscope, Sunrise, Target, TriangleAlert, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { CaseHeader, CaseStat } from '@/components/case/CaseParts'
@@ -121,7 +121,10 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
       {data && (
         <>
           {data.status === 'running' ? (
-            <RunningCard result={data} checkedIn={checkedIn} />
+            <>
+              <RunningCard result={data} checkedIn={checkedIn} />
+              <WarningSigns />
+            </>
           ) : (
             <Verdict result={data} />
           )}
@@ -165,6 +168,34 @@ function RunningCard({ result, checkedIn }: { result: ExperimentResult; checkedI
             : result.summary}
         </p>
       </div>
+    </section>
+  )
+}
+
+// While the mission runs: when not to wait out the 7 days. The same fixed card for everyone, so
+// it never turns into a personal triage or diagnosis. Copy by Berken, also in Polish.
+function WarningSigns() {
+  return (
+    <section aria-labelledby="warning-signs" className="rounded-3xl bg-card p-5 ring-1 ring-border">
+      <h2 id="warning-signs" className="flex items-center gap-2 text-lg font-semibold">
+        <TriangleAlert aria-hidden className="size-5 shrink-0 text-coral-700" />
+        Warning signs
+      </h2>
+      <ul className="mt-2 space-y-2">
+        <li>
+          Chest pain, fainting or severe shortness of breath during training → <b>call 112 now.</b>
+        </li>
+        <li>
+          Unexplained weight loss or fever → <b>don’t wait the 7 days, see a doctor.</b>
+        </li>
+      </ul>
+      <details className="mt-3">
+        <summary className="min-h-11 cursor-pointer py-2 font-medium text-navy-700">Po polsku</summary>
+        <p lang="pl" className="text-muted-foreground">
+          Ból w klatce piersiowej, omdlenie lub silna duszność podczas treningu → natychmiast dzwoń pod 112.
+          Niewyjaśniona utrata masy ciała lub gorączka → nie czekaj 7 dni, idź do lekarza.
+        </p>
+      </details>
     </section>
   )
 }
