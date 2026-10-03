@@ -1,8 +1,12 @@
-"""Personal baseline: what is "normal" for THIS runner?
+"""Personal baseline: what is "normal" for THIS person?
 
-Every metric is compared to the runner's own previous 30 days, not to
+Every metric is compared to the user's own previous 30 days, not to
 population norms. A resting HR of 58 is normal for one person and a warning
 sign for another.
+
+Works for both personas: a runner with a watch (resting HR, HRV, sleep) and
+a gym user without one (daily check-in: sleep, energy, ...). Rules whose data
+is missing are skipped; "signals_used" says which ones were checked.
 
 - Baseline = rolling MEDIAN of the previous 30 days. Today is NOT in its own
   window, so a bad day cannot pull its own baseline towards itself.
@@ -31,6 +35,7 @@ HRV_AVG_MIN_DAYS = 4
 RHR_ABOVE_BPM = 5    # resting HR more than 5 bpm above baseline
 HRV_BELOW_SD = 1     # HRV 7-day average more than 1 SD below baseline
 MIN_SLEEP_H = 6.0    # absolute floor, independent of the baseline
+LOW_ENERGY = 2       # check-in energy <= 2 on a 1-5 scale ("tired" or worse)
 
 
 def compute_baseline(df, artifacts=None):
@@ -44,8 +49,11 @@ def compute_baseline(df, artifacts=None):
     enter any baseline nor count towards a low day.
     """
     if artifacts is None:
-        artifacts = detect_artifacts(df)
-    data = df.set_index(pd.to_datetime(df["date"]))[METRICS].astype(float)
+        artifacts = detect_artifacts(df)["artifacts"]
+    raw = df.set_index(pd.to_datetime(df["date"]))
+    # A metric the user doesn't have (no watch -> no resting HR / HRV) becomes
+    # an all-NaN column, so every rule that needs it is simply skipped.
+    data = raw.reindex(columns=METRICS).astype(float)
     for a in artifacts:
         day = pd.Timestamp(a["date"])
         if day in data.index:
@@ -57,6 +65,8 @@ def compute_baseline(df, artifacts=None):
     # No HRV verdict on a day whose own HRV reading is missing or untrusted.
     data["hrv_7d"] = (data["hrv_rmssd"].rolling(HRV_AVG, min_periods=HRV_AVG_MIN_DAYS)
                       .mean().where(data["hrv_rmssd"].notna()))
+    # Self-reported energy (1-5) from the daily check-in, judged on its own scale.
+    data["energy"] = raw["energy"].astype(float) if "energy" in raw else float("nan")
     return pd.concat([data, median.add_suffix("_median"), sd.add_suffix("_sd")], axis=1)
 
 
@@ -85,7 +95,7 @@ def deviation(df, metric, date, artifacts=None):
               "baseline": 54.2, "sd": 2.9, "diff": 5.5, "z": 1.9}
     """
     row = compute_baseline(df, artifacts).loc[pd.Timestamp(date)]
-    return {"date": str(date), **_deviation(row, metric)}
+    return {"date": pd.Timestamp(date).strftime("%Y-%m-%d"), **_deviation(row, metric)}
 
 
 def is_low_day(df, date, artifacts=None):
@@ -93,6 +103,9 @@ def is_low_day(df, date, artifacts=None):
       - resting HR         > baseline + 5 bpm
       - HRV 7-day average  < baseline - 1 SD (SD of daily HRV)
       - sleep              < 6 h
+      - check-in energy    <= 2 (of 5)
+    A rule is only checked when its data exists (and, for resting HR / HRV,
+    a baseline exists); "signals_used" lists the rules that were checked.
 
     Why a 7-day average for HRV: daily HRV is very noisy (one late coffee
     moves it), so HRV-guided training usually looks at the weekly average.
@@ -102,27 +115,39 @@ def is_low_day(df, date, artifacts=None):
     streaks). Against the daily SD, only a sustained drop counts.
 
     Returns {"date", "low": bool, "reasons": [human-readable strings],
-             "hrv_7d": float, "deviations": {metric: deviation dict}}.
+             "signals_used": [...], "hrv_7d": float,
+             "deviations": {metric: deviation dict}}.
     """
     row = compute_baseline(df, artifacts).loc[pd.Timestamp(date)]
     dev = {m: _deviation(row, m) for m in METRICS}
-    reasons = []
+    def has(*cols):  # does this day have the data a rule needs?
+        return all(pd.notna(row[c]) for c in cols)
 
-    # Missing data or no baseline yet gives NaN, and NaN comparisons are
-    # False, so such a day simply gets no signal.
-    if row["resting_hr"] > row["resting_hr_median"] + RHR_ABOVE_BPM:
-        reasons.append(f"Resting HR {row['resting_hr']:.0f} bpm "
-                       f"(your normal: {row['resting_hr_median']:.0f} bpm)")
-    if row["hrv_7d"] < row["hrv_rmssd_median"] - HRV_BELOW_SD * row["hrv_rmssd_sd"]:
-        reasons.append(f"HRV 7-day average {row['hrv_7d']:.0f} ms "
-                       f"(your normal: {row['hrv_rmssd_median']:.0f} ms)")
-    if row["sleep_hours"] < MIN_SLEEP_H:
-        normal = (f" (your normal: {row['sleep_hours_median']:.1f}h)"
-                  if pd.notna(row["sleep_hours_median"]) else "")
-        reasons.append(f"Sleep {row['sleep_hours']:.1f}h{normal}")
+    used, reasons = [], []
 
-    return {"date": str(date), "low": bool(reasons), "reasons": reasons,
-            "hrv_7d": _num(row["hrv_7d"]), "deviations": dev}
+    if has("resting_hr", "resting_hr_median"):
+        used.append("resting_hr")
+        if row["resting_hr"] > row["resting_hr_median"] + RHR_ABOVE_BPM:
+            reasons.append(f"Resting HR {row['resting_hr']:.0f} bpm "
+                           f"(your normal: {row['resting_hr_median']:.0f} bpm)")
+    if has("hrv_7d", "hrv_rmssd_median", "hrv_rmssd_sd"):
+        used.append("hrv_7d")
+        if row["hrv_7d"] < row["hrv_rmssd_median"] - HRV_BELOW_SD * row["hrv_rmssd_sd"]:
+            reasons.append(f"HRV 7-day average {row['hrv_7d']:.0f} ms "
+                           f"(your normal: {row['hrv_rmssd_median']:.0f} ms)")
+    if has("sleep_hours"):
+        used.append("sleep_hours")
+        if row["sleep_hours"] < MIN_SLEEP_H:
+            normal = (f" (your normal: {row['sleep_hours_median']:.1f}h)"
+                      if has("sleep_hours_median") else "")
+            reasons.append(f"Sleep {row['sleep_hours']:.1f}h{normal}")
+    if has("energy"):
+        used.append("energy")
+        if row["energy"] <= LOW_ENERGY:
+            reasons.append(f"Energy {row['energy']:.0f}/5 in your check-in")
+
+    return {"date": pd.Timestamp(date).strftime("%Y-%m-%d"), "low": bool(reasons), "reasons": reasons,
+            "signals_used": used, "hrv_7d": _num(row["hrv_7d"]), "deviations": dev}
 
 
 if __name__ == "__main__":
@@ -140,4 +165,11 @@ if __name__ == "__main__":
     # and the artifact night must not count as one.
     assert all(low[d]["low"] for d in df["date"].tail(5))
     assert not low["2026-08-20"]["low"]
+    assert low["2026-09-28"]["signals_used"] == ["resting_hr", "hrv_7d", "sleep_hours"]
     print("OK: last 5 days are low days, artifact night 2026-08-20 is not")
+
+    # Persona 2 (gym, no watch): same days, only a check-in.
+    gym = df[["date", "sleep_hours", "soreness", "mood", "feeling_sick", "training_load"]].assign(energy=2)
+    r = is_low_day(gym, "2026-09-28")
+    assert r["signals_used"] == ["sleep_hours", "energy"] and r["low"], r
+    print("OK: no-watch user ->", r["signals_used"], r["reasons"])

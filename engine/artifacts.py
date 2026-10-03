@@ -13,6 +13,10 @@ A day is excluded if ANY rule fires:
   4. Resting HR < 30 or > 120 bpm
   5. A sudden metric shift at a firmware change -> the ±3 days around it
 
+A rule only runs when its data exists: a gym user without a watch has none
+of these columns, so nothing is checked and nothing is excluded.
+"signals_used" lists the watch data the checks could use.
+
 Run:  python -m engine.artifacts   (from the repo root)
 """
 import pandas as pd
@@ -29,6 +33,10 @@ SHIFT_SD = 1.5              # rule 5: "sudden" = shift > 1.5 x normal daily SD
 SENSOR_METRICS = {"resting_hr": ("Resting HR", "bpm"),
                   "hrv_rmssd": ("HRV", "ms"),
                   "sleep_hours": ("Sleep", "h")}
+
+# Watch columns the daily rules read: 2-4 (numbers) and 5 (firmware version).
+DAY_CHECK_COLUMNS = ["sleep_hr_max", "sleep_motion", "night_data_coverage", "resting_hr"]
+WATCH_COLUMNS = DAY_CHECK_COLUMNS + ["device_firmware"]
 
 DAY = pd.Timedelta(days=1)
 
@@ -74,7 +82,9 @@ def _minute_jumps(minute_hr):
 def _day_artifacts(df, minute_hr=None):
     """Rules 1-4 -> {date: [reasons]}."""
     found = {}
-    for date, row in zip(_dates(df), df.to_dict("records")):
+    # A missing column, or one sent as null, becomes NaN, so its rule never fires.
+    values = df.reindex(columns=DAY_CHECK_COLUMNS).astype(float)
+    for date, row in zip(_dates(df), values.to_dict("records")):
         if reasons := _day_reasons(row):
             found[date] = reasons
     if minute_hr is not None:
@@ -95,8 +105,10 @@ def firmware_changes(df, minute_hr=None):
     Returns [{"date", "from", "to", "shifts": {metric: shift}}]; "shifts" is
     empty when the update changed nothing measurable.
     """
+    if "device_firmware" not in df:
+        return []
     data = df.set_index(pd.to_datetime(df["date"]))
-    values = data[list(SENSOR_METRICS)].astype(float)
+    values = data.reindex(columns=list(SENSOR_METRICS)).astype(float)
     values.loc[values.index.isin(pd.to_datetime(list(_day_artifacts(df, minute_hr))))] = float("nan")
 
     firmware, previous = data["device_firmware"], data["device_firmware"].shift()
@@ -114,9 +126,11 @@ def firmware_changes(df, minute_hr=None):
 
 
 def detect_artifacts(df, minute_hr=None):
-    """All days whose data can't be trusted, sorted by date:
-    [{"date": "2026-08-20", "excluded": True, "reason": "...",
-      "metrics": ["hrv_rmssd", "resting_hr", "sleep_hours"]}]
+    """All days whose data can't be trusted, sorted by date, plus the watch
+    data the checks could use (empty for a user without a watch):
+    {"artifacts": [{"date": "2026-08-20", "excluded": True, "reason": "...",
+                    "metrics": ["hrv_rmssd", "resting_hr", "sleep_hours"]}],
+     "signals_used": ["sleep_hr_max", "sleep_motion", ...]}
 
     "metrics" = which readings of that day are untrusted. Rules 1-4 mean the
     night's recording is broken -> all of them. A firmware update only
@@ -141,15 +155,19 @@ def detect_artifacts(df, minute_hr=None):
                 reasons.append(reason)
                 metrics.update(fw["shifts"])
 
-    return [{"date": d, "excluded": True, "reason": "; ".join(r), "metrics": sorted(m)}
-            for d, (r, m) in sorted(found.items())]
+    used = [c for c in WATCH_COLUMNS if c in df and df[c].notna().any()]
+    if minute_hr is not None:
+        used.append("minute_hr")
+    return {"artifacts": [{"date": d, "excluded": True, "reason": "; ".join(r), "metrics": sorted(m)}
+                          for d, (r, m) in sorted(found.items())],
+            "signals_used": used}
 
 
 if __name__ == "__main__":
     from pathlib import Path
 
     df = pd.read_csv(Path(__file__).parent / "data" / "demo_ania.csv")
-    artifacts = detect_artifacts(df)
+    artifacts = detect_artifacts(df)["artifacts"]
     for a in artifacts:
         print(a["date"], "-", a["reason"])
     print("Firmware changes:", firmware_changes(df))
@@ -166,3 +184,8 @@ if __name__ == "__main__":
     assert "2026-07-05" in _minute_jumps(minutes)
     assert not _minute_jumps(minutes.assign(at_rest=[True, False]))
     print("OK: artifact night 2026-08-20 excluded, firmware change 2026-08-30 detected")
+
+    # Persona 2 (gym, no watch): nothing to check, nothing excluded, no crash.
+    gym = df[["date", "sleep_hours", "soreness", "mood", "feeling_sick", "training_load"]]
+    assert detect_artifacts(gym) == {"artifacts": [], "signals_used": []}
+    print("OK: no-watch user -> no checks, no exclusions")

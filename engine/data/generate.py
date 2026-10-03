@@ -6,7 +6,9 @@ The story the data tells (day index 0..89):
   - day 50      artifact night: sleep HR 140 with zero motion (watch glitch)
   - day 60      firmware update: HRV reads ~10 higher from this day on
   - days 69-89  overreaching: load +10% per week, resting HR creeps up +7,
-                HRV drops; days 85-89 are clearly "low days"
+                HRV drops; from day 80 HRV is clearly low (HRV often reacts
+                before resting HR); days 85-89 resting HR is clearly up too,
+                so they are clearly "low days" on every rule
 
 Run:  python engine/data/generate.py   -> writes engine/data/demo_ania.csv
 """
@@ -23,7 +25,8 @@ HOLIDAY = range(30, 37)
 ARTIFACT_DAY = 50
 FIRMWARE_DAY = 60
 RAMP_START = 69          # last 3 weeks
-LOW_DAYS_START = 85      # last 5 days
+HRV_LOW_START = 80       # last 10 days: HRV clearly low
+LOW_DAYS_START = 85      # last 5 days: resting HR clearly up too
 
 # Weekly training pattern (Mon..Sun): (training_load, run_km)
 WEEK = [(0, 0), (90, 10), (50, 7), (90, 11), (45, 6), (120, 18), (50, 7)]
@@ -57,10 +60,14 @@ def generate(seed=SEED):
             progress = (i - RAMP_START) / (N_DAYS - 1 - RAMP_START)  # 0 -> 1
             rhr += 7 * progress
             hrv -= 18 * progress
+        # Last 10 days: HRV clearly low. It starts 5 days before the low-day
+        # block because the HRV rule uses a 7-day average, which needs about
+        # a week of low readings before it drops clearly.
+        if i >= HRV_LOW_START:
+            hrv = rng.normal(60 - 30, 3)
         # Last 5 days: clearly low, small noise so the 5-day trigger is reliable.
         if i >= LOW_DAYS_START:
-            rhr = rng.normal(52 + 7.5, 0.7)
-            hrv = rng.normal(60 - 18, 3)
+            rhr = rng.normal(52 + 9.5, 0.5)
             soreness, mood = 4, 2
 
         # Firmware update: new HRV algorithm reads ~10 ms higher from now on.
