@@ -102,3 +102,11 @@ One short entry per decision: what, why, alternatives considered.
   During a load-cut experiment, training is capped at easy and the old load spike is no longer counted, because the user is already acting on it.
 - **Why:** Every outcome is explainable in one sentence and testable. The check-in comes first because subjective measures react most sensitively to training strain (Saw et al., 2016).
 - **Alternatives:** readiness scores mixing all signals into one number (harder to explain), and multi-day plan rewriting (out of scope: today only).
+
+## D13: Motivation layer and follow-up cards stay in the browser
+- **What:**
+  - XP, levels, the check-in streak and "today's advice done" are counted in the browser session only. XP rewards the habit (check-in +10, advice done +20, accepting a mission +50), never more training: a rest day earns the same as a hard day.
+  - Every new day asks for a check-in again. A day counts as checked in only when the user answered in the app, even though the synthetic data has check-ins for almost every day.
+  - Follow-up cards are added to the check-in by simple rules (`frontend/src/lib/clues.ts`): a mission check while an experiment runs ("Did you keep yesterday's training light?"), a "what got in the way of your sleep?" card after ≤ 6 h or a bad night, and a "what's behind the stress?" card when stress is 4 or 5. A clue named twice in 7 days shows one everyday tip on the Today screen. Mission answers show on the 7-day tracker.
+- **Why:** The rule engine and the shared `models.py` contract stay unchanged, so all numbers and findings still come from the engine alone. The follow-up cards are rule-based, not LLM-generated, so every question can be explained in one sentence. The tips are everyday habits (screens, caffeine timing, study breaks), never medical advice.
+- **Alternatives:** sending the extra answers to the engine (a contract change for both of us, too late before the feature freeze) and LLM-generated questions (harder to explain, and the brief limits the LLM to explaining computed findings).

@@ -1,4 +1,4 @@
-import { CircleCheck, FileText, FlaskConical, PartyPopper, RotateCcw, Stethoscope } from 'lucide-react'
+import { Check, CircleCheck, CircleDashed, CircleX, FileText, FlaskConical, PartyPopper, RotateCcw, Stethoscope } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { MiniChart } from '@/components/MiniChart'
@@ -7,6 +7,7 @@ import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState, LoadingState } from '@/components/states'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import { adherenceFor } from '@/lib/clues'
 import { addDays, formatDay } from '@/lib/dates'
 import { toCtx, useSession } from '@/lib/session'
 import type { Experiment, ExperimentResult } from '@/lib/types'
@@ -85,7 +86,7 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
       {error ? <ErrorState onRetry={retry} /> : null}
       {data && (
         <>
-          <DayTracker result={data} />
+          <DayTracker result={data} experiment={experiment} />
           {data.status === 'running' ? <RunningCard result={data} /> : <ResultCard result={data} />}
           {data.chart && data.chart.points.length > 1 && (
             <section className="rounded-2xl bg-card p-5 ring-1 ring-border">
@@ -107,7 +108,15 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   )
 }
 
-function DayTracker({ result }: { result: ExperimentResult }) {
+const ADHERENCE_LABEL = { yes: 'stuck to the plan', partly: 'partly stuck to the plan', no: 'did not stick to the plan' }
+
+function DayTracker({ result, experiment }: { result: ExperimentResult; experiment: Experiment }) {
+  const { session } = useSession()
+  const answers = Array.from({ length: result.days_total }, (_, i) =>
+    i < result.day ? adherenceFor(session, experiment.start, i + 1) : undefined,
+  )
+  const answered = answers.filter(Boolean)
+  const stuck = answers.filter((a) => a === 'yes').length
   return (
     <section aria-label={`Day ${result.day} of ${result.days_total}`} className="rounded-2xl bg-card p-5 ring-1 ring-border">
       <div className="flex items-center justify-between">
@@ -121,22 +130,33 @@ function DayTracker({ result }: { result: ExperimentResult }) {
         <p className="text-sm text-muted-foreground">{result.checkins_logged} check-ins</p>
       </div>
       <ol className="mt-3 grid grid-cols-7 gap-1.5">
-        {Array.from({ length: result.days_total }, (_, i) => {
+        {answers.map((answer, i) => {
           const done = i < result.day
+          // A passed day nobody answered for is just "done" (plain check); "stuck to it" is green.
+          const Icon = answer === 'no' ? CircleX : answer === 'partly' ? CircleDashed : answer === 'yes' ? CircleCheck : Check
           return (
             <li
               key={i}
-              aria-label={`Day ${i + 1}${done ? ', done' : ''}`}
+              aria-label={`Day ${i + 1}${done ? (answer ? `, you ${ADHERENCE_LABEL[answer]}` : ', done') : ''}`}
               className={cn(
                 'grid h-10 place-items-center rounded-lg text-sm font-semibold',
-                done ? 'bg-navy-900 text-white' : 'bg-navy-50 text-muted-foreground',
+                !done && 'bg-navy-50 text-muted-foreground',
+                done && !answer && 'bg-navy-900 text-white',
+                answer === 'yes' && 'bg-green-700 text-white',
+                answer === 'partly' && 'bg-amber-50 text-amber-800 ring-1 ring-amber-800/30',
+                answer === 'no' && 'bg-coral-50 text-coral-700 ring-1 ring-coral-500/40',
               )}
             >
-              {done ? <CircleCheck aria-hidden className="size-4" /> : i + 1}
+              {done ? <Icon aria-hidden className="size-4" /> : i + 1}
             </li>
           )
         })}
       </ol>
+      {answered.length > 0 && (
+        <p className="mt-3 text-sm text-muted-foreground">
+          Mission check: stuck to the plan on {stuck} of {answered.length} {answered.length === 1 ? 'day' : 'days'} you told us about.
+        </p>
+      )}
     </section>
   )
 }

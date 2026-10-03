@@ -59,6 +59,11 @@ try {
   await click('That’s right')
   await waitFor('How well did you sleep?')
   await answer('How well did you sleep?', 3)
+  // Kasia's watch shows a short night, so the follow-up "clue hunt" card appears
+  await waitFor('What got in the way of your sleep?')
+  await click('Coffee after 2 pm')
+  await phone('03-check-in-clue')
+  await click('Next')
   await waitFor('How stressed do you feel?')
   await answer('How stressed do you feel?', 2)
   await waitFor('How sore are your muscles?')

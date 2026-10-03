@@ -13,11 +13,12 @@ import {
 } from 'lucide-react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 
-import { DayComplete, DetectiveRadar, ProgressCard, XpPill, XpToast } from '@/components/progress'
+import { CluePattern, DayComplete, DetectiveRadar, ProgressCard, XpPill, XpToast } from '@/components/progress'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { ErrorState, LoadingState } from '@/components/states'
 import { api } from '@/lib/api'
+import { cluePattern } from '@/lib/clues'
 import { daysBetween } from '@/lib/dates'
 import { XP, levelFor, totalXp } from '@/lib/progress'
 import { toCtx, useSession } from '@/lib/session'
@@ -77,7 +78,10 @@ function Today() {
 
   // The radar needs the low-energy streak, which only the detective returns. It is only asked
   // when detective mode is not triggered, so this call never runs the LLM explanation.
-  const needsRadar = !!result?.has_checkin && !result.detective_triggered
+  // Today counts as checked in only when the user answered in the app. The synthetic data has
+  // check-ins for almost every day, but every new morning should ask again.
+  const checkedIn = !!session.checkins[session.today]
+  const needsRadar = checkedIn && !!result && !result.detective_triggered
   const radar = useApi(`radar:${needsRadar}:${JSON.stringify(request)}`, () =>
     needsRadar ? api.detective(toCtx(session)) : Promise.resolve(null),
   )
@@ -94,6 +98,7 @@ function Today() {
 
   const experimentDay = session.experiment ? daysBetween(session.experiment.start, session.today) + 1 : null
   const doneToday = session.done[session.today]
+  const pattern = cluePattern(session)
 
   const markDone = () => {
     if (!result) return
@@ -105,7 +110,7 @@ function Today() {
   }
 
   let footer = null
-  if (result && !result.has_checkin)
+  if (!checkedIn)
     footer = (
       <PrimaryButton onClick={() => navigate('/check-in')}>
         <Sunrise aria-hidden />
@@ -146,8 +151,8 @@ function Today() {
       <ProgressCard session={session} />
       {toast && <XpToast text={`+${XP.checkin} XP: check-in done`} />}
 
-      {coach.loading && <LoadingState label="Getting today's advice" />}
-      {coach.error ? (
+      {checkedIn && coach.loading && <LoadingState label="Getting today's advice" />}
+      {checkedIn && coach.error ? (
         <ErrorState
           title="We couldn't load today's advice"
           message="The server may be waking up, which takes up to a minute."
@@ -155,7 +160,7 @@ function Today() {
         />
       ) : null}
 
-      {result && !result.has_checkin && (
+      {!checkedIn && (
         <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
           <Sunrise aria-hidden className="size-7 text-coral-700" />
           <h2 className="mt-2 text-xl font-semibold">How are you this morning?</h2>
@@ -165,7 +170,7 @@ function Today() {
 
       {doneToday && !session.experiment && <DayComplete levelUp={levelUp} />}
 
-      {result?.has_checkin && (
+      {checkedIn && result && (
         <>
           <AdviceCard recommendation={result.recommendation} reasons={result.reasons} />
           <Link
@@ -178,7 +183,9 @@ function Today() {
         </>
       )}
 
-      {result?.has_checkin && !session.experiment && (result.detective_triggered || radar.data) && (
+      {checkedIn && pattern && <CluePattern clue={pattern.clue} count={pattern.count} />}
+
+      {checkedIn && result && !session.experiment && (result.detective_triggered || radar.data) && (
         <DetectiveRadar lowDays={radar.data?.low_energy_days ?? 0} triggered={result.detective_triggered} />
       )}
 
@@ -200,7 +207,7 @@ function Today() {
         </section>
       )}
 
-      {result?.has_checkin && result.recommendation !== 'rest' && !doneToday && <PlannedSession />}
+      {checkedIn && result && result.recommendation !== 'rest' && !doneToday && <PlannedSession />}
     </Screen>
   )
 }

@@ -1,6 +1,7 @@
-import { BatteryLow, CircleCheck, Flame, PartyPopper, Search, Sparkles } from 'lucide-react'
+import { BatteryLow, CircleCheck, Flame, Lightbulb, PartyPopper, Search, Sparkles } from 'lucide-react'
 
 import { MascotBadge } from '@/components/case/CaseParts'
+import type { ClueOption } from '@/lib/clues'
 import { XP, checkinStreak, levelFor, totalXp } from '@/lib/progress'
 import type { SessionState } from '@/lib/session'
 import { cn } from '@/lib/utils'
@@ -123,6 +124,30 @@ export function DayComplete({ levelUp }: { levelUp: string | null }) {
       )}
       <h2 className="mt-2 text-xl font-semibold">{levelUp ? `Level up: ${levelUp}!` : 'Day complete'}</h2>
       <p className="text-muted-foreground">+{XP.done} XP. See you at tomorrow's check-in.</p>
+    </section>
+  )
+}
+
+/** A clue the user named on several mornings this week, with one safe tip to try. */
+export function CluePattern({ clue, count }: { clue: ClueOption; count: number }) {
+  return (
+    <section aria-label="Clue spotted" className="rounded-3xl bg-card p-5 ring-1 ring-border">
+      <p className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-[0.14em] text-coral-700">
+        <Lightbulb aria-hidden className="size-4" />
+        Clue spotted
+      </p>
+      <div className="mt-2 flex items-center gap-3">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-navy-900 text-coral-500">
+          <clue.icon aria-hidden className="size-5" />
+        </span>
+        <h2 className="text-lg font-semibold leading-snug">
+          {clue.label}: {count} times this week
+        </h2>
+      </div>
+      <p className="mt-3 rounded-2xl bg-coral-50 p-3.5">
+        <span className="font-semibold">Try this: </span>
+        {clue.tip}
+      </p>
     </section>
   )
 }

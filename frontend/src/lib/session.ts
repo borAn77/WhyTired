@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 
+import type { DayClues } from './clues'
 import { DEMO_DAY } from './dates'
 import type { CheckIn, Ctx, DataLevel, Experiment, ISODate, Lang, Recommendation, Scenario } from './types'
 
@@ -19,6 +20,7 @@ export interface SessionState {
   lang: Lang
   done: Record<ISODate, Recommendation> // days the user marked today's advice as done (XP only)
   missions: ISODate[] // start dates of accepted experiments (XP only)
+  clues: Record<ISODate, DayClues> // answers to the follow-up cards (tips only, never sent to the API)
 }
 
 export const DEFAULT_SESSION: SessionState = {
@@ -34,6 +36,7 @@ export const DEFAULT_SESSION: SessionState = {
   lang: 'en',
   done: {},
   missions: [],
+  clues: {},
 }
 
 export interface SessionApi {
