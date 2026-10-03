@@ -22,18 +22,16 @@ export function ScenePanel() {
     return () => window.clearInterval(timer)
   }, [index])
 
+  // Idle: one compact row, so the presenter column stays shorter than the phone.
   if (index === null) {
     return (
-      <section aria-label="Demo script" className="rounded-xl bg-navy-900 p-4 text-white">
-        <p className="text-sm font-bold uppercase tracking-[0.14em] text-coral-500">Demo script</p>
-        <p className="mt-1 text-sm text-navy-100">
-          {TIMED.length} scenes, about {clock(TOTAL_SECONDS)}. Then use → / ← or a presentation clicker.
-        </p>
-        <Button className="mt-3 h-10 w-full bg-coral-500 font-semibold text-navy-900 hover:bg-coral-500/90" onClick={start}>
-          <Play aria-hidden />
-          Start from scene 1
-        </Button>
-      </section>
+      <Button className="h-11 w-full gap-2 bg-navy-900 font-semibold text-white hover:bg-navy-800" onClick={start}>
+        <Play aria-hidden className="text-coral-500" />
+        Demo script
+        <span className="ml-auto font-normal text-navy-100">
+          {TIMED.length} scenes · {clock(TOTAL_SECONDS)}
+        </span>
+      </Button>
     )
   }
 

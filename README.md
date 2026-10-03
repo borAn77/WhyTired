@@ -57,6 +57,9 @@ uv run uvicorn app.main:app --reload    # http://localhost:8000/api/health
 cd frontend
 npm install
 npm run dev                 # http://localhost:5173 (proxies /api to :8000)
+
+# Or both in one terminal, from the repo root (Ctrl+C stops both)
+node scripts/dev.mjs
 ```
 
 Tests: `cd backend && uv run pytest`

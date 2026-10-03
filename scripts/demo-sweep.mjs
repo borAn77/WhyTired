@@ -115,7 +115,7 @@ try {
     ['Doctor page (PL)', async () => (await path()).startsWith('/s/') && (await has('Zgłoszone przez osobę'))],
     ['Bonus: case closed', async () => (await path()) === '/experiment' && (await has('Mystery solved'))],
   ]
-  await click('Start from scene 1')
+  await click('Demo script')
   for (let i = 0; i < SCENE_CHECKS.length; i++) {
     if (i > 0) await key('ArrowRight', 39)
     await check(`Scene ${i + 1}: ${SCENE_CHECKS[i][0]}`, await until(SCENE_CHECKS[i][1]))
