@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+from statistics import median
 
 from ..models import DayRecord, PlannedSession, Session
 from .baselines import last_days, this_week, usual_period
@@ -32,8 +33,15 @@ def weekly_load(days: list[DayRecord], today: dt.date) -> float:
 
 
 def usual_weekly_load(days: list[DayRecord], today: dt.date) -> float:
-    """Average weekly load over the 28 days before this week (4 weeks)."""
-    return total_load(usual_period(days, today)) / 4
+    """Your usual week = the median of the 4 weekly loads before this week. The median means
+    one unusual week (a holiday, or the first week of a spike) can't distort it
+    (docs/DECISIONS.md, D11)."""
+    period = usual_period(days, today)
+    if not period:
+        return 0.0
+    end = period[-1].date
+    weeks = [total_load(last_days(period, 7, end - dt.timedelta(days=7 * k))) for k in range(4)]
+    return median(weeks)
 
 
 def load_ratio(days: list[DayRecord], today: dt.date) -> float | None:

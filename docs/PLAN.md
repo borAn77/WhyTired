@@ -70,7 +70,7 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 | Rule | Fires when |
 |---|---|
 | low-energy trigger | energy ≤ 2 on ≥ 3 consecutive days (subjective check-ins as load indicators: Saw 2016) |
-| load_spike | last-7-day load ≥ 1.3× the average weekly load of the 28 days before (strong ≥ 1.5×) |
+| load_spike | last-7-day load ≥ 1.3× your usual week = the median of the 4 weeks before (strong ≥ 1.5×, DECISIONS D11) |
 | sleep_debt | Σ(personal 28-day average − hours slept) over 7 days ≥ 4 h (strong ≥ 7 h) |
 | stress_spike | 7-day mean stress ≥ 28-day mean + 1.0 (strong +1.5) |
 | rhr_elevated | 7-day mean resting HR ≥ 28-day baseline + 5 bpm (strong +8). Medium/Full only |
@@ -78,7 +78,7 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 | confidence | +1 fires, +1 strong, +1 history supports, +1 objective corroboration (RHR/HRV), −1 if fewer than 70% of days have data. ≥4 high, 2–3 medium, ≤1 low. Basic is capped at medium |
 | artifacts | the 3 rules from the brief. The jump rule also requires >25 bpm from the median of the last 7 valid readings (DECISIONS D10). Excluded points are returned with a reason |
 | experiment eval | improved if mean energy on days 4–7 ≥ the pre-experiment mean + 1.0 and, when resting HR exists, resting HR ≤ baseline + 3. Fewer than 5 check-ins → not_enough_data |
-| coach | One flag each for: resting HR ≥ baseline + 5, sleep ≤ average − 1.5 h, energy ≤ 2, soreness ≥ 4, stress ≥ 4, load ratio ≥ 1.3.<br>0 flags → hard, 1–2 → easy, ≥3 → rest. An active experiment caps the result at easy |
+| coach | One flag each for: energy ≤ 2, resting HR ≥ usual + 5, sleep ≤ usual − 1.5 h, soreness ≥ 4, stress ≥ 4, load ratio ≥ 1.3.<br>0 flags → hard, 1–2 → easy, ≥3 → rest. Feeling ill → rest. Hard yesterday → easy at most. A load-cut experiment caps at easy (DECISIONS D12) |
 | injury warning | planned duration > 1.10 × the longest session in the last 30 days (Frandsen 2025, used as a duration proxy) |
 
 **Experiment per top cause:**
@@ -208,7 +208,10 @@ Shared rules:
   - Polish copy for the doctor summary, DISCLOSURE, slides
 - `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
-- Branches: `feature/<topic>` → PR into `dev`. `dev` goes into `main` when a milestone is green. Vercel and Render deploy from `main`.
+- `main` is the live demo: every push to `main` deploys (Vercel + Render).
+  - **Boran (+Claude):** push straight to `main`, but only after `uv run pytest` and `npm run build` pass.
+  - **Berken:** work on `feature/<topic>` and open a PR; Boran merges it. Vercel's free plan only deploys commits from the account owner, so this also keeps the live site deploying.
+  - `dev` is no longer used.
 
 ## LLM layer interface (owner: Berken)
 Everything lives in `backend/app/llm/`: `providers.py`, `explain.py`, `validate.py`, `templates.py`. Tests go in `backend/tests/test_llm.py`.

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 
-from ..models import Cause, DataLevel, DayRecord, Experiment, ExperimentPlan, ExperimentResult
+from ..models import Cause, Chart, ChartPoint, DataLevel, DayRecord, Experiment, ExperimentPlan, ExperimentResult
 from .baselines import avg, energy, last_days, resting_hr, usual_period, values, window
 from .load import weekly_load
 
@@ -14,6 +14,14 @@ RHR_BACK_TO_NORMAL = 3.0  # bpm above usual still counts as "back to normal"
 MIN_CHECKINS = 5  # of 7 days, to judge the result
 RESPONSE_DELAY_DAYS = 3  # judge on days 4–7: the body needs a few days to respond
 BEFORE_DAYS = 5
+
+
+TITLES = {
+    "load_spike": "Cut your training load by 40% for 7 days",
+    "rhr_elevated": "Cut your training load by 40% for 7 days",
+    "sleep_debt": "Protect a fixed sleep window for 7 days",
+    "stress_spike": "Two extra easy days and a 10-minute wind-down",
+}
 
 
 def _track(level: DataLevel, extra: str) -> list[str]:
@@ -33,7 +41,7 @@ def suggest_experiment(cause: Cause, days: list[DayRecord], today: dt.date, leve
         target = int(round(week * (1 - LOAD_CUT), -1))
         return ExperimentPlan(
             cause_id=cause.id,
-            title="Cut your training load by 40% for 7 days",
+            title=TITLES[cause.id],
             steps=[
                 f"Keep the next 7 days under {target} load points (last 7 days: {round(week)}).",
                 "Make every session easy: effort 5 out of 10 or lower.",
@@ -44,7 +52,7 @@ def suggest_experiment(cause: Cause, days: list[DayRecord], today: dt.date, leve
     if cause.id == "sleep_debt":
         return ExperimentPlan(
             cause_id=cause.id,
-            title="Protect a fixed sleep window for 7 days",
+            title=TITLES[cause.id],
             steps=[
                 "Go to bed and get up at the same time every day, with 8 hours in bed.",
                 "No screens for the last 30 minutes before bed.",
@@ -54,7 +62,7 @@ def suggest_experiment(cause: Cause, days: list[DayRecord], today: dt.date, leve
         )
     return ExperimentPlan(
         cause_id=cause.id,
-        title="Two extra easy days and a 10-minute wind-down",
+        title=TITLES[cause.id],
         steps=[
             "Swap 2 hard sessions this week for easy ones or rest.",
             "Take 10 minutes every evening to wind down: a walk, stretching or slow breathing.",
@@ -85,9 +93,25 @@ def evaluate_experiment(days: list[DayRecord], experiment: Experiment, today: dt
     energy_during = avg(late, energy) if late else avg(so_far, energy)
     rhr_during = avg(late, resting_hr) if late else avg(so_far, resting_hr)
 
+    chart_days = window(days, start - dt.timedelta(days=BEFORE_DAYS), min(today, last))
+    chart = Chart(
+        metric="energy",
+        unit="/5",
+        points=[
+            ChartPoint(
+                date=day.date,
+                value=energy(day),
+                baseline=round(energy_before, 1) if energy_before is not None else None,
+            )
+            for day in chart_days
+        ],
+    )
+
     def result(status, summary: str) -> ExperimentResult:
         return ExperimentResult(
             status=status,
+            title=TITLES[experiment.cause_id],
+            chart=chart,
             day=max(0, min(day_number, experiment.days)),
             days_total=experiment.days,
             checkins_logged=checkins,

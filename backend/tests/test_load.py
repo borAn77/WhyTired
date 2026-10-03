@@ -41,3 +41,10 @@ def test_injury_warning_above_ten_percent():
     assert injury_warning(PlannedSession(sport="running", duration_min=55), days, TODAY) is None
     warning = injury_warning(PlannedSession(sport="running", duration_min=60), days, TODAY)
     assert warning is not None and "50 min" in warning
+
+
+def test_usual_week_is_the_median_so_one_light_week_does_not_distort_it():
+    # one week without training inside the usual period (days -20..-14 = one 7-day bucket)
+    days = make_days(60, change=lambda o: {"sessions": ()} if -20 <= o <= -14 else {})
+    assert usual_weekly_load(days, TODAY) == 7 * 250
+    assert load_ratio(days, TODAY) == 1.0

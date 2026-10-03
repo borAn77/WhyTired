@@ -8,6 +8,14 @@ import { DEMO_DAY, FIRST_ALLOWED_DAY, LAST_ALLOWED_DAY, addDays, daysBetween, fo
 import { useSession } from '@/lib/session'
 import type { DataLevel, Scenario } from '@/lib/types'
 
+const JUMPS: [string, string][] = [
+  ['Onboarding', '/onboarding'],
+  ['Check-in', '/check-in'],
+  ['Today', '/'],
+  ['Detective', '/detective'],
+  ['Experiment', '/experiment'],
+]
+
 // Presenter-only controls, shown next to the phone frame on desktop. Not part of the product.
 export function DemoPanel() {
   const { session, update, reset } = useSession()
@@ -95,12 +103,22 @@ export function DemoPanel() {
         </ToggleGroup>
       </Field>
 
+      <Field label="Jump to">
+        <div className="flex flex-wrap gap-2">
+          {JUMPS.map(([label, path]) => (
+            <Button key={path} variant="outline" size="sm" onClick={() => navigate(path)}>
+              {label}
+            </Button>
+          ))}
+        </div>
+      </Field>
+
       <Button
         variant="outline"
         className="w-full"
         onClick={() => {
           reset()
-          navigate('/')
+          navigate('/onboarding')
         }}
       >
         <RotateCcw aria-hidden />

@@ -343,13 +343,16 @@ def make_summary(key: str, **changes) -> DoctorSummary:
     chart = Chart(metric="weekly_load", unit="load points",
                   points=[ChartPoint(date=END - dt.timedelta(days=7), value=2345, baseline=1412)])
     return DoctorSummary(
-        lang=data["lang"], patient=data["patient"], data_level=data["data_level"],
+        lang=data["lang"], title="WhyTired: podsumowanie dla lekarza rodzinnego (POZ)",
+        patient=data["patient"], data_level=data["data_level"],
         period_start=END - dt.timedelta(days=89), period_end=END,
+        sources="Dane: poranne ankiety samopoczucia i zapisane treningi.",
         complaint=data["complaint"],
         timeline=[TimelineEntry(date=END - dt.timedelta(days=d), text=t) for d, t in data["timeline"]],
         trends=[Trend(title=title, note=note, chart=chart) for title, note in data["trends"]],
         tried=data["tried"], result=data["result"],
         questions=["Na jakie objawy warto zwrócić uwagę?"],
+        bring=["To podsumowanie (wydruk lub telefon)."],
         disclaimer="To nie jest diagnoza medyczna.",
     )
 

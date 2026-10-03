@@ -17,7 +17,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -45,7 +46,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6255,
@@ -67,7 +69,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -95,7 +98,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6100,
@@ -117,7 +121,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -145,7 +150,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -173,7 +179,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 5790,
@@ -195,7 +202,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -223,7 +231,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6789,
@@ -267,7 +276,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7556,
@@ -289,7 +299,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -317,7 +328,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -345,7 +357,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7530,
@@ -367,7 +380,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -395,7 +409,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7397,
@@ -417,7 +432,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -445,7 +461,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 11023,
@@ -467,7 +484,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -495,7 +513,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -523,7 +542,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6614,
@@ -545,7 +565,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -573,7 +594,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 8489,
@@ -595,7 +617,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -623,7 +646,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7080,
@@ -645,7 +669,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -673,7 +698,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -701,7 +727,8 @@
     "sleep_hours": 8.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 8116,
@@ -723,7 +750,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -751,7 +779,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 5,
     "stress": 1,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 8336,
@@ -775,7 +804,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 5,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 6733,
@@ -799,7 +829,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 1,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 6991,
@@ -823,7 +854,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -853,7 +885,8 @@
     "sleep_hours": 8.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 6180,
@@ -877,7 +910,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 5,
     "stress": 1,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 8633,
@@ -901,7 +935,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -931,7 +966,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 9005,
@@ -953,7 +989,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -981,7 +1018,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6744,
@@ -1003,7 +1041,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1031,7 +1070,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1059,7 +1099,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 9168,
@@ -1103,7 +1144,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7276,
@@ -1125,7 +1167,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1153,7 +1196,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 8502,
@@ -1175,7 +1219,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1203,7 +1248,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1231,7 +1277,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6641,
@@ -1253,7 +1300,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -1281,7 +1329,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 9086,
@@ -1303,7 +1352,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1331,7 +1381,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 7706,
@@ -1353,7 +1404,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1381,7 +1433,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1409,7 +1462,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [],
    "steps": 8022,
@@ -1453,7 +1507,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 9291,
@@ -1475,7 +1530,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -1503,7 +1559,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 7975,
@@ -1525,7 +1582,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1553,7 +1611,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1581,7 +1640,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 7741,
@@ -1603,7 +1663,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1631,7 +1692,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 9308,
@@ -1653,7 +1715,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1681,7 +1744,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 7601,
@@ -1703,7 +1767,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1731,7 +1796,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1759,7 +1825,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 6185,
@@ -1781,7 +1848,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1809,7 +1877,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 8214,
@@ -1831,7 +1900,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [
     {
@@ -1859,7 +1929,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 2
+    "soreness": 2,
+    "ill": false
    },
    "sessions": [],
    "steps": 7128,
@@ -1881,7 +1952,8 @@
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -1909,7 +1981,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 1
+    "soreness": 1,
+    "ill": false
    },
    "sessions": [
     {
@@ -1937,7 +2010,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [],
    "steps": 10308,
@@ -1959,7 +2033,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [
     {
@@ -1987,7 +2062,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [
     {
@@ -2015,7 +2091,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2043,7 +2120,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2071,7 +2149,8 @@
     "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2099,7 +2178,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [
     {
@@ -2127,7 +2207,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [],
    "steps": 8806,
@@ -2149,7 +2230,8 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2177,7 +2259,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [
     {
@@ -2205,7 +2288,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2233,7 +2317,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2261,7 +2346,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 4
+    "soreness": 4,
+    "ill": false
    },
    "sessions": [
     {
@@ -2289,7 +2375,8 @@
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3
+    "soreness": 3,
+    "ill": false
    },
    "sessions": [
     {
@@ -2320,7 +2407,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2342,7 +2430,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2370,7 +2459,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2392,7 +2482,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2420,7 +2511,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2442,7 +2534,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2470,7 +2563,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2498,7 +2592,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2520,7 +2615,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2548,7 +2644,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2570,7 +2667,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2598,7 +2696,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [],
     "steps": 8798,
@@ -2620,7 +2719,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2648,7 +2748,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3
+     "soreness": 3,
+     "ill": false
     },
     "sessions": [
      {
@@ -2678,7 +2779,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 4,
      "stress": 2,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 5722,
@@ -2700,7 +2802,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 4,
      "stress": 2,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2728,7 +2831,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 4,
      "stress": 2,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 5722,
@@ -2750,7 +2854,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2778,7 +2883,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 9501,
@@ -2800,7 +2906,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2828,7 +2935,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2856,7 +2964,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 9501,
@@ -2878,7 +2987,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2906,7 +3016,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 9501,
@@ -2928,7 +3039,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -2956,7 +3068,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [],
     "steps": 9501,
@@ -2978,7 +3091,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
@@ -3006,7 +3120,8 @@
      "sleep_hours": 7.5,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 2
+     "soreness": 2,
+     "ill": false
     },
     "sessions": [
      {
