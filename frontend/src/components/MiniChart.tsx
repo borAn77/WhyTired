@@ -1,10 +1,11 @@
 import { Bar, BarChart, Cell, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts'
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
-import { formatShort } from '@/lib/dates'
-import type { Chart } from '@/lib/types'
+import { formatShortIn } from '@/lib/dates'
+import type { Chart, Lang } from '@/lib/types'
 
 const TITLES: Record<string, string> = {
+  energy: 'Energy (1–5)',
   weekly_load: 'Training load per week',
   sleep_hours: 'Hours slept per night',
   stress: 'Stress (1–5)',
@@ -17,21 +18,33 @@ const config = {
 
 // Small charts that support a finding. Only shown inside a cause card; the evidence text
 // above them carries the same numbers, so the chart is never the only source of information.
-export function MiniChart({ chart }: { chart: Chart }) {
-  const data = chart.points.map((point) => ({ ...point, label: formatShort(point.date) }))
+export function MiniChart({
+  chart,
+  title: titleOverride,
+  caption,
+  height = 'h-32',
+  lang = 'en',
+}: {
+  chart: Chart
+  title?: string
+  caption?: string
+  height?: string
+  lang?: Lang
+}) {
+  const data = chart.points.map((point) => ({ ...point, label: formatShortIn(point.date, lang) }))
   const baseline = chart.points.find((point) => point.baseline !== null)?.baseline ?? null
   const last = data[data.length - 1]
   const weekly = chart.metric === 'weekly_load'
-  const title = TITLES[chart.metric] ?? chart.metric
+  const title = titleOverride ?? TITLES[chart.metric] ?? chart.metric
   const summary = `${title}. Latest ${last?.value ?? 'no data'}${baseline !== null ? `, your usual ${baseline}` : ''}.`
 
   return (
     <figure className="space-y-2">
       <figcaption className="text-sm font-semibold text-navy-900">{title}</figcaption>
-      <ChartContainer config={config} className="aspect-auto h-32 w-full" role="img" aria-label={summary}>
+      <ChartContainer config={config} className={`aspect-auto w-full ${height}`} role="img" aria-label={summary}>
         {weekly ? (
           <BarChart data={data} margin={{ top: 6, right: 4, left: 4, bottom: 0 }}>
-            <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={6} interval={0} fontSize={12} />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={6} interval="preserveStartEnd" minTickGap={12} fontSize={12} />
             <YAxis hide domain={[0, 'auto']} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideIndicator />} />
             <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={36} isAnimationActive={false}>
@@ -72,10 +85,11 @@ export function MiniChart({ chart }: { chart: Chart }) {
           </LineChart>
         )}
       </ChartContainer>
-      <p className="text-sm text-muted-foreground">
-        {weekly ? 'Coral bar = last 7 days. ' : 'Last 28 days. '}
-        Dashed line = your usual.
-      </p>
+      {caption !== '' && (
+        <p className="text-sm text-muted-foreground">
+          {caption ?? `${weekly ? 'Coral bar = last 7 days.' : 'Last 28 days.'} Dashed line = your usual.`}
+        </p>
+      )}
     </figure>
   )
 }

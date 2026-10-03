@@ -116,3 +116,51 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+/* Doctor summary document (screen + print) */
+@layer components {
+  .doc-heading {
+    @apply text-sm font-semibold uppercase tracking-wide text-coral-700;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  html,
+  body {
+    background: white !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  /* Fit one A4 page: smaller type on paper only (the app itself keeps 16px minimum). */
+  #doctor-summary {
+    font-size: 9.5pt;
+    line-height: 1.35;
+  }
+  #doctor-summary .doc-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+  #doctor-summary .doc-charts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  #doctor-summary section,
+  #doctor-summary li {
+    break-inside: avoid;
+  }
+  #doctor-summary h1 {
+    font-size: 13pt;
+  }
+  #doctor-summary .doc-heading {
+    font-size: 8.5pt;
+  }
+  #doctor-summary .text-sm {
+    font-size: 8pt;
+  }
+  #doctor-summary.space-y-6 > * + * {
+    margin-top: 0.8rem;
+  }
+}

@@ -1,4 +1,4 @@
-import type { ISODate } from './types'
+import type { ISODate, Lang } from './types'
 
 // The synthetic personas' "today" when the demo starts (see backend/scripts/generate_personas.py).
 export const DEMO_DAY: ISODate = '2026-10-04'
@@ -24,3 +24,17 @@ const shortFormat = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 's
 export const formatDay = (iso: ISODate) => dayFormat.format(toDate(iso))
 /** "4 Oct" */
 export const formatShort = (iso: ISODate) => shortFormat.format(toDate(iso))
+
+const formats: Record<Lang, Intl.DateTimeFormat> = {
+  en: shortFormat,
+  pl: new Intl.DateTimeFormat('pl-PL', { day: 'numeric', month: 'short', timeZone: 'UTC' }),
+}
+const longFormats: Record<Lang, Intl.DateTimeFormat> = {
+  en: new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+  pl: new Intl.DateTimeFormat('pl-PL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+}
+
+/** "4 Oct" / "4 paź" */
+export const formatShortIn = (iso: ISODate, lang: Lang) => formats[lang].format(toDate(iso))
+/** "4 October 2026" / "4 października 2026" */
+export const formatLongIn = (iso: ISODate, lang: Lang) => longFormats[lang].format(toDate(iso))

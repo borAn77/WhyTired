@@ -144,6 +144,7 @@ export interface CoachResult {
 
 export interface ExperimentResult {
   status: ExperimentStatus
+  title: string
   day: number
   days_total: number
   checkins_logged: number
@@ -152,6 +153,7 @@ export interface ExperimentResult {
   rhr_baseline: number | null
   rhr_during: number | null
   summary: string
+  chart: Chart | null // energy: the 5 days before and the experiment days so far
 }
 
 export interface TimelineEntry {
@@ -167,16 +169,19 @@ export interface Trend {
 
 export interface DoctorSummary {
   lang: Lang
+  title: string
   patient: string
   period_start: ISODate
   period_end: ISODate
   data_level: DataLevel
+  sources: string
   complaint: string
   timeline: TimelineEntry[]
   trends: Trend[]
   tried: string
   result: string
   questions: string[]
+  bring: string[]
   disclaimer: string
   explanation: Explanation | null
 }
