@@ -70,6 +70,12 @@ export function DetectiveScreen() {
     >
       <Intro lowDays={data.low_energy_days} />
       <DataLevelBadge level={data.data_level} />
+      {data.data_level === 'basic' && (
+        <p className="rounded-xl bg-navy-50 p-4">
+          Without a watch we rely on your check-ins and logged sessions. That's enough to spot patterns, but no
+          finding can go above <strong className="font-semibold">medium confidence</strong>.
+        </p>
+      )}
 
       {data.explanation && (
         <section className="rounded-2xl bg-navy-900 p-5 text-white">

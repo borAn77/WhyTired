@@ -26,6 +26,9 @@ Tests: `cd backend && uv run pytest`
 
 Demo data (synthetic, deterministic): `cd backend && uv run python -m scripts.generate_personas`
 
+Before the demo, rehearse the whole flow on the live site (Chrome needed):
+`node scripts/e2e-demo.mjs https://whytired-vnvu.onrender.com /tmp/whytired-e2e`
+
 ## Repository
 | Path | What |
 |---|---|
