@@ -12,7 +12,18 @@ from .engine import artifacts
 from .engine.coach import coach_today
 from .engine.detective import run_detective
 from .engine.experiment import evaluate_experiment
-from .models import CoachRequest, CoachResult, Ctx, DayRecord, DetectiveResult, ExperimentResult, Health, Profile
+from .engine.summary import build_summary
+from .models import (
+    CoachRequest,
+    CoachResult,
+    Ctx,
+    DayRecord,
+    DetectiveResult,
+    DoctorSummary,
+    ExperimentResult,
+    Health,
+    Profile,
+)
 
 load_dotenv()
 
@@ -68,3 +79,11 @@ def experiment(ctx: Ctx) -> ExperimentResult:
         raise HTTPException(status_code=422, detail="No experiment in the request")
     clean_days, _ = artifacts.clean(days_for(ctx))
     return evaluate_experiment(clean_days, ctx.experiment, ctx.today)
+
+
+@app.post("/api/summary", response_model=DoctorSummary)
+def summary(ctx: Ctx) -> DoctorSummary:
+    """The doctor summary. Also behind the read-only share link (/s/<token> in the frontend)."""
+    days = days_for(ctx)
+    profile = store.get_persona(ctx.persona_id).profile
+    return build_summary(profile, days, ctx.experiment, ctx.lang)

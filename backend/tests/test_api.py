@@ -94,3 +94,11 @@ def test_coach_for_kasia(kasia):
 
 def test_root_says_where_things_are():
     assert client.get("/").json()["health"] == "/api/health"
+
+
+def test_summary_endpoint(kasia):
+    experiment = {"cause_id": "load_spike", "start": (TODAY + dt.timedelta(days=1)).isoformat(), "days": 7}
+    today = (TODAY + dt.timedelta(days=7)).isoformat()
+    body = client.post("/api/summary", json=ctx(today=today, experiment=experiment, lang="pl")).json()
+    assert body["title"].startswith("WhyTired: podsumowanie")
+    assert body["questions"][-1].startswith("Na jakie objawy")

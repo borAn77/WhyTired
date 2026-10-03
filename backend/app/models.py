@@ -210,6 +210,7 @@ class CoachResult(BaseModel):
 
 class ExperimentResult(BaseModel):
     status: ExperimentStatus
+    title: str
     day: int  # 1..days while running
     days_total: int
     checkins_logged: int
@@ -218,6 +219,7 @@ class ExperimentResult(BaseModel):
     rhr_baseline: float | None = None
     rhr_during: float | None = None
     summary: str
+    chart: Chart | None = None  # energy: the 5 days before and the experiment days so far
 
 
 class TimelineEntry(BaseModel):
@@ -233,16 +235,19 @@ class Trend(BaseModel):
 
 class DoctorSummary(BaseModel):
     lang: Lang
+    title: str
     patient: str  # first name + age; synthetic personas only
     period_start: dt.date
     period_end: dt.date
     data_level: DataLevel
+    sources: str  # where the data comes from, in plain words
     complaint: str
     timeline: list[TimelineEntry]
     trends: list[Trend]
     tried: str
     result: str
     questions: list[str]
+    bring: list[str]  # what to bring to the visit
     disclaimer: str
     explanation: Explanation | None = None
 
