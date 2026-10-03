@@ -24,6 +24,8 @@ npm run dev                 # http://localhost:5173 (proxies /api to :8000)
 
 Tests: `cd backend && uv run pytest`
 
+Demo data (synthetic, deterministic): `cd backend && uv run python -m scripts.generate_personas`
+
 ## Repository
 | Path | What |
 |---|---|

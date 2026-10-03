@@ -83,12 +83,18 @@ export interface HistoryCheck {
   rhr_delta: number | null
 }
 
+export interface ConfidenceCheck {
+  label: string
+  passed: boolean
+}
+
 export interface Cause {
   id: CauseId
   title: string
   confidence: Confidence
   score: number
   strength: number
+  checks: ConfidenceCheck[]
   evidence: Evidence[]
   history_check: HistoryCheck | null
   data_level_used: DataLevel

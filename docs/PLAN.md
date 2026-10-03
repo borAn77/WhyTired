@@ -74,9 +74,9 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 | sleep_debt | Σ(personal 28-day average − hours slept) over 7 days ≥ 4 h (strong ≥ 7 h) |
 | stress_spike | 7-day mean stress ≥ 28-day mean + 1.0 (strong +1.5) |
 | rhr_elevated | 7-day mean resting HR ≥ 28-day baseline + 5 bpm (strong +8). Medium/Full only |
-| history check | the lowest-factor 7-day window in the user's past (e.g. Kasia's holiday week) vs. the 90-day mean. Supports the cause if energy is ≥ +0.5 or resting HR is ≤ −3 bpm |
+| history check | the lowest-factor 7-day window in the user's past (e.g. Kasia's holiday week; the last 14 days are left out) vs. all other past days. Supports the cause if energy is ≥ +0.5 or resting HR is ≤ −3 bpm |
 | confidence | +1 fires, +1 strong, +1 history supports, +1 objective corroboration (RHR/HRV), −1 if fewer than 70% of days have data. ≥4 high, 2–3 medium, ≤1 low. Basic is capped at medium |
-| artifacts | the 3 rules from the brief. Excluded points are returned with a reason |
+| artifacts | the 3 rules from the brief. The jump rule also requires >25 bpm from the median of the last 7 valid readings (DECISIONS D10). Excluded points are returned with a reason |
 | experiment eval | improved if mean energy on days 4–7 ≥ the pre-experiment mean + 1.0 and, when resting HR exists, resting HR ≤ baseline + 3. Fewer than 5 check-ins → not_enough_data |
 | coach | One flag each for: resting HR ≥ baseline + 5, sleep ≤ average − 1.5 h, energy ≤ 2, soreness ≥ 4, stress ≥ 4, load ratio ≥ 1.3.<br>0 flags → hard, 1–2 → easy, ≥3 → rest. An active experiment caps the result at easy |
 | injury warning | planned duration > 1.10 × the longest session in the last 30 days (Frandsen 2025, used as a duration proxy) |
@@ -169,7 +169,8 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 - Summary page: print preview fits one A4 page, and the share link opens in a private window.
 - Repeat the walkthrough on the deployed URL. Before the demo, call `/api/health` to wake Render from its cold start.
 
-## Persona data spec (for `backend/scripts/generate_personas.py`)
+## Persona data spec (implemented in `backend/scripts/generate_personas.py`)
+Regenerate with `cd backend && uv run python -m scripts.generate_personas`. A test fails if the committed JSON doesn't match the generator.
 Shared rules:
 - `DEMO_DAY = 2026-10-04` (D0).
 - `history` = 90 days, D−89…D0 inclusive. `future[scenario]` = 14 days, D+1…D+14.
@@ -199,11 +200,12 @@ Shared rules:
 ## Ownership and git workflow
 - **Boran (+Claude):**
   - `backend/app/` (except `llm/`)
+  - `backend/scripts/` + `backend/data/` (generator done in M1, story beats from Berken's first dataset)
   - `frontend/`
   - deploy config and docs
-- **Teammate:**
-  - `backend/scripts/`, `backend/data/`
-  - `backend/app/llm/`
-  - their tests
+- **Berken:**
+  - `backend/app/llm/` (prompt, provider, validator, EN/PL templates) + tests
+  - Polish copy for the doctor summary, DISCLOSURE, slides
+- `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
 - Branches: `feature/<topic>` → PR into `dev`. `dev` goes into `main` when a milestone is green. Vercel and Render deploy from `main`.
