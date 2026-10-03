@@ -208,7 +208,10 @@ Shared rules:
   - Polish copy for the doctor summary, DISCLOSURE, slides
 - `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
-- Branches: `feature/<topic>` → PR into `dev`. `dev` goes into `main` when a milestone is green. Vercel and Render deploy from `main`.
+- `main` is the live demo: every push to `main` deploys (Vercel + Render).
+  - **Boran (+Claude):** push straight to `main`, but only after `uv run pytest` and `npm run build` pass.
+  - **Berken:** work on `feature/<topic>` and open a PR; Boran merges it. Vercel's free plan only deploys commits from the account owner, so this also keeps the live site deploying.
+  - `dev` is no longer used.
 
 ## LLM layer interface (owner: Berken)
 Everything lives in `backend/app/llm/`: `providers.py`, `explain.py`, `validate.py`, `templates.py`. Tests go in `backend/tests/test_llm.py`.
