@@ -74,6 +74,7 @@ One short entry per decision: what, why, alternatives considered.
   - the check-in and the previous day's training did not change much
 - **Why:** With only the brief's "vs. the previous day" rule, a real HR rise after a very hard day would be accepted, and then the next normal morning would look like a 25+ bpm "jump" and be thrown away. That error cascaded for days in our tests. The median check makes a return to normal always count as valid.
 - **Alternatives:** comparing with the previous raw value (it accepts the artifact as the new reference point).
+- **Update (found by Berken):** The brief also lets a change in activity explain a jump. In our first version, a hard training day therefore "explained" even a +35 bpm night, so the artifact stayed in the data. Training raises the next morning's resting HR by a few bpm, never 25+, so training alone no longer explains a flagged jump. A check-in change (feeling much worse, e.g. getting ill) still does, because illness can really raise resting HR and we must not hide that.
 
 ## D11: "Your usual week" is the median of the previous 4 weeks
 - **What:** Training-load rules compare the last 7 days with the median of the 4 weekly loads before them, not the mean.
