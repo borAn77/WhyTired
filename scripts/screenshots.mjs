@@ -9,7 +9,10 @@ const SITE = (process.argv[2] ?? 'http://localhost:5173').replace(/\/$/, '')
 const OUT = process.argv[3] ?? 'docs/screenshots'
 await fs.mkdir(OUT, { recursive: true })
 
-const browser = await launchBrowser({ profileDir: `/tmp/whytired-shots-chrome`, port: 9334, scale: 2 })
+// A fresh profile on every run: the walk starts at onboarding, which a saved session would skip.
+const PROFILE = '/tmp/whytired-shots-chrome'
+await fs.rm(PROFILE, { recursive: true, force: true })
+const browser = await launchBrowser({ profileDir: PROFILE, port: 9334, scale: 2 })
 const { waitFor, click, clickSelector, evaluate, goto } = browser
 
 /** Screenshot of the phone frame only (with a little margin), optionally scrolled to some text. */
@@ -37,6 +40,17 @@ async function phone(name, scrollToText) {
 }
 
 const answer = (question, option) => clickSelector(`[role="radiogroup"][aria-label="${question}"] [role="radio"]:nth-child(${option})`)
+
+/** The first-run tour covers Today until it is skipped (once per browser profile). */
+async function skipTour() {
+  const skipped = await evaluate(`(() => {
+    const tour = [...document.querySelectorAll('[role="dialog"]')].find((d) => d.innerText.includes('Step 1 of 3'))
+    const skip = tour && [...tour.querySelectorAll('button')].find((b) => b.innerText.trim() === 'Skip')
+    skip?.click()
+    return !!skip
+  })()`)
+  if (skipped) await sleep(300)
+}
 
 try {
   // Fresh start: onboarding
@@ -73,6 +87,7 @@ try {
   // Daily coach
   await click('Finish check-in')
   await waitFor('Rest today')
+  await skipTour()
   await phone('04-today-coach')
 
   // Detective mode

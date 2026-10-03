@@ -13,6 +13,16 @@ await fs.mkdir(OUT, { recursive: true })
 const browser = await launchBrowser({ profileDir: `${OUT}/.chrome` })
 const { waitFor, click, evaluate, goto } = browser
 const shot = (name) => browser.screenshot(`${OUT}/${name}.png`)
+// The first-run tour covers Today until it is skipped (once per browser profile).
+const skipTour = async () => {
+  const skipped = await evaluate(`(() => {
+    const tour = [...document.querySelectorAll('[role="dialog"]')].find((d) => d.innerText.includes('Step 1 of 3'))
+    const skip = tour && [...tour.querySelectorAll('button')].find((b) => b.innerText.trim() === 'Skip')
+    skip?.click()
+    return !!skip
+  })()`)
+  if (skipped) await sleep(300)
+}
 const step = async (label, fn) => {
   const start = Date.now()
   await fn()
@@ -30,6 +40,7 @@ try {
   await step('Today: coach says rest (API may cold-start)', async () => {
     await goto(`${SITE}/`)
     await waitFor('Rest today')
+    await skipTour()
     await shot('e2e_1_today')
   })
   await step('Detective: ranked causes', async () => {
