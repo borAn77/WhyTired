@@ -5,7 +5,8 @@
   "age": 21,
   "goal": "Get stronger and train consistently",
   "sports": [
-   "gym"
+   "gym",
+   "football"
   ],
   "has_watch": false
  },
@@ -89,20 +90,14 @@
   {
    "date": "2026-07-11",
    "checkin": {
-    "energy": 5,
-    "sleep_hours": 8.0,
-    "sleep_quality": 3,
+    "energy": 4,
+    "sleep_hours": 7.0,
+    "sleep_quality": 4,
     "stress": 2,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -110,15 +105,14 @@
   },
   {
    "date": "2026-07-12",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
-    "sleep_quality": 3,
-    "stress": 2,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [],
+   "checkin": null,
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 85,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -225,33 +219,11 @@
   {
    "date": "2026-07-18",
    "checkin": {
-    "energy": 3,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-07-19",
-   "checkin": {
     "energy": 4,
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2,
+    "soreness": 3,
     "ill": false
    },
    "sessions": [],
@@ -261,10 +233,32 @@
    "tags": []
   },
   {
+   "date": "2026-07-19",
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.0,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 85,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
    "date": "2026-07-20",
    "checkin": {
     "energy": 4,
-    "sleep_hours": 7.5,
+    "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 3,
@@ -284,7 +278,14 @@
   },
   {
    "date": "2026-07-21",
-   "checkin": null,
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 3,
+    "ill": false
+   },
    "sessions": [],
    "steps": null,
    "manual_pulse": null,
@@ -354,20 +355,14 @@
   {
    "date": "2026-07-25",
    "checkin": {
-    "energy": 3,
-    "sleep_hours": 8.0,
-    "sleep_quality": 3,
+    "energy": 4,
+    "sleep_hours": 7.0,
+    "sleep_quality": 4,
     "stress": 2,
     "soreness": 3,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -375,15 +370,14 @@
   },
   {
    "date": "2026-07-26",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 3,
-    "ill": false
-   },
-   "sessions": [],
+   "checkin": null,
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 90,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -490,20 +484,14 @@
   {
    "date": "2026-08-01",
    "checkin": {
-    "energy": 4,
+    "energy": 3,
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 60,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -519,7 +507,13 @@
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 95,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -603,7 +597,14 @@
   },
   {
    "date": "2026-08-07",
-   "checkin": null,
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
    "sessions": [
     {
      "sport": "gym",
@@ -619,33 +620,11 @@
   {
    "date": "2026-08-08",
    "checkin": {
-    "energy": 4,
+    "energy": 3,
     "sleep_hours": 7.5,
-    "sleep_quality": 3,
-    "stress": 3,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 60,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-08-09",
-   "checkin": {
-    "energy": 5,
-    "sleep_hours": 7.5,
-    "sleep_quality": 3,
+    "sleep_quality": 4,
     "stress": 2,
-    "soreness": 2,
+    "soreness": 3,
     "ill": false
    },
    "sessions": [],
@@ -655,10 +634,32 @@
    "tags": []
   },
   {
-   "date": "2026-08-10",
+   "date": "2026-08-09",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 7.5,
+    "sleep_hours": 7.0,
+    "sleep_quality": 4,
+    "stress": 2,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 85,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-08-10",
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 2,
@@ -679,7 +680,7 @@
   {
    "date": "2026-08-11",
    "checkin": {
-    "energy": 5,
+    "energy": 3,
     "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 2,
@@ -699,13 +700,13 @@
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3,
+    "soreness": 2,
     "ill": false
    },
    "sessions": [
     {
      "sport": "gym",
-     "duration_min": 70,
+     "duration_min": 65,
      "rpe": 6
     }
    ],
@@ -717,11 +718,11 @@
   {
    "date": "2026-08-13",
    "checkin": {
-    "energy": 5,
+    "energy": 4,
     "sleep_hours": 8.0,
     "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2,
+    "soreness": 3,
     "ill": false
    },
    "sessions": [],
@@ -733,11 +734,11 @@
   {
    "date": "2026-08-14",
    "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
+    "energy": 5,
+    "sleep_hours": 7.5,
     "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 2,
+    "stress": 2,
+    "soreness": 3,
     "ill": false
    },
    "sessions": [
@@ -754,21 +755,8 @@
   },
   {
    "date": "2026-08-15",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 9.0,
-    "sleep_quality": 5,
-    "stress": 1,
-    "soreness": 3,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
+   "checkin": null,
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -779,14 +767,20 @@
   {
    "date": "2026-08-16",
    "checkin": {
-    "energy": 4,
-    "sleep_hours": 9.0,
+    "energy": 5,
+    "sleep_hours": 8.5,
     "sleep_quality": 4,
     "stress": 1,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 90,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -798,7 +792,7 @@
    "date": "2026-08-17",
    "checkin": {
     "energy": 4,
-    "sleep_hours": 9.0,
+    "sleep_hours": 8.5,
     "sleep_quality": 5,
     "stress": 1,
     "soreness": 2,
@@ -905,33 +899,11 @@
   {
    "date": "2026-08-22",
    "checkin": {
-    "energy": 3,
+    "energy": 4,
     "sleep_hours": 7.5,
     "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 60,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-08-23",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
-    "sleep_quality": 4,
     "stress": 2,
-    "soreness": 3,
+    "soreness": 2,
     "ill": false
    },
    "sessions": [],
@@ -941,9 +913,31 @@
    "tags": []
   },
   {
-   "date": "2026-08-24",
+   "date": "2026-08-23",
    "checkin": {
     "energy": 3,
+    "sleep_hours": 7.5,
+    "sleep_quality": 3,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 85,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-08-24",
+   "checkin": {
+    "energy": 4,
     "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 2,
@@ -965,8 +959,8 @@
   {
    "date": "2026-08-25",
    "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
+    "energy": 3,
+    "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 3,
     "soreness": 3,
@@ -1041,32 +1035,10 @@
   {
    "date": "2026-08-29",
    "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 3,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-08-30",
-   "checkin": {
     "energy": 3,
-    "sleep_hours": 8.0,
+    "sleep_hours": 7.5,
     "sleep_quality": 3,
-    "stress": 2,
+    "stress": 3,
     "soreness": 2,
     "ill": false
    },
@@ -1077,10 +1049,32 @@
    "tags": []
   },
   {
+   "date": "2026-08-30",
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 3,
+    "stress": 2,
+    "soreness": 3,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 90,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
    "date": "2026-08-31",
    "checkin": {
     "energy": 5,
-    "sleep_hours": 8.0,
+    "sleep_hours": 7.5,
     "sleep_quality": 4,
     "stress": 3,
     "soreness": 2,
@@ -1154,7 +1148,14 @@
   },
   {
    "date": "2026-09-04",
-   "checkin": null,
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
    "sessions": [
     {
      "sport": "gym",
@@ -1172,18 +1173,12 @@
    "checkin": {
     "energy": 3,
     "sleep_hours": 7.5,
-    "sleep_quality": 4,
+    "sleep_quality": 3,
     "stress": 2,
-    "soreness": 2,
+    "soreness": 3,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1199,7 +1194,13 @@
     "soreness": 3,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 90,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1309,17 +1310,11 @@
     "energy": 4,
     "sleep_hours": 7.5,
     "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 3,
+    "stress": 2,
+    "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1328,14 +1323,20 @@
   {
    "date": "2026-09-13",
    "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.0,
+    "energy": 3,
+    "sleep_hours": 7.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3,
+    "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 95,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1344,147 +1345,11 @@
   {
    "date": "2026-09-14",
    "checkin": {
-    "energy": 3,
-    "sleep_hours": 7.0,
-    "sleep_quality": 3,
-    "stress": 2,
-    "soreness": 3,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 7
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-15",
-   "checkin": {
     "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-16",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
-    "sleep_quality": 4,
-    "stress": 2,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 65,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-17",
-   "checkin": {
-    "energy": 3,
-    "sleep_hours": 8.5,
+    "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
-    "soreness": 3,
-    "ill": false
-   },
-   "sessions": [],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-18",
-   "checkin": {
-    "energy": 5,
-    "sleep_hours": 7.5,
-    "sleep_quality": 3,
-    "stress": 2,
     "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 80,
-     "rpe": 7
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-19",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 3,
-    "stress": 2,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-20",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 2,
-    "soreness": 2,
-    "ill": false
-   },
-   "sessions": [],
-   "steps": null,
-   "manual_pulse": null,
-   "watch": null,
-   "tags": []
-  },
-  {
-   "date": "2026-09-21",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 3,
-    "soreness": 3,
     "ill": false
    },
    "sessions": [
@@ -1500,10 +1365,146 @@
    "tags": []
   },
   {
-   "date": "2026-09-22",
+   "date": "2026-09-15",
+   "checkin": {
+    "energy": 3,
+    "sleep_hours": 7.0,
+    "sleep_quality": 3,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-16",
    "checkin": {
     "energy": 4,
     "sleep_hours": 7.5,
+    "sleep_quality": 3,
+    "stress": 2,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "gym",
+     "duration_min": 60,
+     "rpe": 6
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-17",
+   "checkin": {
+    "energy": 3,
+    "sleep_hours": 8.0,
+    "sleep_quality": 3,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-18",
+   "checkin": {
+    "energy": 3,
+    "sleep_hours": 7.0,
+    "sleep_quality": 3,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "gym",
+     "duration_min": 75,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-19",
+   "checkin": {
+    "energy": 3,
+    "sleep_hours": 7.0,
+    "sleep_quality": 3,
+    "stress": 2,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-20",
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 90,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-21",
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.0,
+    "sleep_quality": 3,
+    "stress": 2,
+    "soreness": 2,
+    "ill": false
+   },
+   "sessions": [
+    {
+     "sport": "gym",
+     "duration_min": 75,
+     "rpe": 7
+    }
+   ],
+   "steps": null,
+   "manual_pulse": null,
+   "watch": null,
+   "tags": []
+  },
+  {
+   "date": "2026-09-22",
+   "checkin": {
+    "energy": 3,
+    "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 2,
@@ -1519,19 +1520,13 @@
    "date": "2026-09-23",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 5.5,
+    "sleep_hours": 5.0,
     "sleep_quality": 2,
     "stress": 4,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1544,7 +1539,7 @@
    "checkin": {
     "energy": 3,
     "sleep_hours": 5.5,
-    "sleep_quality": 2,
+    "sleep_quality": 3,
     "stress": 4,
     "soreness": 2,
     "ill": false
@@ -1561,13 +1556,19 @@
    "date": "2026-09-25",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 5.5,
+    "sleep_hours": 5.0,
     "sleep_quality": 3,
-    "stress": 4,
+    "stress": 5,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "gym",
+     "duration_min": 70,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1579,19 +1580,13 @@
    "date": "2026-09-26",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 5.5,
+    "sleep_hours": 6.0,
     "sleep_quality": 3,
-    "stress": 5,
+    "stress": 3,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 50,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1603,13 +1598,19 @@
    "date": "2026-09-27",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 5.5,
+    "sleep_hours": 5.0,
     "sleep_quality": 3,
-    "stress": 3,
+    "stress": 4,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 95,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1630,8 +1631,8 @@
    "sessions": [
     {
      "sport": "gym",
-     "duration_min": 60,
-     "rpe": 6
+     "duration_min": 70,
+     "rpe": 7
     }
    ],
    "steps": null,
@@ -1647,7 +1648,7 @@
     "energy": 3,
     "sleep_hours": 5.5,
     "sleep_quality": 2,
-    "stress": 4,
+    "stress": 5,
     "soreness": 2,
     "ill": false
    },
@@ -1663,19 +1664,13 @@
    "date": "2026-09-30",
    "checkin": {
     "energy": 3,
-    "sleep_hours": 5.5,
+    "sleep_hours": 5.0,
     "sleep_quality": 2,
     "stress": 4,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1687,8 +1682,8 @@
    "date": "2026-10-01",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 5.5,
-    "sleep_quality": 2,
+    "sleep_hours": 5.0,
+    "sleep_quality": 3,
     "stress": 4,
     "soreness": 2,
     "ill": false
@@ -1706,12 +1701,18 @@
    "checkin": {
     "energy": 2,
     "sleep_hours": 5.5,
-    "sleep_quality": 3,
-    "stress": 5,
+    "sleep_quality": 2,
+    "stress": 4,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "gym",
+     "duration_min": 80,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1723,19 +1724,13 @@
    "date": "2026-10-03",
    "checkin": {
     "energy": 1,
-    "sleep_hours": 5.0,
+    "sleep_hours": 6.0,
     "sleep_quality": 2,
-    "stress": 4,
+    "stress": 5,
     "soreness": 2,
     "ill": false
    },
-   "sessions": [
-    {
-     "sport": "gym",
-     "duration_min": 55,
-     "rpe": 6
-    }
-   ],
+   "sessions": [],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1753,7 +1748,13 @@
     "soreness": 2,
     "ill": false
    },
-   "sessions": [],
+   "sessions": [
+    {
+     "sport": "football",
+     "duration_min": 85,
+     "rpe": 7
+    }
+   ],
    "steps": null,
    "manual_pulse": null,
    "watch": null,
@@ -1777,8 +1778,8 @@
     "sessions": [
      {
       "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
+      "duration_min": 70,
+      "rpe": 7
      }
     ],
     "steps": null,
@@ -1812,13 +1813,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 50,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1850,7 +1845,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "gym",
+      "duration_min": 75,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1866,13 +1867,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1888,7 +1883,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "football",
+      "duration_min": 90,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1907,8 +1908,8 @@
     "sessions": [
      {
       "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
+      "duration_min": 70,
+      "rpe": 7
      }
     ],
     "steps": null,
@@ -1942,13 +1943,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 50,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1980,7 +1975,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "gym",
+      "duration_min": 75,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -1996,13 +1997,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2018,7 +2013,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "football",
+      "duration_min": 90,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2039,8 +2040,8 @@
     "sessions": [
      {
       "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
+      "duration_min": 70,
+      "rpe": 7
      }
     ],
     "steps": null,
@@ -2074,13 +2075,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 50,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2112,7 +2107,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "gym",
+      "duration_min": 75,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2128,13 +2129,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2150,7 +2145,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "football",
+      "duration_min": 90,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2169,8 +2170,8 @@
     "sessions": [
      {
       "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
+      "duration_min": 70,
+      "rpe": 7
      }
     ],
     "steps": null,
@@ -2204,13 +2205,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 50,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2242,7 +2237,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "gym",
+      "duration_min": 75,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2258,13 +2259,7 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [
-     {
-      "sport": "gym",
-      "duration_min": 55,
-      "rpe": 6
-     }
-    ],
+    "sessions": [],
     "steps": null,
     "manual_pulse": null,
     "watch": null,
@@ -2280,7 +2275,13 @@
      "soreness": 2,
      "ill": false
     },
-    "sessions": [],
+    "sessions": [
+     {
+      "sport": "football",
+      "duration_min": 90,
+      "rpe": 7
+     }
+    ],
     "steps": null,
     "manual_pulse": null,
     "watch": null,

@@ -29,7 +29,8 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 # ------------------------------------------------------------------------- scenario config
 # How to read it:
 # - Days are offsets from the demo day D0: -13 means D-13, 1 means D+1.
-# - A training week maps weekday (Mon=0) -> (minutes, effort 1-10). Load = minutes × effort.
+# - A training week maps weekday (Mon=0) -> (minutes, effort 1-10), or (minutes, effort, sport)
+#   when it is not the persona's main sport. Load = minutes × effort.
 # - (mean, sd) pairs are normal-distributed noise: rng.gauss(mean, sd).
 # - {answer: probability} dicts are check-in answers drawn with those weights.
 CONFIG = {
@@ -49,7 +50,7 @@ CONFIG = {
             "has_watch": True,
         },
         "sport": "running",
-        "missed_checkins": [-80, -47, -33],  # a few forgotten mornings
+        "missed_checkins": [dt.date(2026, 7, 18), dt.date(2026, 8, 29)],  # forgotten mornings (brief)
         "reported_sleep_noise_h": 0.2,  # check-in hours = watch sleep ± a little, in half hours
         "steps": (8000, 1200),
         "steps_per_run_min": 150,
@@ -101,13 +102,23 @@ CONFIG = {
             "sleep_min": (425, 15),
             "energy": 3,
             "low_energy": {-4: 2, -3: 2, -2: 1, -1: 2, 0: 2},  # the 5 low days that start detective mode
+            "late_caffeine_days": [-4, -3, -1, 0],  # mornings after a late coffee: 4 of the 5 tired days
+            "late_caffeine_sleep_min": 30,  # ...cost 30 min of sleep (brief: 20-40 min)
             "stress": {2: 0.6, 3: 0.4},
             "soreness": {3: 0.5, 4: 0.5},
             "sleep_quality": 3,
         },
-        "artifact_night": {  # the strap came loose; she felt and trained as the day before
+        "artifact_night": {  # the strap came loose; her check-in that morning is normal
             "day": -10,  # 2026-09-24, inside the load spike
-            "watch": {"resting_hr": 92.0, "sleep_coverage": 0.35, "sleep_min": 158, "sleep_hr_avg": 96.0, "day_hr_avg": 77.0},
+            "watch": {
+                "resting_hr": 88.0,  # ~31 bpm above the night before: over the 25 bpm jump rule
+                "hrv_ms": 18.0,
+                "sleep_coverage": 0.35,
+                "sleep_min": 158,
+                "sleep_hr_avg": 96.0,
+                "day_hr_avg": 77.0,
+            },
+            "energy": 4,  # her check-in that morning is normal
         },
         "branches": {  # both branches follow the experiment: training load cut by more than 40%
             "week": {1: (40, 4), 3: (35, 4), 5: (45, 5), 6: (30, 4)},
@@ -143,13 +154,13 @@ CONFIG = {
             "name": "Tomek",
             "age": 21,
             "goal": "Get stronger and train consistently",
-            "sports": ["gym"],
+            "sports": ["gym", "football"],
             "has_watch": False,
         },
         "sport": "gym",
-        "missed_checkins": [-75, -58, -30],
+        "missed_checkins": [dt.date(2026, 7, 12), dt.date(2026, 7, 26), dt.date(2026, 8, 15)],  # brief
         "normal": {
-            "week": {0: (70, 7), 2: (65, 6), 4: (75, 7), 5: (60, 6)},  # 4 gym sessions, ~1750
+            "week": {0: (70, 7), 2: (65, 6), 4: (75, 7), 6: (90, 7, "football")},  # gym Mon/Wed/Fri + football Sun, ~2035
             "sleep_h": (7.5, 0.4),
             "energy": {3: 0.35, 4: 0.55, 5: 0.1},
             "stress": {2: 0.6, 3: 0.4},
@@ -164,10 +175,12 @@ CONFIG = {
             "sleep_quality": {4: 0.5, 5: 0.5},
             "soreness": {2: 0.6, 3: 0.4},
         },
-        "exams": {  # short nights, high stress, fewer sessions (so no load spike)
+        "exams": {  # short nights, high stress, one session fewer (so no load spike)
             "from": -11,  # D-11 .. D0
-            "week": {0: (55, 6), 2: (50, 6), 5: (55, 6)},  # 3 shorter sessions
-            "sleep_h_choices": (5.0, 5.5, 5.5, 6.0),
+            "week": {0: (70, 7), 4: (75, 7), 6: (90, 7, "football")},  # drops Wednesday's gym, ~1645
+            "sleep_h_choices": (5.5, 6.0),  # exam stress alone: 5.5-6 h
+            "late_screens_sleep_h": 0.5,  # phone in bed late: another 30 min less (brief: 30-60 min)
+            "screen_free_weekday": 5,  # ...every night except Friday's (Saturday morning): 6 of 7
             "energy": 3,
             "low_energy": {-3: 2, -2: 2, -1: 1, 0: 2},
             "stress": {3: 0.1, 4: 0.7, 5: 0.2},
@@ -215,7 +228,9 @@ def half_hours(hours: float) -> float:
 def sessions_for(pattern: dict, weekday: int, sport: str, rng: random.Random | None = None) -> list[Session]:
     if weekday not in pattern:
         return []
-    minutes, rpe = pattern[weekday]
+    minutes, rpe = pattern[weekday][:2]
+    if len(pattern[weekday]) == 3:  # e.g. Tomek's Sunday football
+        sport = pattern[weekday][2]
     if rng:  # small day-to-day variation in history; none in the future branches
         minutes += rng.choice(CONFIG["session_jitter_min"])
     return [Session(sport=sport, duration_min=minutes, rpe=rpe)]
@@ -289,6 +304,8 @@ def kasia_day(rng: random.Random, offset: int, branch: str | None = None) -> Day
             0, spike["hrv_noise"]
         )
         sleep_min = rng.gauss(*spike["sleep_min"])
+        if offset in spike["late_caffeine_days"]:  # coffee late the evening before: shorter night
+            sleep_min -= spike["late_caffeine_sleep_min"]
         energy = spike["low_energy"].get(offset, spike["energy"])
         stress, soreness = pick(rng, spike["stress"]), pick(rng, spike["soreness"])
         quality = spike["sleep_quality"]
@@ -314,14 +331,14 @@ def kasia_day(rng: random.Random, offset: int, branch: str | None = None) -> Day
 
 def add_artifact_night(days: list[DayRecord]) -> None:
     """The strap came loose for one night: implausible resting HR, most of the night missing and
-    sleep HR above the daytime average, while Kasia felt and trained exactly as the day before."""
+    sleep HR above the daytime average, while Kasia's check-in that morning was normal."""
     night = CONFIG["kasia"]["artifact_night"]
     i = next(i for i, day in enumerate(days) if day.date == date_of(night["day"]))
     day, previous = days[i], days[i - 1]
     days[i] = day.model_copy(
         update={
             "checkin": day.checkin.model_copy(
-                update={"energy": previous.checkin.energy, "stress": previous.checkin.stress}
+                update={"energy": night["energy"], "stress": previous.checkin.stress}
             ),
             "watch": day.watch.model_copy(update=night["watch"]),
         }
@@ -378,6 +395,8 @@ def tomek_day(rng: random.Random, offset: int, branch: str | None = None) -> Day
         tags = ["exams"]
         sessions = sessions_for(exams["week"], weekday, sport, rng)
         sleep = rng.choice(exams["sleep_h_choices"])
+        if weekday != exams["screen_free_weekday"]:  # on the phone late the evening before
+            sleep -= exams["late_screens_sleep_h"]
         energy = exams["low_energy"].get(offset, exams["energy"])
         stress = pick(rng, exams["stress"])
         quality, soreness = pick(rng, exams["sleep_quality"]), exams["soreness"]
@@ -413,8 +432,7 @@ def build_tomek() -> PersonaFile:
 # ---------------------------------------------------------------- output
 
 
-def drop_checkins(days: list[DayRecord], offsets: list[int]) -> list[DayRecord]:
-    missed = {date_of(offset) for offset in offsets}
+def drop_checkins(days: list[DayRecord], missed: list[dt.date]) -> list[DayRecord]:
     return [day.model_copy(update={"checkin": None}) if day.date in missed else day for day in days]
 
 

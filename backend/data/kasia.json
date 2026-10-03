@@ -249,7 +249,14 @@
   },
   {
    "date": "2026-07-16",
-   "checkin": null,
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.5,
+    "sleep_quality": 3,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
    "sessions": [
     {
      "sport": "running",
@@ -294,14 +301,7 @@
   },
   {
    "date": "2026-07-18",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 7.5,
-    "sleep_quality": 4,
-    "stress": 2,
-    "soreness": 3,
-    "ill": false
-   },
+   "checkin": null,
    "sessions": [
     {
      "sport": "running",
@@ -1117,7 +1117,14 @@
   },
   {
    "date": "2026-08-18",
-   "checkin": null,
+   "checkin": {
+    "energy": 5,
+    "sleep_hours": 8.0,
+    "sleep_quality": 4,
+    "stress": 2,
+    "soreness": 2,
+    "ill": false
+   },
    "sessions": [
     {
      "sport": "running",
@@ -1399,14 +1406,7 @@
   },
   {
    "date": "2026-08-29",
-   "checkin": {
-    "energy": 4,
-    "sleep_hours": 8.0,
-    "sleep_quality": 4,
-    "stress": 2,
-    "soreness": 3,
-    "ill": false
-   },
+   "checkin": null,
    "sessions": [
     {
      "sport": "running",
@@ -1480,7 +1480,14 @@
   },
   {
    "date": "2026-09-01",
-   "checkin": null,
+   "checkin": {
+    "energy": 4,
+    "sleep_hours": 7.0,
+    "sleep_quality": 4,
+    "stress": 3,
+    "soreness": 2,
+    "ill": false
+   },
    "sessions": [
     {
      "sport": "running",
@@ -2087,7 +2094,7 @@
   {
    "date": "2026-09-24",
    "checkin": {
-    "energy": 3,
+    "energy": 4,
     "sleep_hours": 7.0,
     "sleep_quality": 3,
     "stress": 2,
@@ -2104,8 +2111,8 @@
    "steps": 18484,
    "manual_pulse": null,
    "watch": {
-    "resting_hr": 92.0,
-    "hrv_ms": 55.5,
+    "resting_hr": 88.0,
+    "hrv_ms": 18.0,
     "sleep_min": 158.0,
     "sleep_coverage": 0.35,
     "sleep_hr_avg": 96.0,
@@ -2256,7 +2263,7 @@
    "date": "2026-09-30",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 7.0,
+    "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
     "soreness": 4,
@@ -2274,7 +2281,7 @@
    "watch": {
     "resting_hr": 60.0,
     "hrv_ms": 48.4,
-    "sleep_min": 429.0,
+    "sleep_min": 399.0,
     "sleep_coverage": 0.99,
     "sleep_hr_avg": 56.5,
     "day_hr_avg": 75.9
@@ -2285,7 +2292,7 @@
    "date": "2026-10-01",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 7.0,
+    "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 3,
@@ -2303,7 +2310,7 @@
    "watch": {
     "resting_hr": 61.4,
     "hrv_ms": 47.7,
-    "sleep_min": 431.0,
+    "sleep_min": 401.0,
     "sleep_coverage": 0.97,
     "sleep_hr_avg": 58.3,
     "day_hr_avg": 72.3
@@ -2343,7 +2350,7 @@
    "date": "2026-10-03",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 7.0,
+    "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 2,
     "soreness": 4,
@@ -2361,7 +2368,7 @@
    "watch": {
     "resting_hr": 62.7,
     "hrv_ms": 47.9,
-    "sleep_min": 405.0,
+    "sleep_min": 375.0,
     "sleep_coverage": 0.99,
     "sleep_hr_avg": 58.6,
     "day_hr_avg": 75.6
@@ -2372,7 +2379,7 @@
    "date": "2026-10-04",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 7.0,
+    "sleep_hours": 6.5,
     "sleep_quality": 3,
     "stress": 3,
     "soreness": 3,
@@ -2390,7 +2397,7 @@
    "watch": {
     "resting_hr": 62.0,
     "hrv_ms": 50.0,
-    "sleep_min": 415.0,
+    "sleep_min": 385.0,
     "sleep_coverage": 0.97,
     "sleep_hr_avg": 58.9,
     "day_hr_avg": 83.4
