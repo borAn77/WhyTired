@@ -53,7 +53,8 @@ export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
       <div className="doc-columns grid gap-6 sm:grid-cols-2">
         <section className="space-y-2">
           <h2 className="doc-heading">{h.summary}</h2>
-          <p>{summary.complaint}</p>
+          {/* The template fallback only repeats the sections below, so it is never printed. */}
+          <p>{summary.explanation?.source === 'llm' ? summary.explanation.text : summary.complaint}</p>
           <h2 className="doc-heading pt-2">{h.timeline}</h2>
           <ol className="space-y-2">
             {summary.timeline.map((entry) => (
@@ -69,7 +70,6 @@ export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
           <p>{summary.tried}</p>
           <h2 className="doc-heading pt-2">{h.result}</h2>
           <p className="font-semibold">{summary.result}</p>
-          {summary.explanation && <p className="text-muted-foreground">{summary.explanation.text}</p>}
           <h2 className="doc-heading pt-2">{h.questions}</h2>
           <ol className="list-decimal space-y-1.5 pl-5">
             {summary.questions.map((question) => (
