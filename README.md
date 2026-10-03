@@ -9,6 +9,8 @@ WhyTired works in three steps:
 
 Built at HackYeah 2026 (Sport & Healthcare).
 
+**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
+
 ## Screenshots
 | Morning coach | Detective mode | Experiment result | Doctor summary (PL) |
 |---|---|---|---|
@@ -41,12 +43,14 @@ flowchart LR
     LLM -- "plain-language text\n(EN/PL) or template" --> API
     API -- "DetectiveResult / CoachResult /\nExperimentResult / DoctorSummary" --> UI
 
-    LLM -.->|only if LLM_PROVIDER=anthropic| ANTHROPIC["Anthropic API\nclaude-opus-5"]
+    LLM -.->|only if LLM_PROVIDER=anthropic| ANTHROPIC["Anthropic API\nclaude-haiku-4-5"]
 ```
 
 The backend is stateless: every request carries the full context (persona, "today", logged check-ins, the active experiment) from the browser's `localStorage`, so the free Render API can sleep and wake up without losing anyone's demo. The rule engine is plain Python, no I/O, one small function per rule, and it is the only place that computes numbers. The LLM only turns those numbers into a sentence or two, in English or Polish, and a validator rejects any text that invents a number or mentions a diagnosis, medication or lab test — it falls back to a template if so, or if there is no API key at all.
 
 ## Run locally
+Needs [uv](https://docs.astral.sh/uv/) (it installs Python 3.12 for you) and Node 22.
+
 ```bash
 # Backend (Python 3.12 via uv)
 cd backend
@@ -85,12 +89,12 @@ The demo controls (desktop: right of the phone frame; phone: a tab on the right 
 7. **The verdict (+7 days).** Days skipped with time travel run on the persona's recorded data and are marked "Demo data". In the not-improved branch the verdict is stamped "To your doctor" and leads to a one-page summary in Polish: complaint timeline, small trend charts, what was tried and how well the plan was followed, what the user noticed (e.g. coffee after 2 pm), and questions to ask. No diagnoses, no recommended tests. Print → PDF fits one A4 page; "Share" gives a read-only link and a QR code. Switch the outcome to "Improved" to see "Case closed" (+100 XP) instead.
 8. **Switch persona to Tomek (no watch, basic data).** The same detective runs on check-ins and logged sessions only. A note explains that without a watch no finding goes above medium confidence; his prime suspect is sleep debt during exams.
 
-### Presenting with the demo script (about 2 minutes)
+### Presenting with the demo script (12 scenes, under 2½ minutes)
 
-"Start from scene 1" in the demo controls runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same.
+"Demo script" at the top of the demo controls runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same.
 
 - **→ / PageDown** next scene, **← / PageUp** previous. A presentation clicker sends these keys.
-- The card shows what to say, what to tap live (only the first check-in and the mission check), and the time against a 2-minute pace.
+- The card shows what to say, what to tap live (only the first check-in and the mission check), and the elapsed time against the planned pace (it turns coral when you are more than 10 seconds behind).
 - `?scene=N` opens scene N directly, e.g. `https://whytired-vnvu.onrender.com/?scene=5` to recover mid-demo.
 - The scenes and the notes live in `frontend/src/lib/scenes.ts`.
 
