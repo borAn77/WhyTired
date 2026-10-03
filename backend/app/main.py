@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import os
-
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 
@@ -11,6 +9,8 @@ from . import store
 from .engine import artifacts
 from .engine.detective import run_detective
 from .engine.experiment import evaluate_experiment
+from .llm import explain_detective
+from .llm.providers import active_provider
 from .models import Ctx, DayRecord, DetectiveResult, ExperimentResult, Health, Profile
 
 load_dotenv()
@@ -35,7 +35,7 @@ def health() -> Health:
     return Health(
         status="ok",
         personas=sorted(store.load_personas()),
-        llm_provider=os.getenv("LLM_PROVIDER", "none"),
+        llm_provider=active_provider(),
     )
 
 
@@ -46,7 +46,10 @@ def personas() -> list[Profile]:
 
 @app.post("/api/detective", response_model=DetectiveResult)
 def detective(ctx: Ctx) -> DetectiveResult:
-    return run_detective(days_for(ctx))
+    result = run_detective(days_for(ctx))
+    if result.triggered:
+        result.explanation = explain_detective(result, ctx.lang)
+    return result
 
 
 @app.post("/api/experiment", response_model=ExperimentResult)
