@@ -13,6 +13,7 @@ import {
   Minus,
   Smartphone,
   Volume2,
+  Wine,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -43,6 +44,7 @@ export const SLEEP_CLUES: ClueOption[] = [
   { id: 'caffeine', label: 'Coffee after 2 pm', icon: Coffee, tip: 'No coffee or energy drinks after 2 pm for a few days.' },
   { id: 'studying', label: 'Studying late', icon: BookOpen, tip: 'Pick a fixed time to stop studying in the evening.' },
   { id: 'worries', label: 'Worries', icon: Brain, tip: "Write tomorrow's to-do list before bed." },
+  { id: 'alcohol', label: 'Alcohol in the evening', icon: Wine, tip: 'Try a few alcohol-free evenings this week.' },
   { id: 'noise', label: 'Noise or light', icon: Volume2, tip: 'Try earplugs, a sleep mask or a cooler room.' },
   { id: 'nothing', label: 'Nothing special', icon: Minus },
 ]

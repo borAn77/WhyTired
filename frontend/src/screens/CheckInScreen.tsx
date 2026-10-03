@@ -345,7 +345,8 @@ function ClueCard({
               aria-checked={on}
               onClick={() => toggle(option)}
               className={cn(
-                'flex min-h-24 flex-col items-start justify-between gap-2 rounded-2xl p-3.5 text-left font-semibold ring-1 transition',
+                'flex gap-2 rounded-2xl p-3.5 text-left font-semibold ring-1 transition',
+                option.tip ? 'min-h-24 flex-col items-start justify-between' : 'col-span-2 min-h-14 items-center gap-3',
                 'focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.98] motion-reduce:transition-none',
                 on ? 'bg-navy-900 text-white ring-navy-900' : 'bg-card text-navy-900 ring-border hover:bg-navy-50',
               )}
