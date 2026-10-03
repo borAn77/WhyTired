@@ -2,11 +2,14 @@
 
 All code in this repository was written during HackYeah 2026 (3–4 October 2026) by the WhyTired team.
 
+Berken's first commit (`1b7fc6c`) shows 09:33 CEST, but it builds on the team's first commit (`34dd8da`) from 11:00 CEST; the earlier time most likely comes from a wrong system clock or timezone on his Windows laptop, not from work done before the hackathon.
+
 ## AI tools used during development
 | Tool | Used for |
 |---|---|
 | Claude Code (Anthropic), model Claude Opus 5.5 | Project setup, scaffolding, writing and reviewing code and docs together with the team. Every change was reviewed by a team member, who can explain it. |
 | Claude Code (Anthropic), model Claude Opus 5.5 (Berken's sessions) | Writing the LLM layer (`backend/app/llm/`: provider with template fallback and 10-second limit, output validator, EN/PL templates) and its tests (`backend/tests/test_llm.py`, `backend/tests/conftest.py`), resolving merges, and drafting docs. Berken reviewed every change and can explain it. |
+| Claude Code (Anthropic), model Claude Opus 5.5 (Berken's sessions) | Building Ask WhyTired (`frontend/src/components/helper/`), an in-app helper: a user guide, an explainer and a 3-step first-run tour with Skip. Its answers are fixed, hand-checked texts, with no LLM and no free-text input. |
 
 ## External APIs and models used by the app
 | API / model | Purpose | Data sent |
