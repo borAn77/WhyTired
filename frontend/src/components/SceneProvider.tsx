@@ -9,10 +9,11 @@ const HEADER_OFFSET = 88 // the phone's sticky header
 const SCROLL_TIMEOUT_MS = 60_000 // the free API can take a minute to wake up
 
 // Where the scene keys are left alone. Text fields need every key. Arrow keys also move between
-// the options of a Radix toggle group, so they are left alone there too; a clicker's
-// PageDown/PageUp are not, since a toggle the presenter just clicked keeps the focus.
+// the options of a Radix toggle group and move a slider (sleep hours), so they are left alone
+// there too; a clicker's PageDown/PageUp are not, since a control the presenter just clicked
+// keeps the focus.
 const TEXT_FIELDS = 'input, textarea, select, [contenteditable="true"]'
-const ARROW_KEY_WIDGETS = `${TEXT_FIELDS}, [data-radix-collection-item]`
+const ARROW_KEY_WIDGETS = `${TEXT_FIELDS}, [data-radix-collection-item], [role="slider"]`
 
 // Runs the presenter's demo script (lib/scenes.ts). Lives above all routes, so the keys also
 // work on the doctor page, which has no phone frame. Keys are only active while the script runs.

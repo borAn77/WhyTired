@@ -123,8 +123,8 @@ const STORIES: Record<string, Record<PersonaKey, Story>> = {
 export const AFTER: Record<'improved' | 'not_improved', Story> = {
   improved: {
     step: 'After 7 days',
-    title: 'It helped. The face shows it.',
-    body: 'The experiment worked, so WhyTired closes the case. Same check-in tomorrow.',
+    title: 'Energy is back. The face shows it.',
+    body: 'Energy recovered during the change, so WhyTired closes the case. Same check-in tomorrow.',
   },
   not_improved: {
     step: 'After 7 days',

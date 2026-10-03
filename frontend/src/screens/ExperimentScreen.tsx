@@ -176,7 +176,7 @@ const VERDICTS = {
     icon: Trophy,
     card: 'bg-green-50 ring-green-700/30',
     stampColor: 'border-green-700 text-green-700',
-    note: 'Keep the change. You found what was draining you.',
+    note: 'Keep the change. Your mornings got better while you made it.',
   },
   not_improved: {
     stamp: 'To your doctor',

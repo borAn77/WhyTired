@@ -29,7 +29,7 @@ def _track(level: DataLevel, extra: str) -> list[str]:
     if level == "full":
         track.append("Resting heart rate (your watch records it)")
     elif level == "medium":
-        track.append("Morning pulse (30-second guided check)")
+        track.append("Step count (your phone records it)")
     return track
 
 

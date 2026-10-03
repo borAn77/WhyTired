@@ -15,7 +15,8 @@ import { Tour } from './Tour'
 // "Ask WhyTired": a floating button inside the phone that opens fixed questions with fixed
 // answers (no free text, no LLM, no API calls), plus a 3-step tour the first time Today opens.
 // Reads the session; never changes it. Hidden on onboarding, where its corner would cover the
-// "Get started" button.
+// "Get started" button, and while the presenter's demo script runs, where on a 720p projector
+// it would cover text the scenes point at.
 
 const TOUR_KEY = 'whytired.tour.v1'
 
@@ -72,7 +73,7 @@ export function AskWhyTired({ scrollRef }: { scrollRef: RefObject<HTMLDivElement
     }
   }, [scrollRef, open, touring])
 
-  if (pathname === '/onboarding') return null
+  if (pathname === '/onboarding' || scriptRunning) return null
 
   const close = () => {
     setOpenOn(null)
