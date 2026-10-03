@@ -111,9 +111,10 @@ def detective_prompt(facts_text: str, lang: Lang) -> str:
     return (
         f"Findings (JSON):\n{facts_text}\n\n"
         f"Write 2-4 plain sentences in {LANGUAGES[lang]}, speaking to the user as \"you\".{style} "
-        "Cover: the most likely cause with its key numbers and confidence; whether the user's "
-        "own history supports it; how many unreliable nights were left out (only if more than 0); "
-        "and the suggested experiment as the next step. Return only the sentences."
+        "Cover: the most likely cause with its key numbers and confidence (if data_level is "
+        "basic, say it is based on check-ins only); whether the user's own history supports it; "
+        "how many unreliable nights were left out (only if more than 0); and the suggested "
+        "experiment as the next step. Return only the sentences."
     )
 
 

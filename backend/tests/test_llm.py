@@ -10,6 +10,8 @@ from typing import get_args
 import pytest
 from fastapi.testclient import TestClient
 
+from app import store
+from app.engine import causes
 from app.engine.detective import run_detective
 from app.llm import explain_detective, explain_summary, providers, templates, validate
 from app.llm.explain import facts_json, summary_facts
@@ -448,3 +450,70 @@ def test_basic_summary_rejects_heart_data_even_if_an_engine_text_has_it(monkeypa
     summary = make_summary("tomek-pl", trends=[("Sen", "Średnio 5,4 h na noc; tętno 60.")])
     fake_llm(monkeypatch, "Od 4 dni utrzymuje się niski poziom energii, a tętno wynosi 60.")
     assert explain_summary(summary).source == "template"
+
+
+# ---------- alignment with the engine and the committed demo personas ----------
+
+
+def engine_cause_ids() -> set[str]:
+    """Every cause id the engine can return: the API contract (CauseId) and the engine's titles."""
+    return set(get_args(CauseId)) | set(causes.TITLES)
+
+
+def test_every_engine_cause_id_has_templates():
+    """Fails as soon as the engine gets a new cause id without EN and PL template texts."""
+    tables = {
+        "CAUSE_SENTENCES": templates.CAUSE_SENTENCES,
+        "CAUSE_NAMES": templates.CAUSE_NAMES,
+        "HISTORY_WEEKS": templates.HISTORY_WEEKS,
+    }
+    missing = [
+        f"{name}[{cause_id!r}][{lang!r}]"
+        for cause_id in sorted(engine_cause_ids())
+        for name, table in tables.items()
+        for lang in LANGS
+        if not table.get(cause_id, {}).get(lang)
+    ]
+    missing += [f"CAUSE_FIELDS[{c!r}]" for c in sorted(engine_cause_ids()) if c not in templates.CAUSE_FIELDS]
+    assert not missing, f"add these to app/llm/templates.py: {missing}"
+
+
+@pytest.mark.parametrize("lang", LANGS)
+def test_unknown_cause_id_never_breaks_the_explanation(lang):
+    """A cause the templates do not know yet (built without validation) still gets a safe text."""
+    new = Cause.model_construct(
+        id="late_caffeine", title="Late caffeine", confidence="low", score=1, strength=0.5,
+        checks=[], evidence=[], history_check=None, data_level_used="full", chart=None,
+    )
+    result = DetectiveResult(triggered=True, low_energy_days=3, data_level="full", causes=[new], excluded=[])
+    explanation = explain_detective(result, lang)
+    assert explanation.source == "template" and explanation.text
+    assert validate.check(explanation.text, facts_json(result)) == []
+    if lang == "pl":
+        assert "caffeine" not in explanation.text.lower()
+
+
+def test_basic_level_says_the_finding_rests_on_check_ins_only():
+    assert "based on check-ins only" in templates.detective_text(tomek(), "en")
+    assert "tylko na podstawie ankiet" in templates.detective_text(tomek(), "pl")
+    assert "check-ins only" not in templates.detective_text(kasia(), "en")
+
+
+def persona_on(persona_id: str, day: str) -> DetectiveResult:
+    persona = store.get_persona(persona_id)
+    days = store.days_until(persona, dt.date.fromisoformat(day), "not_improved")
+    return run_detective(store.restrict_to_level(days, "full"))
+
+
+@pytest.mark.parametrize("day", ["2026-10-03", "2026-10-04"])
+@pytest.mark.parametrize("lang", LANGS)
+def test_demo_personas_get_safe_explanations(day, lang):
+    """The committed Kasia and Tomek files, on the demo days, with the LLM off."""
+    kasia_result, tomek_result = persona_on("kasia", day), persona_on("tomek", day)
+    for result in (kasia_result, tomek_result):
+        explanation = explain_detective(result, lang)
+        assert result.triggered and explanation.source == "template"
+        assert validate.check(explanation.text, facts_json(result)) == []
+    tomek_text = explain_detective(tomek_result, lang).text
+    assert tomek_result.data_level == "basic"
+    assert not validate.mentions_heart_data(tomek_text)

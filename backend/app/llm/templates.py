@@ -67,12 +67,22 @@ GENERIC_CAUSE = {
     "en": "After {days} low-energy days in a row, the most likely reason is {name}",
     "pl": "Po {days} dniach z rzędu z niską energią najbardziej prawdopodobną przyczyną jest {name}",
 }
+# Safety net for a cause id added to the engine before its templates exist: the demo
+# keeps working (no KeyError) and the Polish text stays Polish. test_llm.py fails until
+# the new id gets real templates above.
+UNKNOWN_CAUSE = {
+    "en": "After {days} low-energy days in a row, the most likely reason is the first one shown below",
+    "pl": "Po {days} dniach z rzędu z niską energią najbardziej prawdopodobna przyczyna jest "
+    "pokazana poniżej jako pierwsza",
+}
 
 CONFIDENCE: dict[Confidence, dict[Lang, str]] = {
     "high": {"en": "high confidence", "pl": "pewność wysoka"},
     "medium": {"en": "medium confidence", "pl": "pewność średnia"},
     "low": {"en": "low confidence", "pl": "pewność niska"},
 }
+# Basic level (no watch): say what the finding rests on, so less data reads as less certainty.
+CHECKINS_ONLY = {"en": ", based on check-ins only", "pl": ", tylko na podstawie ankiet"}
 
 # Sentence 2: the user's own history backs up the cause. Named like the engine's weeks.
 HISTORY_WEEKS: dict[CauseId, dict[Lang, str]] = {
@@ -81,6 +91,7 @@ HISTORY_WEEKS: dict[CauseId, dict[Lang, str]] = {
     "stress_spike": {"en": "calmest week", "pl": "najspokojniejszym tygodniu"},
     "rhr_elevated": {"en": "calmest week", "pl": "najspokojniejszym tygodniu"},
 }
+DEFAULT_WEEK = {"en": "best comparable week", "pl": "najlepszym porównywalnym tygodniu"}
 HISTORY = {
     "en": "Your own history backs this up: in your {week}, {changes} than normal.",
     "pl": "Potwierdza to Twoja historia: w {week} {changes} niż zwykle.",
@@ -184,9 +195,11 @@ def excluded_nights(result: DetectiveResult) -> int:
 
 
 def _cause_sentence(cause: Cause, days: int, lang: Lang) -> str:
-    main = _evidence(cause, CAUSE_FIELDS[cause.id])
+    main = _evidence(cause, CAUSE_FIELDS.get(cause.id, ""))
     debt = _evidence(cause, "sleep_debt")
-    if main is None or main.baseline is None or (cause.id == "sleep_debt" and debt is None):
+    if cause.id not in CAUSE_SENTENCES:
+        text = UNKNOWN_CAUSE[lang].format(days=days)
+    elif main is None or main.baseline is None or (cause.id == "sleep_debt" and debt is None):
         text = GENERIC_CAUSE[lang].format(days=days, name=CAUSE_NAMES[cause.id][lang])
     else:
         text = CAUSE_SENTENCES[cause.id][lang].format(
@@ -195,7 +208,8 @@ def _cause_sentence(cause: Cause, days: int, lang: Lang) -> str:
             baseline=number(main.baseline, lang),
             debt=number(debt.value, lang) if debt else "",
         )
-    return f"{text} ({CONFIDENCE[cause.confidence][lang]})."
+    basis = CHECKINS_ONLY[lang] if cause.data_level_used == "basic" else ""
+    return f"{text} ({CONFIDENCE[cause.confidence][lang]}{basis})."
 
 
 def _history_sentence(cause: Cause, lang: Lang) -> str | None:
@@ -209,7 +223,8 @@ def _history_sentence(cause: Cause, lang: Lang) -> str | None:
         changes.append(HISTORY_RHR[lang].format(delta=number(abs(history.rhr_delta), lang)))
     if not changes:
         return None
-    return HISTORY[lang].format(week=HISTORY_WEEKS[cause.id][lang], changes=AND[lang].join(changes))
+    week = HISTORY_WEEKS.get(cause.id, DEFAULT_WEEK)[lang]
+    return HISTORY[lang].format(week=week, changes=AND[lang].join(changes))
 
 
 def _evidence(cause: Cause, metric: str) -> Evidence | None:

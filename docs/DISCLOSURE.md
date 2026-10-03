@@ -6,12 +6,13 @@ All code in this repository was written during HackYeah 2026 (3–4 October 2026
 | Tool | Used for |
 |---|---|
 | Claude Code (Anthropic), model Claude Opus 5.5 | Project setup, scaffolding, writing and reviewing code and docs together with the team. Every change was reviewed by a team member, who can explain it. |
-| _teammate: add your tools here_ | |
+| Claude Code (Anthropic), model Claude Opus 5.5 (Berken's sessions) | Writing the LLM layer (`backend/app/llm/`: provider with template fallback and 10-second limit, output validator, EN/PL templates) and its tests (`backend/tests/test_llm.py`, `backend/tests/conftest.py`), resolving merges, and drafting docs. Berken reviewed every change and can explain it. |
 
 ## External APIs and models used by the app
 | API / model | Purpose | Data sent |
 |---|---|---|
-| Anthropic API, `claude-opus-5` (configurable) | Turns rule-engine findings into plain-language text (EN/PL) | Only a JSON of computed findings: no name, no dates, no raw time series. Optional: with `LLM_PROVIDER=none` nothing is sent. |
+| Anthropic API, `claude-haiku-4-5` (configurable via `ANTHROPIC_MODEL`) | Turns rule-engine findings into plain-language text (EN/PL): the detective explanation and the "In short" paragraph of the doctor summary | Only a JSON of computed findings: no name, no dates, no raw time series. With `LLM_PROVIDER=none` nothing is sent. |
+| Ollama (optional, local, e.g. `gemma3:4b`) | The same, for offline development; not used on Render | The same JSON; it stays on the local machine |
 
 ## Libraries and licences
 ### Frontend (npm)
