@@ -18,6 +18,7 @@ import json
 import logging
 import re
 
+from ..engine.causes import HISTORY_FACTORS
 from ..models import DataLevel, DetectiveResult, DoctorSummary, Explanation, HistoryCheck, Lang
 from . import providers, templates, validate
 
@@ -50,13 +51,20 @@ POLISH_STYLE = (
     "and do not use the word 'masz'."
 )
 
+HISTORY_INSTRUCTION = "Say which week was compared and how it differed; never describe it as an earlier spike."
+
 # ---------- detective ----------
 
 
 def explain_detective(result: DetectiveResult, lang: Lang) -> Explanation:
-    """2-4 plain sentences in `lang` about the detective findings. Never raises."""
+    """2-4 plain sentences in `lang` about the detective findings. Never raises.
+
+    Polish always uses the template, without calling the LLM: Haiku's Polish detective text
+    was ungrammatical and flipped the logic of the history check, while the Polish templates
+    read well. (The Polish doctor summary paragraph still uses the LLM.)
+    """
     template = templates.detective_text(result, lang)
-    if not result.triggered:  # main.py only calls us when triggered; nothing to explain
+    if not result.triggered or lang == "pl":  # main.py only calls us when triggered
         return Explanation(text=template, source="template")
 
     facts_text = facts_json(result)
@@ -84,7 +92,7 @@ def detective_facts(result: DetectiveResult) -> dict:
                     {"text": e.text, "value": e.value, "baseline": e.baseline, "unit": e.unit}
                     for e in cause.evidence
                 ],
-                "history": _history(cause.history_check),
+                "history": _history(cause.id, cause.history_check),
             }
             for cause in result.causes
         ],
@@ -93,12 +101,35 @@ def detective_facts(result: DetectiveResult) -> dict:
     }
 
 
-def _history(check: HistoryCheck | None) -> dict | None:
-    """Empty values are left out: a missing rhr_delta (no watch) must not even appear as a key."""
+def _history(cause_id: str, check: HistoryCheck | None) -> dict | None:
+    """The history check, worded so the LLM cannot get its direction wrong.
+
+    The engine compares the past week with the LEAST of a factor (e.g. the lightest training
+    week) with all other past days. With only {supports, energy_delta, rhr_delta} the model
+    guessed which week was compared and wrote "when your load spiked before, your energy
+    dipped". So the payload names the week and puts the direction in the key names:
+    energy_delta > 0 becomes "energy_higher_that_week", rhr_delta < 0 becomes
+    "resting_hr_lower_that_week", both with the absolute value. A difference that is None
+    (no watch: no resting HR) or 0 is left out, so it does not even appear as a key.
+    """
     if check is None:
         return None
-    values = {"supports": check.supports, "energy_delta": check.energy_delta, "rhr_delta": check.rhr_delta}
-    return {key: value for key, value in values.items() if value is not None}
+    factor = HISTORY_FACTORS.get(cause_id)
+    week = f"your {factor[1]}" if factor else "your easiest past week for this factor"
+    if check.period_tag:
+        week += f" (your {check.period_tag} week)"
+    payload: dict = {
+        "compared_week": week,
+        "compared_with": "your normal days",
+        "supports_this_cause": check.supports,
+    }
+    if check.energy_delta:
+        direction = "higher" if check.energy_delta > 0 else "lower"
+        payload[f"energy_{direction}_that_week"] = abs(check.energy_delta)
+    if check.rhr_delta:
+        direction = "lower" if check.rhr_delta < 0 else "higher"
+        payload[f"resting_hr_{direction}_that_week"] = abs(check.rhr_delta)
+    return payload
 
 
 def facts_json(result: DetectiveResult) -> str:
@@ -112,9 +143,9 @@ def detective_prompt(facts_text: str, lang: Lang) -> str:
         f"Findings (JSON):\n{facts_text}\n\n"
         f"Write 2-4 plain sentences in {LANGUAGES[lang]}, speaking to the user as \"you\".{style} "
         "Cover: the most likely cause with its key numbers and confidence (if data_level is "
-        "basic, say it is based on check-ins only); whether the user's own history supports it; "
-        "how many unreliable nights were left out (only if more than 0); and the suggested "
-        "experiment as the next step. Return only the sentences."
+        "basic, say it is based on check-ins only); whether the user's own history supports it "
+        f"({HISTORY_INSTRUCTION}); how many unreliable nights were left out (only if more than 0); "
+        "and the suggested experiment as the next step. Return only the sentences."
     )
 
 
