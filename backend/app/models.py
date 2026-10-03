@@ -147,12 +147,20 @@ class HistoryCheck(BaseModel):
     rhr_delta: float | None = None
 
 
+class ConfidenceCheck(BaseModel):
+    """One line of 'why this confidence': each passed check adds a point (see engine/causes.py)."""
+
+    label: str
+    passed: bool
+
+
 class Cause(BaseModel):
     id: CauseId
     title: str
     confidence: Confidence
     score: int
     strength: float  # effect size relative to the "strong" threshold, used for ranking
+    checks: list[ConfidenceCheck]
     evidence: list[Evidence]
     history_check: HistoryCheck | None = None
     data_level_used: DataLevel

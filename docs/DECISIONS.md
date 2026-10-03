@@ -64,3 +64,11 @@ One short entry per decision: what, why, alternatives considered.
   - Any failure falls back to template text: an error, a timeout, a refusal, or a failed validation.
 - **Why:** The demo never hangs or shows invented numbers, and it works without a key.
 - **Alternatives:** no LLM (less natural language) and LLM without validation (unsafe).
+
+## D10: The artifact jump rule also checks your recent normal
+- **What:** A resting-HR reading is excluded as an artifact only if all three hold:
+  - it is more than 25 bpm away from the last valid reading
+  - it is more than 25 bpm away from the median of the last 7 valid readings
+  - the check-in and the previous day's training did not change much
+- **Why:** With only the brief's "vs. the previous day" rule, a real HR rise after a very hard day would be accepted, and then the next normal morning would look like a 25+ bpm "jump" and be thrown away. That error cascaded for days in our tests. The median check makes a return to normal always count as valid.
+- **Alternatives:** comparing with the previous raw value (it accepts the artifact as the new reference point).
