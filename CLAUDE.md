@@ -100,7 +100,7 @@ No real patient data. Build a synthetic data generator:
 - Frontend: Vite + React + TypeScript + Tailwind + shadcn/ui, web only.
 - Backend: FastAPI (Python). The rule engine lives here as pure, testable functions.
 - Data: synthetic JSON files loaded in memory. No database, no auth.
-- Deployment for the demo link: frontend on Vercel, backend on Render. If deployment becomes a blocker, a local demo plus a screen recording is the fallback.
+- Deployment for the demo link: both on Render (`render.yaml`): the frontend as a static site, the backend as a web service. If deployment becomes a blocker, a local demo plus a screen recording is the fallback.
 
 ## Time plan
 See `docs/PLAN.md` for the timeline adjusted to the real deadline (milestones M0–M6).

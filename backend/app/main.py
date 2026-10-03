@@ -6,6 +6,7 @@ import os
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import store
 from .engine import artifacts
@@ -31,6 +32,15 @@ load_dotenv()
 
 app = FastAPI(title="WhyTired API", version="0.1.0")
 
+# The frontend is a separate static site, so the browser needs CORS. The API has no cookies
+# and no logins, so any origin may read it; CORS_ORIGINS can narrow this (comma-separated).
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in os.getenv("CORS_ORIGINS", "*").split(",")],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
+
 
 def days_for(ctx: Ctx) -> list[DayRecord]:
     """The days this request may see: up to `today`, in the chosen branch, at the chosen data level."""
@@ -47,7 +57,7 @@ def days_for(ctx: Ctx) -> list[DayRecord]:
 @app.get("/", include_in_schema=False)
 def root() -> dict[str, str]:
     """The app itself is the frontend; this only says where things are."""
-    return {"service": "WhyTired API", "health": "/api/health", "docs": "/docs", "app": "https://why-tired.vercel.app"}
+    return {"service": "WhyTired API", "health": "/api/health", "docs": "/docs"}
 
 
 @app.get("/api/health", response_model=Health)

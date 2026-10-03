@@ -1,5 +1,6 @@
-# Render Blueprint for the WhyTired API (New → Blueprint → pick this repo).
+# Render Blueprint (New → Blueprint → pick this repo): the API and the frontend.
 services:
+  # FastAPI backend: rule engine, data, LLM explanations
   - type: web
     name: whytired-api
     runtime: python
@@ -18,3 +19,21 @@ services:
         value: claude-haiku-4-5
       - key: ANTHROPIC_API_KEY
         sync: false # set the value in the Render dashboard, never in git
+
+  # React frontend as a free static site (CDN, no cold start)
+  - type: web
+    name: whytired
+    runtime: static
+    rootDir: frontend
+    branch: main
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_API_URL
+        value: https://whytired-api.onrender.com
+    routes:
+      - type: rewrite # single-page app: /detective, /s/<token> … all load index.html
+        source: /*
+        destination: /index.html

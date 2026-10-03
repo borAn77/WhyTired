@@ -18,8 +18,12 @@ export class ApiError extends Error {
   }
 }
 
+// Locally VITE_API_URL is empty and Vite proxies /api to FastAPI. On Render the frontend is a
+// static site and calls the API service directly (https://whytired-api.onrender.com).
+const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(`${API_BASE}/api${path}`, {
     ...init,
     headers: { 'Content-Type': 'application/json', ...init?.headers },
   })

@@ -14,6 +14,7 @@ const JUMPS: [string, string][] = [
   ['Today', '/'],
   ['Detective', '/detective'],
   ['Experiment', '/experiment'],
+  ['Summary', '/summary'],
 ]
 
 // Presenter-only controls, shown next to the phone frame on desktop. Not part of the product.

@@ -102,3 +102,13 @@ def test_summary_endpoint(kasia):
     body = client.post("/api/summary", json=ctx(today=today, experiment=experiment, lang="pl")).json()
     assert body["title"].startswith("WhyTired: podsumowanie")
     assert body["questions"][-1].startswith("Na jakie objawy")
+
+
+def test_cors_lets_the_static_site_call_the_api():
+    response = client.options(
+        "/api/detective",
+        headers={"Origin": "https://whytired.onrender.com", "Access-Control-Request-Method": "POST",
+                 "Access-Control-Request-Headers": "content-type"},
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] in ("*", "https://whytired.onrender.com")

@@ -28,12 +28,27 @@ def test_rhr_jump_with_matching_check_in_change_is_kept():
     assert excluded == []
 
 
-def test_rhr_jump_after_very_hard_day_is_kept():
+def test_hard_training_alone_does_not_explain_a_big_jump():
+    # Berken's case: a very hard day before a +35 bpm night used to make the jump look "explained"
     def change(offset):
         if offset == -11:
             return {"sessions": ((180, 9),)}
         if offset == -10:
-            return {"rhr": 82.0}
+            return {"rhr": 89.0}
+        return {}
+
+    days = make_days(30, change=change)
+    _, excluded = clean(days)
+    assert {(p.date, p.metric) for p in excluded} == {(days[-11].date, "resting_hr")}
+    assert "too big to come from training alone" in excluded[0].reason
+
+
+def test_moderate_rise_after_a_hard_day_is_kept():
+    def change(offset):
+        if offset == -11:
+            return {"sessions": ((180, 9),)}
+        if offset == -10:
+            return {"rhr": 66.0}  # +12 bpm: real, not an artifact
         return {}
 
     _, excluded = clean(make_days(30, change=change))
