@@ -1,0 +1,20 @@
+# Render Blueprint for the WhyTired API (New → Blueprint → pick this repo).
+services:
+  - type: web
+    name: whytired-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    branch: main
+    buildCommand: pip install uv && uv sync --frozen --no-dev
+    startCommand: uv run --no-dev uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: LLM_PROVIDER
+        value: anthropic
+      - key: ANTHROPIC_MODEL
+        value: claude-opus-5
+      - key: ANTHROPIC_API_KEY
+        sync: false # set the value in the Render dashboard, never in git
