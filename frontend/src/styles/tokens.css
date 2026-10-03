@@ -1,0 +1,38 @@
+/*
+ * WhyTired design tokens. Every color, radius and size in the UI comes from here.
+ * Contrast ratios (WCAG 2.x) were checked for the pairs we actually use:
+ *   navy-900 on white 17.2:1 · muted on bg 6.4:1 · navy-900 on coral-500 6.3:1
+ *   coral-700 on white 5.7:1 · white on coral-700 5.7:1 · green-700 on green-50 5.8:1
+ *   amber-800 on amber-50 6.7:1 · navy-700 on navy-50 9.8:1
+ * Rule: coral-500 is a FILL color only (2.7:1 as text fails AA). Text in coral uses coral-700.
+ *
+ * Type scale (Tailwind defaults, body never below 16px):
+ *   text-sm 14px labels/badges only · text-base 16px body · text-lg 18px · text-xl 20px
+ *   text-2xl 24px screen titles · text-3xl 30px hero numbers
+ * Spacing: Tailwind 4px scale. Screen padding 20px (p-5), card padding 16–20px, gaps 12–16px.
+ */
+:root {
+  --wt-navy-900: #0b1b33; /* primary + body text */
+  --wt-navy-800: #13294b;
+  --wt-navy-700: #1e3a64; /* charts, focus ring */
+  --wt-navy-300: #8da2c0; /* baselines in charts (non-text) */
+  --wt-navy-100: #dce4f0;
+  --wt-navy-50: #e8eef7;
+  --wt-bg: #f4f6fa; /* app background */
+  --wt-surface: #ffffff; /* cards */
+  --wt-muted: #4b5b73; /* secondary text */
+  --wt-border: #dce2ec;
+
+  --wt-coral-500: #ff6f61; /* accent fill (logo coral) */
+  --wt-coral-700: #b83a2e; /* accent text, white-on-coral */
+  --wt-coral-50: #fff1ee; /* accent surface */
+
+  --wt-green-700: #146c43; /* "hard training" */
+  --wt-green-50: #e8f5ee;
+  --wt-amber-800: #7a4d00; /* "easy training", warnings */
+  --wt-amber-50: #fff4db;
+
+  --wt-radius: 1rem;
+  --wt-phone-width: 390px;
+  --wt-phone-height: 844px;
+}
