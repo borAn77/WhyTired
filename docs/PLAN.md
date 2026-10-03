@@ -168,33 +168,11 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 - Summary page: print preview fits one A4 page, and the share link opens in a private window.
 - Repeat the walkthrough on the deployed URL. Before the demo, call `/api/health` to wake Render from its cold start.
 
-## Persona data spec (implemented in `backend/scripts/generate_personas.py`)
-Regenerate with `cd backend && uv run python -m scripts.generate_personas`. A test fails if the committed JSON doesn't match the generator.
-Shared rules:
-- `DEMO_DAY = 2026-10-04` (D0).
-- `history` = 90 days, D−89…D0 inclusive. `future[scenario]` = 14 days, D+1…D+14.
-- Seed `random.Random(42)`. Stdlib only. Output goes to `backend/data/<id>.json` and must validate as `PersonaFile` (see `backend/app/models.py`).
-- Check-ins exist on almost every day. Leave out at most ~5% of history days, and never drop one from the last 10 days or the future days.
-- `tags` mark story periods (`"holiday"`, `"exams"`). The UI only uses them to *name* a period, the rules never read them.
-
-### Kasia (`kasia`, 23, runner, has_watch = true)
-| Days | Sessions | Watch | Check-in |
-|---|---|---|---|
-| Baseline (all days not listed below) | 4 runs/week<br>40–60 min, RPE 4–6<br>≈1000 AU/week | RHR 54 ± 1.5<br>HRV 62 ± 5 ms<br>sleep 450 ± 25 min<br>coverage 0.95–1.0<br>sleep HR ≈ 50<br>day HR ≈ 76 | energy 3–4<br>sleep quality 3–4<br>stress 2–3<br>soreness 2<br>sleep ≈ 7.5 h |
-| D−60…D−54, tag `holiday` | 1–2 easy runs<br>30 min, RPE 3 | RHR 48 ± 1 (−6)<br>HRV ≈ 72 | energy 4–5<br>stress 1–2 |
-| D−20 (**artifact night**) | normal | resting_hr **92**<br>sleep_coverage **0.35**<br>sleep_hr_avg **96** (above day_hr_avg 77) | normal (energy 4) |
-| D−13…D0 (**load spike**) | 6 runs/week<br>60–90 min, RPE 6–8<br>one long run of 110 min<br>≈2400 AU/week | RHR rises to 61–62 over the last 7 days<br>HRV ≈ 48 | energy 3, then D−4…D0 = 2, 2, 1, 2, 2<br>soreness 3–4<br>sleep ≈ 7.0 h |
-| future `not_improved` | load −40% (sticks to the plan):<br>3–4 runs, 35–45 min, RPE 4–5 | RHR stays 60–61 | energy stays ~2 (occasionally 3) |
-| future `improved` | same load cut | RHR back to ~55 by D+4 | energy 3 by D+3, 4 by D+5 |
-
-### Tomek (`tomek`, 21, gym, has_watch = false → `watch = null`, no steps, no manual pulse)
-| Days | Sessions | Check-in |
-|---|---|---|
-| Baseline | 4 gym sessions/week<br>60–75 min, RPE 6–7 | sleep 7.5 ± 0.5 h<br>energy 3–4<br>stress 2–3<br>soreness 2–3 |
-| D−50…D−44, tag `holiday` | as baseline | sleep ≈ 8.5 h<br>energy 4–5<br>stress 1–2 |
-| D−11…D0, tag `exams` | 3 sessions/week<br>50–60 min, RPE 6<br>(no load spike) | sleep 5.0–6.0 h<br>stress mostly 4<br>energy 3, then D−3…D0 = 2, 2, 1, 2 |
-| future `not_improved` (sleep-window experiment) | 3 sessions/week | sleep ≈ 7.0 h (sticks to the plan)<br>energy stays ~2<br>stress 4 |
-| future `improved` | 3 sessions/week | sleep 7.5–8 h<br>energy 3 by D+3, 4 by D+5 |
+## Persona data
+The day-by-day stories of Kasia and Tomek are documented in `docs/PERSONAS.md`, owned by Berken. The original data brief is `docs/PERSONAS_BRIEF.md`.
+- **Source of truth:** the generator, `backend/scripts/generate_personas.py`.
+- **Tests:** `backend/tests/test_personas.py` locks the demo story: causes and their confidence, the artifact night, and both experiment branches.
+- **Regenerating:** `cd backend && uv run python -m scripts.generate_personas`. A test fails if the committed JSON doesn't match the generator.
 
 ## Ownership and git workflow
 - **Boran (+Claude):**

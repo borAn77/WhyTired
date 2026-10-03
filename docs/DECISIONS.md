@@ -59,13 +59,16 @@ One short entry per decision: what, why, alternatives considered.
 
 ## D9: LLM call setup
 - **What:**
-  - Anthropic API, model `claude-opus-5` (overridable via `ANTHROPIC_MODEL`), `effort: low`, 8 s timeout.
-  - Answers are cached in memory by a hash of the input.
-  - `LLM_PROVIDER=none` uses templates only.
+  - Anthropic API through the official SDK. The model is `claude-haiku-4-5`, chosen by Berken as the fastest Claude model, well inside the time limit; it can be overridden with `ANTHROPIC_MODEL`. `effort: low` is sent only to models that support it.
+  - Each attempt has 8 s, there is one retry, and the whole call has a hard limit of 10 s. Answers are cached in memory by a hash of the input.
+  - `LLM_PROVIDER` selects the provider:
+    - `anthropic` (default)
+    - `ollama` (a local model for offline work)
+    - `none` (templates only)
   - Every number in the generated text must exist in the input, and diagnosis, medication and lab-test terms are blocked.
-  - Any failure falls back to template text: an error, a timeout, a refusal, or a failed validation.
-- **Why:** The demo never hangs or shows invented numbers, and it works without a key.
-- **Alternatives:** no LLM (less natural language) and LLM without validation (unsafe).
+  - Any failure falls back to the template text and logs the reason: an error (including an account without credits), a timeout, a refusal, or a failed validation.
+- **Why:** The demo never hangs or shows invented numbers, and it works without a key or credits.
+- **Alternatives:** no LLM (less natural language) and an LLM without validation (unsafe).
 
 ## D10: The artifact jump rule also checks your recent normal
 - **What:** A resting-HR reading is excluded as an artifact only if all three hold:
