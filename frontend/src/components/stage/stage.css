@@ -1,0 +1,581 @@
+/*
+ * Demo stage around the phone: backdrop, device case, story panel, logo character and the
+ * restyled Demo Controls. Plain CSS on top of the existing tokens (src/styles/tokens.css),
+ * so it can be copied to the real repo as one file.
+ *
+ * Phones (< 768px) keep the original full-screen app; everything below starts at 768px,
+ * except the logo character, which is also used on the onboarding screen.
+ */
+
+/* ---------- Logo character ---------- */
+
+.wt-char__lid,
+.wt-char__pupil {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wt-char--energised .wt-char__lid {
+  transform: translateY(-3.8px);
+}
+
+.wt-char--energised .wt-char__pupil {
+  transform: translateY(-1.2px);
+}
+
+/* Heavy lids blink slowly every few seconds. */
+.wt-char__blink {
+  --blink: 4.6px;
+  animation: wt-blink 5.5s ease-in-out 1.6s infinite;
+}
+
+.wt-char--energised .wt-char__blink {
+  --blink: 8.4px;
+  animation-duration: 4.2s;
+}
+
+@keyframes wt-blink {
+  0%,
+  88%,
+  100% {
+    transform: none;
+  }
+  91% {
+    transform: translateY(var(--blink));
+  }
+  94% {
+    transform: none;
+  }
+}
+
+.wt-char__mouth {
+  transition: opacity 500ms ease-out;
+}
+
+.wt-char__mouth--happy,
+.wt-char--energised .wt-char__mouth--tired {
+  opacity: 0;
+}
+
+.wt-char--energised .wt-char__mouth--happy {
+  opacity: 1;
+}
+
+/* Heartbeat: draws left to right once, then a bright blip runs along it. */
+.wt-char__beat {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: wt-draw 1.2s cubic-bezier(0.33, 1, 0.68, 1) 0.2s forwards;
+  transition: stroke-width 600ms ease-out;
+}
+
+.wt-char__blip {
+  stroke-dasharray: 0.07 0.93;
+  stroke-dashoffset: 0.07;
+  opacity: 0.85;
+  animation: wt-blip 2.8s linear 1.4s infinite both;
+}
+
+.wt-char--tired .wt-char__heartbeat {
+  animation: wt-dim 2.8s ease-in-out 1.4s infinite;
+}
+
+/* After the experiment: steadier, brighter, a little stronger. */
+.wt-char--energised .wt-char__beat {
+  stroke-width: 3.8;
+}
+
+.wt-char--energised .wt-char__blip {
+  animation-duration: 1.6s;
+}
+
+@keyframes wt-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wt-blip {
+  from {
+    stroke-dashoffset: 0.07;
+  }
+  to {
+    stroke-dashoffset: -0.93;
+  }
+}
+
+@keyframes wt-dim {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* Thinking: the magnifier scans left and right. */
+.wt-char--scan .wt-char__magnifier {
+  animation: wt-scan 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes wt-scan {
+  from {
+    transform: translateX(-5px);
+  }
+  to {
+    transform: translateX(5px);
+  }
+}
+
+/* ---------- Story panel ---------- */
+
+.stage-story {
+  color: var(--wt-navy-900);
+}
+
+.stage-story__inner {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  animation: stage-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.stage-story__character {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stage-story__mark {
+  width: 232px;
+  height: auto;
+}
+
+.stage-story__badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--wt-green-700);
+  background: var(--wt-green-50);
+}
+
+.stage-story__persona {
+  font-size: 1rem;
+  color: var(--wt-muted);
+}
+
+.stage-story__step {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wt-coral-700);
+}
+
+.stage-story__title {
+  font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.stage-story__body {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: var(--wt-muted);
+  max-width: 34ch;
+}
+
+.stage-story__note {
+  padding-left: 12px;
+  border-left: 3px solid var(--wt-coral-500);
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--wt-navy-900);
+  max-width: 36ch;
+}
+
+.stage-story.is-compact .stage-story__mark {
+  width: 120px;
+}
+
+.stage-story.is-compact .stage-story__character {
+  margin-bottom: 4px;
+}
+
+.stage-story.is-compact .stage-story__title {
+  font-size: 1.5rem;
+}
+
+/* ---------- Detective scene: the magnifier finds the cause ---------- */
+
+.stage-scene {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 0 12px;
+  padding: 16px 16px 12px;
+  border-radius: 20px;
+  background: var(--wt-surface);
+  box-shadow: 0 18px 40px -28px rgba(27, 42, 78, 0.45);
+  border: 1px solid var(--wt-border);
+}
+
+.stage-scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.stage-scene__base {
+  stroke: var(--wt-border);
+  stroke-width: 1.5;
+}
+
+.stage-scene__bar {
+  fill: var(--wt-navy-100);
+  stroke: var(--wt-navy-300);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  transition:
+    fill 450ms ease-out,
+    stroke 450ms ease-out;
+}
+
+.stage-scene__bar.is-usual {
+  fill: var(--wt-navy-500);
+  stroke: none;
+}
+
+.stage-scene__bar.is-hot {
+  fill: var(--wt-coral-500);
+  stroke: var(--wt-coral-600);
+  stroke-dasharray: none;
+}
+
+.stage-scene__label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--wt-muted);
+}
+
+.stage-scene__value {
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--wt-navy-900);
+}
+
+.stage-scene__bar.is-usual + .stage-scene__label + .stage-scene__value {
+  fill: #fff;
+}
+
+.stage-scene__lens {
+  transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stage-scene__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.stage-scene__metric {
+  font-weight: 600;
+}
+
+.stage-scene__delta {
+  color: var(--wt-muted);
+  transition: color 400ms ease-out;
+}
+
+.stage-scene__caption.is-found .stage-scene__delta {
+  font-weight: 700;
+  color: var(--wt-coral-700);
+}
+
+/* ---------- Stage layout (768px and up) ---------- */
+
+.stage-backdrop,
+.stage__story,
+.stage__story-compact,
+.stage__presenter {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(288px, 340px);
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    padding: 24px;
+    overflow: hidden;
+    background: var(--wt-bg);
+  }
+
+  .stage-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stage-backdrop__lines {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 12px;
+    height: 100px;
+  }
+
+  .stage-backdrop__line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .stage-backdrop__line.is-slate {
+    stroke: var(--wt-navy-300);
+    opacity: 0.35;
+  }
+
+  .stage-backdrop__line.is-coral {
+    stroke: var(--wt-coral-500);
+    stroke-dasharray: 0.22 0.78;
+    opacity: 0.55;
+    animation: wt-blip-slow 9s linear infinite;
+  }
+
+  @keyframes wt-blip-slow {
+    from {
+      stroke-dashoffset: 0.22;
+    }
+    to {
+      stroke-dashoffset: -0.78;
+    }
+  }
+
+  /* Device case: the phone gets a real bezel, side button, depth and a faint reflection.
+     It sits straight on the light page, so a layered soft shadow lifts it off the background. */
+  .stage__device {
+    position: relative;
+    z-index: 1;
+    padding: 12px;
+    border-radius: 56px;
+    background: linear-gradient(150deg, #2c3d66 0%, #16223f 45%, #0e1730 100%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 2px 4px rgba(14, 23, 48, 0.12),
+      0 12px 24px -8px rgba(14, 23, 48, 0.2),
+      0 36px 72px -20px rgba(14, 23, 48, 0.32),
+      0 80px 140px -40px rgba(14, 23, 48, 0.4);
+  }
+
+  .stage__device::before {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 180px;
+    width: 3px;
+    height: 72px;
+    border-radius: 0 3px 3px 0;
+    background: #24345a;
+  }
+
+  .stage__device::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 44px;
+    background: linear-gradient(118deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Same content size as before (the old 10px border is now the case), so screens lay out
+     exactly as they did. */
+  .stage__screen {
+    width: calc(var(--wt-phone-width) - 20px);
+    height: calc(var(--wt-phone-height) - 20px);
+    border-radius: 44px;
+  }
+
+  .stage__controls {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 12px;
+    align-self: center;
+  }
+
+  .stage__story-compact {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .stage__presenter {
+    display: inline-flex;
+    justify-self: start;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--wt-navy-900);
+  }
+
+  .stage__presenter::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--wt-coral-500);
+  }
+
+  /* Demo Controls, restyled without touching DemoPanel.tsx */
+  .stage__controls > :last-child {
+    padding: 24px;
+    border-radius: 24px;
+    background: var(--wt-surface);
+    border: 1px solid var(--wt-border);
+    box-shadow: 0 30px 60px -36px rgba(27, 42, 78, 0.5);
+  }
+
+  .stage__controls .text-sm {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .stage__controls [data-slot='toggle-group'] {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    width: 100%;
+  }
+
+  .stage__controls [data-slot='toggle-group-item'] {
+    min-height: 44px;
+    height: auto;
+    padding: 6px 10px;
+    font-size: 1rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .stage__controls [data-slot='toggle-group-item'][data-state='on'] {
+    background: var(--wt-coral-500);
+    border-color: var(--wt-coral-500);
+    color: var(--wt-navy-900);
+    font-weight: 600;
+  }
+
+  .stage__controls [data-slot='button'] {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-height: 920px) {
+  .stage {
+    align-items: start;
+  }
+}
+
+/* Wide screens: story | phone | controls. */
+@media (min-width: 1280px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 56px;
+    padding: 24px 40px;
+  }
+
+  .stage__story {
+    display: block;
+    position: relative;
+    z-index: 1;
+    justify-self: end;
+    align-self: center;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .stage__story-compact {
+    display: none;
+  }
+
+  /* Wide enough that the time-travel and jump buttons need one row less: the column then stays
+     shorter than the phone, so 1440x900 does not scroll. */
+  .stage__controls {
+    justify-self: start;
+    align-self: center;
+    width: 100%;
+    max-width: 392px;
+  }
+}
+
+/* Tall enough (1440x900 full screen): a slightly larger phone, same proportions. The case is
+   4px taller than --wt-phone-height, so 864 + 4 + 2 × 16px padding = 900px, no scrolling. */
+@media (min-width: 1280px) and (min-height: 900px) {
+  .stage {
+    --wt-phone-width: 400px;
+    --wt-phone-height: 864px;
+    padding-block: 16px;
+  }
+}
+
+/* Pause everything while the tab is hidden. */
+.stage.is-paused *,
+.stage.is-paused *::before,
+.stage.is-paused *::after {
+  animation-play-state: paused !important;
+}
+
+/* Reduced motion: final states only, the face stays still. */
+@media (prefers-reduced-motion: reduce) {
+  .wt-char__beat {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .wt-char__blip {
+    display: none;
+  }
+
+  .wt-char__blink,
+  .wt-char__heartbeat,
+  .wt-char__magnifier,
+  .stage-backdrop__line,
+  .stage-story__inner {
+    animation: none !important;
+  }
+
+  .wt-char__lid,
+  .wt-char__pupil,
+  .wt-char__mouth,
+  .wt-char__beat,
+  .stage-scene__lens,
+  .stage-scene__bar,
+  .stage-scene__delta {
+    transition: none;
+  }
+}

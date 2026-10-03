@@ -1,22 +1,49 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
-// On phones the app is full screen. On desktop (demo) it sits in a phone-sized frame,
-// with the presenter-only demo controls rendered next to it. On phones the same controls
-// open from a small button, so the demo also works from a phone.
+import '@/components/stage/stage.css'
+import { StageBackdrop } from '@/components/stage/StageBackdrop'
+import { StoryPanel } from '@/components/stage/StoryPanel'
+import { usePageVisible, usePrefersReducedMotion } from '@/components/stage/motion'
+
+// On phones the app is full screen. On desktop (demo) it sits in a phone-sized frame on a
+// "stage": the story panel with the animated logo on the left, the presenter-only demo
+// controls on the right. On phones the same controls open from a small button, so the demo
+// also works from a phone. The stage only reads the session; it never changes app state.
 export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   const [controlsOpen, setControlsOpen] = useState(false)
+  const pageVisible = usePageVisible()
+  const scrollRef = useScreenTransition()
+
   return (
-    <div className="min-h-dvh bg-navy-50 md:flex md:items-center md:justify-center md:gap-10 md:p-8">
-      <div
-        data-phone-frame
-        className="relative flex h-dvh w-full flex-col overflow-hidden bg-app md:h-[var(--wt-phone-height)] md:w-[var(--wt-phone-width)] md:rounded-[2.75rem] md:border-[10px] md:border-navy-900 md:shadow-2xl"
-      >
-        <div data-phone-scroll className="flex-1 overflow-y-auto">
-          {children}
+    <div className={`stage min-h-dvh bg-navy-50${pageVisible ? '' : ' is-paused'}`}>
+      <StageBackdrop />
+
+      <div className="stage__story">
+        <StoryPanel />
+      </div>
+
+      <div className="stage__device">
+        <div
+          data-phone-frame
+          className="stage__screen relative flex h-dvh w-full flex-col overflow-hidden bg-app"
+        >
+          <div data-phone-scroll ref={scrollRef} className="flex-1 overflow-y-auto">
+            {children}
+          </div>
         </div>
       </div>
-      {aside && <aside className="hidden w-72 md:block">{aside}</aside>}
+
+      {aside && (
+        <aside className="stage__controls hidden md:block">
+          <div className="stage__story-compact">
+            <StoryPanel compact />
+          </div>
+          <p className="stage__presenter">For the presenter</p>
+          {aside}
+        </aside>
+      )}
 
       {aside && (
         <div className="md:hidden">
@@ -49,4 +76,32 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
       )}
     </div>
   )
+}
+
+// Fades the phone content in on every route change. Uses the Web Animations API on the
+// existing scroll container, so no wrapper element and no remount: screens keep their state.
+function useScreenTransition() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { pathname } = useLocation()
+  const reduce = usePrefersReducedMotion()
+  const first = useRef(true)
+
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    const el = ref.current
+    if (!el || reduce || typeof el.animate !== 'function') return
+    const animation = el.animate(
+      [
+        { opacity: 0, transform: 'translateX(14px)' },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 320, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    )
+    return () => animation.cancel()
+  }, [pathname, reduce])
+
+  return ref
 }
