@@ -1,10 +1,14 @@
 """Hand-written explanation texts in English and Polish: the fallback for every LLM call.
 
-The templates are built only from engine numbers (Evidence.value / .baseline, the history
-deltas, the count of excluded nights), never from the engine's English sentences. That
-keeps the Polish text fully Polish. Every template also passes the same validator as LLM
-answers (tests/test_llm.py), so it never contains a blocked term or a number that is not
-in the findings.
+detective_text() writes the detective card, summary_text() the "In short" paragraph of the
+doctor summary.
+
+The detective templates are built only from engine numbers (Evidence.value / .baseline, the
+history deltas, the count of excluded nights), never from the engine's English sentences.
+That keeps the Polish text fully Polish. The summary template reuses the summary's own texts,
+which the page already shows in its language. Every template passes the same validator as
+LLM answers (tests/test_llm.py), so it never contains a blocked term or a number that is
+not in the input.
 
 Polish copy uses gender-neutral forms (no "byłeś/byłaś") and "pkt" instead of declined
 "punktów". It should be read once by a native speaker before the demo.
@@ -12,7 +16,7 @@ Polish copy uses gender-neutral forms (no "byłeś/byłaś") and "pkt" instead o
 
 from __future__ import annotations
 
-from ..models import Cause, CauseId, Confidence, DetectiveResult, Evidence, Lang
+from ..models import Cause, CauseId, Confidence, DataLevel, DetectiveResult, Evidence, Lang
 
 # Sentence 1: the top cause with its key numbers. {days} = low-energy days in a row.
 # The other fields come from the cause's Evidence (see CAUSE_FIELDS).
@@ -115,6 +119,44 @@ NOT_TRIGGERED = {
 }
 
 
+# Doctor summary, "In short" paragraph. Impersonal and gender-neutral, for a doctor.
+SUMMARY_INTRO = {
+    "en": "Summary of the last {days} days, based on {source}.",
+    "pl": "Podsumowanie ostatnich {days} dni; źródło danych: {source}.",
+}
+DATA_SOURCES: dict[DataLevel, dict[Lang, str]] = {
+    "full": {
+        "en": "a sports watch, daily check-ins and logged training",
+        "pl": "zegarek sportowy, codzienne ankiety i zapis treningów",
+    },
+    "medium": {
+        "en": "daily check-ins, logged training and phone measurements",
+        "pl": "codzienne ankiety, zapis treningów i pomiary z telefonu",
+    },
+    "basic": {
+        "en": "daily check-ins and logged training (no watch)",
+        "pl": "codzienne ankiety i zapis treningów (bez zegarka)",
+    },
+}
+SUMMARY_TRIED = {"en": "What was tried: {text}", "pl": "Wypróbowany plan: {text}"}
+SUMMARY_RESULT = {"en": "Result: {text}", "pl": "Wynik: {text}"}
+
+
+def summary_text(facts: dict, lang: Lang) -> str:
+    """The "In short" template, from the same facts dict the LLM receives (explain.summary_facts):
+    period and data source, the complaint, what was tried and the result."""
+    sentences = [
+        SUMMARY_INTRO[lang].format(days=facts["period_days"], source=DATA_SOURCES[facts["data_level"]][lang])
+    ]
+    if facts["complaint"]:
+        sentences.append(_sentence(facts["complaint"]))
+    if facts["tried"]:
+        sentences.append(SUMMARY_TRIED[lang].format(text=_sentence(facts["tried"])))
+    if facts["result"]:
+        sentences.append(SUMMARY_RESULT[lang].format(text=_sentence(facts["result"])))
+    return " ".join(sentences)
+
+
 def detective_text(result: DetectiveResult, lang: Lang) -> str:
     """2-4 sentences: top cause with numbers, history check, excluded nights, next step."""
     if not result.triggered:
@@ -188,6 +230,11 @@ def _nights(n: int, lang: Lang) -> str:
     if n % 10 in (2, 3, 4) and n % 100 not in (12, 13, 14):
         return "noce"
     return "nocy"
+
+
+def _sentence(text: str) -> str:
+    text = text.strip()
+    return text if text.endswith((".", "!", "?")) else text + "."
 
 
 def _lower_first(text: str) -> str:
