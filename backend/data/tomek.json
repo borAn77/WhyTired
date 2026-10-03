@@ -1742,7 +1742,7 @@
    "date": "2026-10-04",
    "checkin": {
     "energy": 2,
-    "sleep_hours": 5.5,
+    "sleep_hours": 5.0,
     "sleep_quality": 2,
     "stress": 4,
     "soreness": 2,

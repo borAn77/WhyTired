@@ -102,8 +102,8 @@ CONFIG = {
             "sleep_min": (425, 15),
             "energy": 3,
             "low_energy": {-4: 2, -3: 2, -2: 1, -1: 2, 0: 2},  # the 5 low days that start detective mode
-            "late_caffeine_days": [-4, -3, -1, 0],  # mornings after a late coffee: 4 of the 5 tired days
-            "late_caffeine_sleep_min": 30,  # ...cost 30 min of sleep (brief: 20-40 min)
+            "late_caffeine_days": [-4, -3, -2, -1, 0],  # mornings after a late coffee: all 5 tired days
+            "late_caffeine_sleep_min": 40,  # ...cost 40 min of sleep (brief: 20-40 min)
             "stress": {2: 0.6, 3: 0.4},
             "soreness": {3: 0.5, 4: 0.5},
             "sleep_quality": 3,
@@ -181,6 +181,7 @@ CONFIG = {
             "sleep_h_choices": (5.5, 6.0),  # exam stress alone: 5.5-6 h
             "late_screens_sleep_h": 0.5,  # phone in bed late: another 30 min less (brief: 30-60 min)
             "screen_free_weekday": 5,  # ...every night except Friday's (Saturday morning): 6 of 7
+            "demo_day_sleep_h": 5.0,  # the night before D0 (brief: 5.0-5.5 h)
             "energy": 3,
             "low_energy": {-3: 2, -2: 2, -1: 1, 0: 2},
             "stress": {3: 0.1, 4: 0.7, 5: 0.2},
@@ -397,6 +398,8 @@ def tomek_day(rng: random.Random, offset: int, branch: str | None = None) -> Day
         sleep = rng.choice(exams["sleep_h_choices"])
         if weekday != exams["screen_free_weekday"]:  # on the phone late the evening before
             sleep -= exams["late_screens_sleep_h"]
+        if offset == 0:
+            sleep = exams["demo_day_sleep_h"]
         energy = exams["low_energy"].get(offset, exams["energy"])
         stress = pick(rng, exams["stress"])
         quality, soreness = pick(rng, exams["sleep_quality"]), exams["soreness"]
