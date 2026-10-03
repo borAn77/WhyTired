@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Check, FlaskConical, Search, Stethoscope, Sunrise, Watch, type LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-import { Logo } from '@/components/Logo'
+import { AnimatedLogo } from '@/components/AnimatedLogo'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/lib/session'
@@ -35,7 +35,7 @@ export function OnboardingScreen() {
   if (step === 0) {
     return (
       <div className="flex min-h-full flex-col px-6 pb-6 pt-14">
-        <Logo size="lg" className="self-center" />
+        <AnimatedLogo className="self-center" />
         <h1 className="mt-10 text-3xl font-semibold leading-tight tracking-tight">Find out why you're tired.</h1>
         <ul className="mt-6 space-y-4">
           {PROMISES.map(({ icon: Icon, text }) => (
