@@ -22,8 +22,8 @@ The repo `borAn77/WhyTired` is pushed with `main` and `dev` and only holds a REA
 5. **The share link is a base64url token of the request context** (`/s/<token>`). It is a real, read-only, reproducible link that needs no DB. The QR code encodes that link.
 6. **Deployment:** both on Render (`render.yaml`): the frontend as a free static site, which calls the API service directly (`VITE_API_URL`, CORS on the API). See DECISIONS D7 for why we left Vercel.
 7. **LLM call setup:**
-   - Model `claude-opus-5`, overridable with `ANTHROPIC_MODEL`.
-   - `effort: low`, an 8 s timeout, and responses cached in memory by a hash of the input.
+   - Model `claude-haiku-4-5`, overridable with `ANTHROPIC_MODEL`.
+   - No `effort` setting, because Haiku rejects it; an 8 s timeout; responses cached in memory by a hash of the input.
    - Any of these falls back to template text: an error, a timeout, a refusal stop_reason, or a failed validation.
    - Prompt caching isn't worth it here because the system prompt is shorter than the minimum cacheable length.
 8. **The Frandsen 2025 rule was measured on running *distance*.** We apply the same >10% rule to session *duration* so it works across sports. This is stated in the code comment and in DECISIONS.md.
@@ -210,8 +210,8 @@ def explain_detective(result: DetectiveResult, lang: Lang) -> Explanation: ...
   2. No blocked terms, in EN or PL: diagnoses and diseases, medication and supplements, lab and blood tests. **Match whole words only.** For example, `lekarz` (doctor) is fine but `leki` (medication) is not, and `lab` must not match `label`.
 - **Provider (`providers.py`):**
   - `LLM_PROVIDER=anthropic|none`. With `none`, always use the template.
-  - `ANTHROPIC_MODEL`, default `claude-opus-5`, using the official `anthropic` SDK (already a dependency).
-  - Low effort, about 8 s timeout, at most 1 retry.
+  - `ANTHROPIC_MODEL`, default `claude-haiku-4-5`, using the official `anthropic` SDK (already a dependency).
+  - No `effort` for Haiku (newer models get `effort: low`), about 8 s timeout, at most 1 retry.
   - Errors, timeouts and `stop_reason == "refusal"` all fall back to the template.
   - Cache answers in memory by a hash of the input JSON.
 - **Tests:**
