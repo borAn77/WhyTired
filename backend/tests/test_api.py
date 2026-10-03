@@ -82,3 +82,15 @@ def test_too_early_date_is_422(kasia):
 
 def test_experiment_requires_an_experiment(kasia):
     assert client.post("/api/experiment", json=ctx()).status_code == 422
+
+
+def test_coach_for_kasia(kasia):
+    body = client.post("/api/coach", json=ctx(planned_session={"sport": "running", "duration_min": 120})).json()
+    assert body["recommendation"] == "rest"
+    assert body["detective_triggered"] is True
+    assert body["checkin"]["energy"] == 2
+    assert "longest session in the last 30 days (90 min)" in body["injury_warning"]
+
+
+def test_root_says_where_things_are():
+    assert client.get("/").json()["health"] == "/api/health"

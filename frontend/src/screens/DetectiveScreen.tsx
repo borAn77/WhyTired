@@ -6,6 +6,7 @@ import { CauseCard } from '@/components/CauseCard'
 import { ExcludedList } from '@/components/ExcludedList'
 import { ExperimentPlanCard } from '@/components/ExperimentPlanCard'
 import { LogoMark } from '@/components/Logo'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState, LoadingState } from '@/components/states'
 import { Button } from '@/components/ui/button'
@@ -56,14 +57,10 @@ export function DetectiveScreen() {
       footer={
         plan && (
           <>
-            <Button
-              size="lg"
-              onClick={startExperiment}
-              className="h-12 w-full rounded-xl bg-coral-500 text-base font-semibold text-navy-900 hover:bg-coral-500/90"
-            >
+            <PrimaryButton onClick={startExperiment}>
               <FlaskConical aria-hidden />
               Start the 7-day experiment
-            </Button>
+            </PrimaryButton>
             <p className="mt-2 text-center text-sm text-muted-foreground">
               Starts tomorrow, {formatDay(addDays(session.today, 1))}. You can stop at any time.
             </p>

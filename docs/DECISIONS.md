@@ -72,3 +72,27 @@ One short entry per decision: what, why, alternatives considered.
   - the check-in and the previous day's training did not change much
 - **Why:** With only the brief's "vs. the previous day" rule, a real HR rise after a very hard day would be accepted, and then the next normal morning would look like a 25+ bpm "jump" and be thrown away. That error cascaded for days in our tests. The median check makes a return to normal always count as valid.
 - **Alternatives:** comparing with the previous raw value (it accepts the artifact as the new reference point).
+
+## D11: "Your usual week" is the median of the previous 4 weeks
+- **What:** Training-load rules compare the last 7 days with the median of the 4 weekly loads before them, not the mean.
+- **Why:** With the mean, one holiday week made a normal week look like a 1.3× spike, and the first week of a spike pulled "usual" up. The median is robust to one unusual week. Berken's first engine already used medians for baselines, for the same reason.
+- **Alternatives:** the mean (distorted by single weeks), and acute:chronic ratios (more complex, and not linked to single-session injury risk in Frandsen 2025).
+
+## D12: Daily coach = red flags + two safety rules
+- **What:** The coach counts red flags this morning, ordered with how you feel first:
+  - energy ≤ 2
+  - resting HR ≥ usual + 5 bpm
+  - sleep ≥ 1.5 h below usual
+  - soreness ≥ 4
+  - stress ≥ 4
+  - last 7 days' load ≥ 1.3× the usual week
+
+  0 flags → hard, 1–2 → easy, 3+ → rest. At most 3 reasons are shown.
+
+  Safety rules from Berken's first coach:
+  - "I feel ill" always means rest.
+  - Never two hard days in a row (a session at effort ≥ 7/10 yesterday means easy at most).
+
+  During a load-cut experiment, training is capped at easy and the old load spike is no longer counted, because the user is already acting on it.
+- **Why:** Every outcome is explainable in one sentence and testable. The check-in comes first because subjective measures react most sensitively to training strain (Saw et al., 2016).
+- **Alternatives:** readiness scores mixing all signals into one number (harder to explain), and multi-day plan rewriting (out of scope: today only).

@@ -14,6 +14,8 @@ export interface SessionState {
   checkins: Record<ISODate, CheckIn> // check-ins logged in the app override synthetic ones
   experiment: Experiment | null
   onboarded: boolean
+  goal: string | null // onboarding answers (shown in the app, not used by the rules)
+  sports: string[]
   lang: Lang
 }
 
@@ -25,6 +27,8 @@ export const DEFAULT_SESSION: SessionState = {
   checkins: {},
   experiment: null,
   onboarded: false,
+  goal: null,
+  sports: [],
   lang: 'en',
 }
 

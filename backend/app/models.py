@@ -43,6 +43,7 @@ class CheckIn(BaseModel):
     sleep_quality: int = Field(ge=1, le=5)
     stress: int = Field(ge=1, le=5)
     soreness: int = Field(ge=1, le=5)
+    ill: bool = False  # "I feel ill": the coach always says rest (safety rule)
 
 
 class Session(BaseModel):
@@ -203,6 +204,8 @@ class CoachResult(BaseModel):
     injury_warning: str | None = None
     detective_triggered: bool
     has_checkin: bool
+    checkin: CheckIn | None = None  # today's check-in (logged in the app or synthetic)
+    measured_sleep_hours: float | None = None  # last night from the watch, to prefill the check-in
 
 
 class ExperimentResult(BaseModel):

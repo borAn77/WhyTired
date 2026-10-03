@@ -25,6 +25,7 @@ export interface CheckIn {
   sleep_quality: number // 1–5
   stress: number // 1–5
   soreness: number // 1–5
+  ill?: boolean // "I feel ill" → the coach always says rest
 }
 
 export interface Experiment {
@@ -137,6 +138,8 @@ export interface CoachResult {
   injury_warning: string | null
   detective_triggered: boolean
   has_checkin: boolean
+  checkin: CheckIn | null // today's check-in (logged in the app or synthetic)
+  measured_sleep_hours: number | null // last night from the watch, to prefill the check-in
 }
 
 export interface ExperimentResult {
