@@ -9,6 +9,13 @@ WhyTired works in three steps:
 
 Built at HackYeah 2026 (Sport & Healthcare).
 
+## Screenshots
+| Morning coach | Detective mode | Experiment result | Doctor summary (PL) |
+|---|---|---|---|
+| <img src="docs/screenshots/04-today-coach.png" width="200" alt="Today: rest, with reasons"> | <img src="docs/screenshots/05-detective.png" width="200" alt="Detective: ranked causes with confidence"> | <img src="docs/screenshots/12-experiment-not-improved.png" width="200" alt="Experiment: no clear improvement"> | <img src="docs/screenshots/15-doctor-page.png" width="200" alt="One-page summary for the family doctor"> |
+
+All screens are in `docs/screenshots/`. To regenerate them with both servers running locally, run `node scripts/screenshots.mjs http://localhost:5173 docs/screenshots`.
+
 ## Architecture
 
 ```mermaid
