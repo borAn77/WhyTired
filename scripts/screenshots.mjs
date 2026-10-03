@@ -55,13 +55,18 @@ try {
   await click('Start my first check-in')
   await waitFor('How much energy do you have?')
   await answer('How much energy do you have?', 2)
+  await waitFor('How long did you sleep?')
+  await click('That’s right')
+  await waitFor('How well did you sleep?')
   await answer('How well did you sleep?', 3)
+  await waitFor('How stressed do you feel?')
   await answer('How stressed do you feel?', 2)
+  await waitFor('How sore are your muscles?')
   await answer('How sore are your muscles?', 4)
   await phone('03-check-in')
 
   // Daily coach
-  await click("Done: see today's advice")
+  await click('Finish check-in')
   await waitFor('Rest today')
   await phone('04-today-coach')
 
