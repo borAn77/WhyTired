@@ -14,10 +14,12 @@
     --color-navy-900: var(--wt-navy-900);
     --color-navy-800: var(--wt-navy-800);
     --color-navy-700: var(--wt-navy-700);
+    --color-navy-500: var(--wt-navy-500);
     --color-navy-300: var(--wt-navy-300);
     --color-navy-100: var(--wt-navy-100);
     --color-navy-50: var(--wt-navy-50);
     --color-coral-500: var(--wt-coral-500);
+    --color-coral-600: var(--wt-coral-600);
     --color-coral-700: var(--wt-coral-700);
     --color-coral-50: var(--wt-coral-50);
     --color-green-700: var(--wt-green-700);
@@ -87,8 +89,8 @@
     --input: var(--wt-border);
     --ring: var(--wt-navy-700);
     --chart-1: var(--wt-navy-700);
-    --chart-2: var(--wt-coral-500);
-    --chart-3: var(--wt-navy-300);
+    --chart-2: var(--wt-coral-600);
+    --chart-3: var(--wt-navy-500);
     --chart-4: var(--wt-green-700);
     --chart-5: var(--wt-amber-800);
     --radius: var(--wt-radius);

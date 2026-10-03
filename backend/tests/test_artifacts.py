@@ -19,7 +19,7 @@ def test_unexplained_rhr_jump_is_excluded_and_next_day_is_kept():
     assert by_metric(excluded) == {(days[-11].date, "resting_hr")}
     assert cleaned[-11].watch.resting_hr is None
     assert cleaned[-10].watch.resting_hr == 54.0  # compared with the last valid value, so not flagged
-    assert "jumped 38 bpm" in excluded[0].reason
+    assert "Jumped 38 bpm" in excluded[0].reason
 
 
 def test_rhr_jump_with_matching_check_in_change_is_kept():
