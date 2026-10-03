@@ -11,6 +11,7 @@ import {
   Check,
   Frown,
   Laugh,
+  Lightbulb,
   Meh,
   Minus,
   Plus,
@@ -39,7 +40,9 @@ import {
   type ClueOption,
   type DayClues,
 } from '@/lib/clues'
+import { DEMO_DAY } from '@/lib/dates'
 import { XP } from '@/lib/progress'
+import { useScenes } from '@/lib/sceneContext'
 import { toCtx, useSession } from '@/lib/session'
 import type { CheckIn } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -75,6 +78,15 @@ const SCALES: Record<ScaleKey, { question: string; options: Option[] }> = {
 
 type Step = ScaleKey | 'sleep_hours' | 'mission' | 'sleep_clue' | 'stress_clue'
 
+// For judges trying the app on their own (never during the presenter's script): on the demo day,
+// before any mission, the energy card says which answer opens a case. Checked against the rule
+// engine for both personas: Empty or Low on the demo day makes 3+ low mornings in a row, so the
+// detective opens a case; OK or better does not.
+const DEMO_TIPS: Record<string, string> = {
+  kasia: "you're Kasia. She has felt drained for days, so answer Empty or Low to see the detective open a case.",
+  tomek: "you're Tomek. Exams and short nights have drained him, so answer Empty or Low to see the detective open a case.",
+}
+
 const MIN_SLEEP = 0
 const MAX_SLEEP = 14
 const ADVANCE_MS = 280
@@ -103,6 +115,9 @@ function CheckInCards() {
   const sleep = answers.sleep_hours ?? (measured !== null ? Math.round(measured * 2) / 2 : 7.5)
   const isNew = !session.checkins[session.today]
   const mission = missionQuestion(session)
+  const scriptRunning = useScenes().index !== null
+  const demoTip =
+    !scriptRunning && session.today === DEMO_DAY && session.experiment === null ? DEMO_TIPS[session.personaId] : undefined
 
   const steps = [
     mission && 'mission',
@@ -226,6 +241,7 @@ function CheckInCards() {
     card = (
       <ScaleCard heading={heading} scale={SCALES[step]} value={answers[step]} onChange={(value) => choose(step, value)}>
         {last && <IllSwitch on={answers.ill ?? false} onToggle={() => setAnswers({ ...answers, ill: !answers.ill })} />}
+        {step === 'energy' && demoTip && <DemoTip text={demoTip} />}
       </ScaleCard>
     )
 
@@ -411,6 +427,18 @@ function ScaleCard({
       </div>
       {children}
     </section>
+  )
+}
+
+function DemoTip({ text }: { text: string }) {
+  return (
+    <p className="flex items-start gap-2.5 rounded-2xl bg-coral-50 p-3.5 ring-1 ring-coral-500/40">
+      <Lightbulb aria-hidden className="mt-0.5 size-5 shrink-0 text-coral-700" />
+      <span>
+        <span className="font-semibold">Demo tip: </span>
+        {text}
+      </span>
+    </p>
   )
 }
 

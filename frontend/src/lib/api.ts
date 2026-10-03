@@ -44,3 +44,15 @@ export const api = {
   experiment: (ctx: Ctx) => post<ExperimentResult>('/experiment', ctx),
   summary: (ctx: Ctx) => post<DoctorSummary>('/summary', ctx),
 }
+
+const KEEP_AWAKE_MS = 10 * 60 * 1000
+
+// The free Render API sleeps when nobody uses it, and the first request after that can take up
+// to a minute. Pinging it as soon as the app loads wakes it while the user is still on the first
+// screens; pinging every 10 minutes (Render sleeps after 15) keeps it awake while the tab is open,
+// also in the background while the presenter shows slides. A failed ping changes nothing.
+export function keepApiAwake() {
+  const ping = () => api.health().catch(() => undefined)
+  ping()
+  window.setInterval(ping, KEEP_AWAKE_MS)
+}

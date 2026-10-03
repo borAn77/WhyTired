@@ -8,6 +8,12 @@ import { useSession } from '@/lib/session'
 const HEADER_OFFSET = 88 // the phone's sticky header
 const SCROLL_TIMEOUT_MS = 60_000 // the free API can take a minute to wake up
 
+// Where the scene keys are left alone. Text fields need every key. Arrow keys also move between
+// the options of a Radix toggle group, so they are left alone there too; a clicker's
+// PageDown/PageUp are not, since a toggle the presenter just clicked keeps the focus.
+const TEXT_FIELDS = 'input, textarea, select, [contenteditable="true"]'
+const ARROW_KEY_WIDGETS = `${TEXT_FIELDS}, [data-radix-collection-item]`
+
 // Runs the presenter's demo script (lib/scenes.ts). Lives above all routes, so the keys also
 // work on the doctor page, which has no phone frame. Keys are only active while the script runs.
 export function SceneProvider({ children }: { children: ReactNode }) {
@@ -61,13 +67,17 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     }
   }, [go])
 
-  // → / PageDown: next scene, ← / PageUp: previous. Presentation clickers send these keys.
+  // → / PageDown: next scene, ← / PageUp: previous. Presentation clickers send PageDown/PageUp.
+  // Listens in the capture phase, before the focused element: a Radix toggle also takes
+  // PageDown/PageUp (jump to its last/first option) and marks them handled, which would swallow
+  // the clicker. Once this handler has taken a key, Radix skips it.
   useEffect(() => {
     if (index === null) return
     const onKey = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+      const clicker = event.key === 'PageDown' || event.key === 'PageUp'
       const target = event.target as HTMLElement | null
-      if (target?.closest('input, textarea, select, [contenteditable="true"], [data-radix-collection-item]')) return
+      if (target?.closest(clicker ? TEXT_FIELDS : ARROW_KEY_WIDGETS)) return
       if (event.key === 'ArrowRight' || event.key === 'PageDown') {
         event.preventDefault()
         go(index + 1)
@@ -76,8 +86,8 @@ export function SceneProvider({ children }: { children: ReactNode }) {
         go(index - 1)
       }
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
   }, [index, go])
 
   return <SceneContext.Provider value={api}>{children}</SceneContext.Provider>
