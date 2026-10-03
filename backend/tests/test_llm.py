@@ -14,7 +14,7 @@ from app import store
 from app.engine import causes
 from app.engine.detective import run_detective
 from app.llm import explain_detective, explain_summary, providers, templates, validate
-from app.llm.explain import facts_json, summary_facts
+from app.llm.explain import HISTORY_INSTRUCTION, detective_facts, detective_prompt, facts_json, summary_facts
 from app.main import app
 from app.models import (
     Cause,
@@ -517,3 +517,62 @@ def test_demo_personas_get_safe_explanations(day, lang):
     tomek_text = explain_detective(tomek_result, lang).text
     assert tomek_result.data_level == "basic"
     assert not validate.mentions_heart_data(tomek_text)
+
+
+# ---------- history check payload and Polish detective ----------
+
+
+def history_payload(result: DetectiveResult, cause_id: str) -> dict:
+    return next(c["history"] for c in detective_facts(result)["causes"] if c["id"] == cause_id)
+
+
+def test_kasia_history_names_the_compared_week_and_the_direction():
+    """The LLM wrote "when your load spiked before, your energy dipped": the opposite of the
+    engine's finding. The payload now names the week and puts the direction in the keys."""
+    history = history_payload(persona_on("kasia", "2026-10-04"), "load_spike")
+    assert "lightest training week" in history["compared_week"]
+    assert "holiday" in history["compared_week"]
+    assert history["energy_higher_that_week"] == 1.1
+    assert history["resting_hr_lower_that_week"] == 6
+    assert not [key for key in history if "delta" in key or "spike" in key]
+
+
+def test_tomek_history_has_no_resting_hr_key():
+    result = persona_on("tomek", "2026-10-04")
+    for cause in detective_facts(result)["causes"]:
+        assert not [key for key in cause["history"] or {} if "resting_hr" in key]
+
+
+def test_detective_prompt_says_how_to_describe_the_history():
+    assert HISTORY_INSTRUCTION in detective_prompt(facts_json(kasia()), "en")
+
+
+def test_polish_detective_never_calls_the_llm(monkeypatch):
+    fake_llm(monkeypatch, lambda *args: pytest.fail("the LLM must not be called for Polish detective text"))
+    result = persona_on("kasia", "2026-10-04")
+    explanation = explain_detective(result, "pl")
+    assert explanation.source == "template"
+    assert explanation.text == templates.detective_text(result, "pl")
+
+
+def test_polish_summary_still_calls_the_llm(monkeypatch):
+    calls = []
+
+    def reply(*args):
+        calls.append(args)
+        return "Od 5 dni utrzymuje się niski poziom energii."
+
+    fake_llm(monkeypatch, reply)
+    explain_summary(make_summary("kasia-pl"))
+    assert calls
+
+
+def test_good_english_answer_with_resting_heart_rate_is_used(monkeypatch):
+    answer = (
+        "A jump in training load is the most likely reason you feel tired. In your lightest "
+        "training week, your holiday, your energy was 1.1 points higher and your resting heart "
+        "rate was 6 bpm lower than on your normal days."
+    )
+    fake_llm(monkeypatch, answer)
+    explanation = explain_detective(persona_on("kasia", "2026-10-04"), "en")
+    assert (explanation.source, explanation.text) == ("llm", answer)

@@ -58,7 +58,7 @@ LAB_TESTS = _words(
 )
 
 HEART_DATA = _words(
-    r"heart ?rates?", r"heart ?beats?", r"hrv", r"hr", r"rhr\w*", r"bpm", r"pulse", r"rmssd",
+    r"heart ?rates?", r"heart ?beats?", r"hrv", r"hr", r"rhr\w*", r"resting_hr\w*", r"bpm", r"pulse", r"rmssd",
     r"tętn\w*", r"puls\w*", r"rytm\w* serca", r"uderze\w*",
 )
 
