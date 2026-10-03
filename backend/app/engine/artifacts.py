@@ -109,9 +109,8 @@ def clean(days: list[DayRecord]) -> tuple[list[DayRecord], list[ExcludedPoint]]:
             elif unexplained_rhr_jump(rhr, recent_valid, day, previous, usual_day_load):
                 change = round(abs(rhr - recent_valid[-1]))
                 reason = (
-                    f"Resting heart rate jumped {change} bpm overnight, but your check-in and "
-                    f"training did not change. This is most likely a measurement error "
-                    f"(e.g. a loose strap)."
+                    f"Jumped {change} bpm overnight, but your check-in and training did not "
+                    f"change. Most likely a measurement error, e.g. a loose strap."
                 )
             if reason:
                 drop["resting_hr"] = None
