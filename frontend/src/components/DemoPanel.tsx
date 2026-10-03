@@ -25,7 +25,11 @@ export function DemoPanel() {
 
   const travel = (days: number) => {
     const target = Math.min(LAST_ALLOWED_DAY, Math.max(FIRST_ALLOWED_DAY, offset + days))
-    update({ today: addDays(DEMO_DAY, target) })
+    const day = addDays(DEMO_DAY, target)
+    update({ today: day })
+    // A new morning starts with the check-in, as it would in real use. "+7 days" jumps straight
+    // to the verdict instead (the skipped days use the persona's recorded data).
+    if (days === 1 && session.onboarded && !session.checkins[day]) navigate('/check-in')
   }
 
   return (

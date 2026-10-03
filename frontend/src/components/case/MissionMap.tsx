@@ -1,4 +1,4 @@
-import { Check, CircleCheck, CircleDashed, CircleX, Flag, MapPin, Stethoscope, Trophy, type LucideIcon } from 'lucide-react'
+import { Check, CircleCheck, CircleDashed, CircleX, FastForward, Flag, MapPin, Stethoscope, Trophy, type LucideIcon } from 'lucide-react'
 
 import { adherenceFor, type Adherence } from '@/lib/clues'
 import { addDays, formatDay } from '@/lib/dates'
@@ -67,8 +67,22 @@ export function MissionMap({ result, experiment }: { result: ExperimentResult; e
             const passed = stop.n < today
             const answer = passed ? adherenceFor(session, experiment.start, stop.n) : undefined
             const look = answer ? ADHERENCE[answer] : null
-            const Icon = look?.icon ?? (isToday ? MapPin : Check)
-            const status = isToday ? 'Today' : look ? look.label : passed ? 'Done' : formatDay(stop.date)
+            // Only days the user really checked in on get a tick. Days skipped with "+7 days"
+            // run on the persona's recorded data and say so.
+            const checkedIn = !!session.checkins[stop.date]
+            const fromDemo = passed && !look && !checkedIn
+            const Icon = look?.icon ?? (isToday ? MapPin : fromDemo ? FastForward : Check)
+            const status = isToday
+              ? checkedIn
+                ? 'Today · checked in'
+                : 'Today · check in'
+              : look
+                ? look.label
+                : passed
+                  ? checkedIn
+                    ? 'Checked in'
+                    : 'Demo data'
+                  : formatDay(stop.date)
             return (
               <li
                 key={stop.n}
@@ -86,7 +100,8 @@ export function MissionMap({ result, experiment }: { result: ExperimentResult; e
                     'relative grid size-[52px] shrink-0 place-items-center rounded-full text-lg font-bold shadow-sm',
                     isToday && 'bg-coral-500 text-navy-900 ring-4 ring-coral-500/30',
                     !isToday && look && look.node,
-                    !isToday && !look && passed && 'bg-navy-900 text-white',
+                    !isToday && !look && passed && checkedIn && 'bg-navy-900 text-white',
+                    fromDemo && 'border-2 border-dashed border-navy-300 bg-navy-50 text-navy-500',
                     !isToday && !passed && 'bg-card text-muted-foreground ring-2 ring-navy-100',
                   )}
                 >

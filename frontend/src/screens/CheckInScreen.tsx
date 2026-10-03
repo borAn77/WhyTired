@@ -84,6 +84,12 @@ const ADVANCE_MS = 280
 // simple rules (lib/clues.ts): the mission card while an experiment runs, and a "what's behind
 // it" card after a short or bad night or a high stress answer.
 export function CheckInScreen() {
+  const { session } = useSession()
+  // A new day (time travel) starts a fresh check-in instead of keeping yesterday's answers.
+  return <CheckInCards key={session.today} />
+}
+
+function CheckInCards() {
   const { session, update } = useSession()
   const navigate = useNavigate()
   const ctx = toCtx(session)

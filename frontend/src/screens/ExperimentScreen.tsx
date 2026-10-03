@@ -1,4 +1,4 @@
-import { FileText, RotateCcw, Stethoscope, Target, Trophy } from 'lucide-react'
+import { FileText, RotateCcw, Stethoscope, Sunrise, Target, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { CaseHeader, CaseStat } from '@/components/case/CaseParts'
@@ -54,8 +54,17 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   }
   const restart = () => update({ experiment: { ...experiment, start: addDays(session.today, 1) } })
 
+  const checkedIn = !!session.checkins[session.today]
   let footer = null
-  if (data?.status === 'not_improved')
+  if (data?.status === 'running' && data.day > 0 && !checkedIn)
+    footer = (
+      <PrimaryButton onClick={() => navigate('/check-in')}>
+        <Sunrise aria-hidden />
+        Start today’s check-in
+        <XpPill amount={XP.checkin} />
+      </PrimaryButton>
+    )
+  else if (data?.status === 'not_improved')
     footer = (
       <PrimaryButton onClick={() => navigate('/summary')}>
         <FileText aria-hidden />
@@ -111,7 +120,11 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
       {error ? <ErrorState onRetry={retry} /> : null}
       {data && (
         <>
-          {data.status === 'running' ? <RunningCard result={data} /> : <Verdict result={data} />}
+          {data.status === 'running' ? (
+            <RunningCard result={data} checkedIn={checkedIn} />
+          ) : (
+            <Verdict result={data} />
+          )}
           <MissionMap result={data} experiment={experiment} />
           {data.chart && data.chart.points.length > 1 && (
             <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
@@ -133,13 +146,24 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   )
 }
 
-function RunningCard({ result }: { result: ExperimentResult }) {
+function RunningCard({ result, checkedIn }: { result: ExperimentResult; checkedIn: boolean }) {
+  const waiting = result.day > 0 && !checkedIn
   return (
     <section className="flex items-start gap-3 rounded-3xl bg-coral-50 p-5 ring-1 ring-coral-500/40">
-      <Target aria-hidden className="mt-0.5 size-6 shrink-0 text-coral-700" />
+      {waiting ? (
+        <Sunrise aria-hidden className="mt-0.5 size-6 shrink-0 text-coral-700" />
+      ) : (
+        <Target aria-hidden className="mt-0.5 size-6 shrink-0 text-coral-700" />
+      )}
       <div>
-        <p className="text-lg font-semibold">{result.day === 0 ? 'Starts tomorrow' : 'Keep going'}</p>
-        <p className="mt-0.5">{result.summary}</p>
+        <p className="text-lg font-semibold">
+          {result.day === 0 ? 'Starts tomorrow' : waiting ? `Day ${result.day}: check in first` : 'Keep going'}
+        </p>
+        <p className="mt-0.5">
+          {waiting
+            ? `Your morning check-in is still open.${result.day >= 2 ? ' It starts with a quick mission check.' : ''}`
+            : result.summary}
+        </p>
       </div>
     </section>
   )
