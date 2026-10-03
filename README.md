@@ -82,7 +82,26 @@ The demo controls (desktop: right of the phone frame; phone: a tab on the right 
 7. **The verdict (+7 days).** Days skipped with time travel run on the persona's recorded data and are marked "Demo data". In the not-improved branch the verdict is stamped "To your doctor" and leads to a one-page summary in Polish: complaint timeline, small trend charts, what was tried and how well the plan was followed, what the user noticed (e.g. coffee after 2 pm), and questions to ask. No diagnoses, no recommended tests. Print → PDF fits one A4 page; "Share" gives a read-only link and a QR code. Switch the outcome to "Improved" to see "Case closed" (+100 XP) instead.
 8. **Switch persona to Tomek (no watch, basic data).** The same detective runs on check-ins and logged sessions only. A note explains that without a watch no finding goes above medium confidence; his prime suspect is sleep debt during exams.
 
-Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https://whytired-vnvu.onrender.com` walks 15 presenter paths and reports any failure.
+### Presenting with the demo script (about 2 minutes)
+
+"Start from scene 1" in the demo controls runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same.
+
+- **→ / PageDown** next scene, **← / PageUp** previous. A presentation clicker sends these keys.
+- The card shows what to say, what to tap live (only the first check-in and the mission check), and the time against a 2-minute pace.
+- `?scene=N` opens scene N directly, e.g. `https://whytired-vnvu.onrender.com/?scene=5` to recover mid-demo.
+- The scenes and the notes live in `frontend/src/lib/scenes.ts`.
+
+| # | Scene | # | Scene |
+|---|---|---|---|
+| 1 | Kasia's check-in (live) | 7 | Tomek, no watch: same detective, medium confidence |
+| 2 | Today: rest, with reasons | 8 | Tomek's mission |
+| 3 | Clue spotted + detective radar | 9 | Next morning: mission check (live) |
+| 4 | Detective: case file | 10 | A week later: "To your doctor" |
+| 5 | Alibi check | 11 | Doctor summary + QR |
+| 6 | Fake clue dismissed | 12 | The doctor's page (Polish) |
+| ★ | Bonus for Q&A: Kasia's case closed | | |
+
+Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https://whytired-vnvu.onrender.com` walks 15 presenter paths plus every scene of the script and reports any failure.
 
 ## Repository
 | Path | What |

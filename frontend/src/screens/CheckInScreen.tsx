@@ -85,8 +85,9 @@ const ADVANCE_MS = 280
 // it" card after a short or bad night or a high stress answer.
 export function CheckInScreen() {
   const { session } = useSession()
-  // A new day (time travel) starts a fresh check-in instead of keeping yesterday's answers.
-  return <CheckInCards key={session.today} />
+  // A new day (time travel) or a removed check-in (demo script) starts a fresh set of cards
+  // instead of keeping the previous answers.
+  return <CheckInCards key={`${session.today}:${session.checkins[session.today] ? 'edit' : 'new'}`} />
 }
 
 function CheckInCards() {

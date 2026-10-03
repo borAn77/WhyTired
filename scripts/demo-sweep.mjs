@@ -1,5 +1,6 @@
 // Demo rehearsal: walks every path a presenter might take (restart, jumps that skip onboarding,
-// both personas, both experiment outcomes, time travel) and reports PASS/FAIL plus any JS errors.
+// both personas, both experiment outcomes, time travel), then every scene of the demo script
+// with the → key, and reports PASS/FAIL plus any JS errors.
 // Usage: node scripts/demo-sweep.mjs https://whytired-vnvu.onrender.com
 // Needs Google Chrome; set CHROME=/path/to/chrome if it is not in the default macOS location.
 import fs from 'node:fs/promises'
@@ -11,7 +12,7 @@ const SITE = (process.argv[2] ?? 'http://localhost:5173').replace(/\/$/, '')
 const PROFILE = '/tmp/whytired-sweep-chrome'
 await fs.rm(PROFILE, { recursive: true, force: true })
 const b = await launchBrowser({ profileDir: PROFILE, port: 9351 })
-const { click, evaluate, goto, waitFor } = b
+const { click, evaluate, goto, waitFor, send } = b
 const path = () => evaluate('location.pathname')
 const text = (t) => evaluate(`document.body.innerText.includes(${JSON.stringify(t)})`)
 const clickSel = (sel) => evaluate(`document.querySelector(${JSON.stringify(sel)}).click()`)
@@ -80,6 +81,47 @@ try {
   await check('Tomek day-1 check-in lands on Today', (await path()) === '/')
   await click('+7 days'); await sleep(500); await btn('Experiment'); await sleep(2500)
   await check('Tomek verdict shown', await text('VERDICT') || await text('Verdict'))
+
+  // The demo script (lib/scenes.ts), stepped with the → key like a presenter or a clicker.
+  const key = async (name, code) => {
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: name, code: name, windowsVirtualKeyCode: code })
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code: name, windowsVirtualKeyCode: code })
+  }
+  const has = (t) => evaluate(`document.body.textContent.includes(${JSON.stringify(t)})`)
+  const inView = (t) => evaluate(`(() => {
+    const sc = document.querySelector('[data-phone-scroll]'); if (!sc) return false
+    const el = [...sc.querySelectorAll('h1, h2, h3, p')].find((e) => e.textContent.includes(${JSON.stringify(t)})); if (!el) return false
+    const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(); return r.top >= s.top && r.top < s.top + s.height / 2 })()`)
+  const until = async (fn, ms = 90000) => {
+    const t = Date.now()
+    while (Date.now() - t < ms) {
+      if (await fn()) return true
+      await sleep(300)
+    }
+    return false
+  }
+  const SCENE_CHECKS = [
+    ['Kasia check-in', async () => (await path()) === '/check-in' && (await has('How much energy do you have?'))],
+    ['Kasia today', async () => (await path()) === '/' && (await has('Rest today'))],
+    ['Clue spotted in view', () => inView('Clue spotted')],
+    ['Detective case file', async () => (await path()) === '/detective' && (await has('Full data'))],
+    ['Alibi check in view', () => inView('Alibi check')],
+    ['Fake clue in view', () => inView('sensor glitches')],
+    ['Tomek detective', async () => (await has('Basic data')) && (await has('sleeping less'))],
+    ['Tomek mission', async () => (await path()) === '/experiment' && (await has('Starts tomorrow'))],
+    ['Mission check card', async () => (await path()) === '/check-in' && (await has('Did you keep your sleep window'))],
+    ['Verdict: to your doctor', async () => (await path()) === '/experiment' && (await has('No clear improvement'))],
+    ['Summary screen', async () => (await path()) === '/summary' && (await has('Your doctor summary is ready'))],
+    ['Doctor page (PL)', async () => (await path()).startsWith('/s/') && (await has('Zgłoszone przez osobę'))],
+    ['Bonus: case closed', async () => (await path()) === '/experiment' && (await has('Mystery solved'))],
+  ]
+  await click('Start from scene 1')
+  for (let i = 0; i < SCENE_CHECKS.length; i++) {
+    if (i > 0) await key('ArrowRight', 39)
+    await check(`Scene ${i + 1}: ${SCENE_CHECKS[i][0]}`, await until(SCENE_CHECKS[i][1]))
+  }
+  await key('ArrowLeft', 37)
+  await check('← goes back a scene (from the bonus to the doctor page)', await until(async () => (await path()).startsWith('/s/')))
 
   results.push('JS errors: ' + (await errors()))
 } catch (e) {

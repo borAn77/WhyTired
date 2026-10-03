@@ -1,22 +1,29 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 // On phones the app is full screen. On desktop (demo) it sits in a phone-sized frame,
 // with the presenter-only demo controls rendered next to it. On phones the same controls
 // open from a small button, so the demo also works from a phone.
 export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   const [controlsOpen, setControlsOpen] = useState(false)
+  // A new screen starts at the top, like a real app (the scroll container is shared by all screens).
+  const { pathname } = useLocation()
+  const scroller = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 })
+  }, [pathname])
   return (
     <div className="min-h-dvh bg-navy-50 md:flex md:items-center md:justify-center md:gap-10 md:p-8">
       <div
         data-phone-frame
         className="relative flex h-dvh w-full flex-col overflow-hidden bg-app md:h-[var(--wt-phone-height)] md:w-[var(--wt-phone-width)] md:rounded-[2.75rem] md:border-[10px] md:border-navy-900 md:shadow-2xl"
       >
-        <div data-phone-scroll className="flex-1 overflow-y-auto">
+        <div ref={scroller} data-phone-scroll className="flex-1 overflow-y-auto">
           {children}
         </div>
       </div>
-      {aside && <aside className="hidden w-72 md:block">{aside}</aside>}
+      {aside && <aside className="hidden max-h-[calc(100dvh-4rem)] w-72 overflow-y-auto md:block">{aside}</aside>}
 
       {aside && (
         <div className="md:hidden">
