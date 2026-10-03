@@ -37,15 +37,19 @@ def test_committed_files_match_the_generator():
 def test_kasia_detective_story():
     result = detective("kasia")
     assert result.triggered and result.low_energy_days == 5
-    assert [(c.id, c.confidence) for c in result.causes] == [("load_spike", "high"), ("rhr_elevated", "medium")]
+    assert [(c.id, c.confidence) for c in result.causes] == [
+        ("load_spike", "high"),
+        ("rhr_elevated", "medium"),
+        ("sleep_debt", "medium"),  # late caffeine on her 5 tired days
+    ]
     assert result.causes[0].history_check.period_tag == "holiday"
-    artifact_night = DEMO_DAY - dt.timedelta(days=20)
+    artifact_night = DEMO_DAY - dt.timedelta(days=10)
     assert {(p.date, p.metric) for p in result.excluded} == {(artifact_night, "sleep"), (artifact_night, "resting_hr")}
 
 
 def test_kasia_without_watch_is_medium():
     result = detective("kasia", level="basic")
-    assert [(c.id, c.confidence) for c in result.causes] == [("load_spike", "medium")]
+    assert [(c.id, c.confidence) for c in result.causes] == [("load_spike", "medium"), ("sleep_debt", "low")]
 
 
 def test_kasia_not_triggered_before_the_low_days():
