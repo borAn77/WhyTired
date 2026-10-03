@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BedDouble,
   CircleCheck,
@@ -11,13 +11,15 @@ import {
   Zap,
   type LucideIcon,
 } from 'lucide-react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 
+import { DayComplete, DetectiveRadar, ProgressCard, XpPill, XpToast } from '@/components/progress'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { ErrorState, LoadingState } from '@/components/states'
 import { api } from '@/lib/api'
 import { daysBetween } from '@/lib/dates'
+import { XP, levelFor, totalXp } from '@/lib/progress'
 import { toCtx, useSession } from '@/lib/session'
 import type { CoachRequest, Recommendation } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -56,38 +58,93 @@ export function TodayScreen() {
   return <Today />
 }
 
+// What "done" means per recommendation. A rest day earns the same XP as a hard day.
+const DONE_LABEL: Record<Recommendation, string> = {
+  hard: 'Training done',
+  easy: 'Easy day done',
+  rest: 'Rest day done',
+}
+
 function Today() {
-  const { session } = useSession()
+  const { session, update } = useSession()
   const navigate = useNavigate()
+  const location = useLocation()
   const request: CoachRequest = { ...toCtx(session), planned_session: null }
   const coach = useApi(`coach:${JSON.stringify(request)}`, () => api.coach(request))
   const personas = useApi('personas', () => api.personas())
   const name = personas.data?.find((persona) => persona.id === session.personaId)?.name
-
-  const experimentDay = session.experiment ? daysBetween(session.experiment.start, session.today) + 1 : null
   const result = coach.data
 
-  let primary: { label: string; to: string; icon: LucideIcon } | null = null
-  if (result && !result.has_checkin) primary = { label: 'Start my check-in', to: '/check-in', icon: Sunrise }
+  // The radar needs the low-energy streak, which only the detective returns. It is only asked
+  // when detective mode is not triggered, so this call never runs the LLM explanation.
+  const needsRadar = !!result?.has_checkin && !result.detective_triggered
+  const radar = useApi(`radar:${needsRadar}:${JSON.stringify(request)}`, () =>
+    needsRadar ? api.detective(toCtx(session)) : Promise.resolve(null),
+  )
+
+  const [levelUp, setLevelUp] = useState<string | null>(null)
+  const [toast, setToast] = useState(() => (location.state as { gained?: string } | null)?.gained === 'checkin')
+  useEffect(() => {
+    if (!toast) return
+    // Clear the router state so a reload doesn't show the reward again.
+    navigate('.', { replace: true, state: null })
+    const timer = window.setTimeout(() => setToast(false), 3500)
+    return () => window.clearTimeout(timer)
+  }, [toast, navigate])
+
+  const experimentDay = session.experiment ? daysBetween(session.experiment.start, session.today) + 1 : null
+  const doneToday = session.done[session.today]
+
+  const markDone = () => {
+    if (!result) return
+    const before = levelFor(totalXp(session))
+    const next = { ...session, done: { ...session.done, [session.today]: result.recommendation } }
+    const after = levelFor(totalXp(next))
+    setLevelUp(after.number > before.number ? after.name : null)
+    update({ done: next.done })
+  }
+
+  let footer = null
+  if (result && !result.has_checkin)
+    footer = (
+      <PrimaryButton onClick={() => navigate('/check-in')}>
+        <Sunrise aria-hidden />
+        Start my check-in
+        <XpPill amount={XP.checkin} />
+      </PrimaryButton>
+    )
   else if (result?.detective_triggered && !session.experiment)
-    primary = { label: 'Find out why', to: '/detective', icon: Search }
-  else if (session.experiment) primary = { label: 'Open my experiment', to: '/experiment', icon: FlaskConical }
+    footer = (
+      <PrimaryButton onClick={() => navigate('/detective')}>
+        <Search aria-hidden />
+        Find out why
+      </PrimaryButton>
+    )
+  else if (session.experiment)
+    footer = (
+      <PrimaryButton onClick={() => navigate('/experiment')}>
+        <FlaskConical aria-hidden />
+        Open my experiment
+      </PrimaryButton>
+    )
+  else if (result && !doneToday)
+    footer = (
+      <PrimaryButton onClick={markDone}>
+        <CircleCheck aria-hidden />
+        {DONE_LABEL[result.recommendation]}
+        <XpPill amount={XP.done} />
+      </PrimaryButton>
+    )
 
   return (
-    <Screen
-      footer={
-        primary && (
-          <PrimaryButton onClick={() => navigate(primary.to)}>
-            <primary.icon aria-hidden />
-            {primary.label}
-          </PrimaryButton>
-        )
-      }
-    >
+    <Screen footer={footer}>
       <section>
         <h1 className="text-2xl font-semibold tracking-tight">Good morning{name ? `, ${name}` : ''}</h1>
         {session.goal && <p className="mt-1 text-muted-foreground">Your goal: {session.goal.toLowerCase()}</p>}
       </section>
+
+      <ProgressCard session={session} />
+      {toast && <XpToast text={`+${XP.checkin} XP: check-in done`} />}
 
       {coach.loading && <LoadingState label="Getting today's advice" />}
       {coach.error ? (
@@ -99,12 +156,14 @@ function Today() {
       ) : null}
 
       {result && !result.has_checkin && (
-        <section className="rounded-2xl bg-card p-5 ring-1 ring-border">
+        <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
           <Sunrise aria-hidden className="size-7 text-coral-700" />
           <h2 className="mt-2 text-xl font-semibold">How are you this morning?</h2>
-          <p className="mt-1 text-muted-foreground">Take the 15-second check-in to get today's advice.</p>
+          <p className="mt-1 text-muted-foreground">5 taps, 15 seconds. Then you get today's advice.</p>
         </section>
       )}
+
+      {doneToday && !session.experiment && <DayComplete levelUp={levelUp} />}
 
       {result?.has_checkin && (
         <>
@@ -119,27 +178,20 @@ function Today() {
         </>
       )}
 
-      {result?.detective_triggered && !session.experiment && (
-        <section className="rounded-2xl border-2 border-coral-500 bg-coral-50 p-5">
-          <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-coral-700">
-            <Search aria-hidden className="size-4" />
-            Detective mode
-          </p>
-          <h2 className="mt-1.5 text-xl font-semibold">Your energy has been low for several days</h2>
-          <p className="mt-1">Let's look for the cause in your own data. It takes a few seconds.</p>
-        </section>
+      {result?.has_checkin && !session.experiment && (result.detective_triggered || radar.data) && (
+        <DetectiveRadar lowDays={radar.data?.low_energy_days ?? 0} triggered={result.detective_triggered} />
       )}
 
       {session.experiment && experimentDay !== null && (
-        <section className="flex gap-3 rounded-2xl bg-card p-5 ring-1 ring-border">
+        <section className="flex gap-3 rounded-3xl bg-card p-5 ring-1 ring-border">
           <FlaskConical aria-hidden className="mt-0.5 size-6 shrink-0 text-coral-700" />
           <div>
             <h2 className="font-semibold">
               {experimentDay < 1
-                ? 'Your experiment starts tomorrow'
+                ? 'Your mission starts tomorrow'
                 : experimentDay <= session.experiment.days
-                  ? `Experiment: day ${experimentDay} of ${session.experiment.days}`
-                  : 'Your experiment is finished'}
+                  ? `Mission: day ${experimentDay} of ${session.experiment.days}`
+                  : 'Your mission is finished'}
             </h2>
             <p className="mt-0.5 text-muted-foreground">
               {experimentDay > session.experiment.days ? 'See whether it helped.' : 'Keep checking in each morning.'}
@@ -148,7 +200,7 @@ function Today() {
         </section>
       )}
 
-      {result?.has_checkin && result.recommendation !== 'rest' && <PlannedSession />}
+      {result?.has_checkin && result.recommendation !== 'rest' && !doneToday && <PlannedSession />}
     </Screen>
   )
 }

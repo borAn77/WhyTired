@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
 import { DEMO_DAY } from './dates'
-import type { CheckIn, Ctx, DataLevel, Experiment, ISODate, Lang, Scenario } from './types'
+import type { CheckIn, Ctx, DataLevel, Experiment, ISODate, Lang, Recommendation, Scenario } from './types'
 
 // The backend is stateless (docs/DECISIONS.md, D1): the browser keeps the session and sends
 // it with every request. Stored in localStorage so a page reload keeps the demo where it was.
@@ -17,6 +17,8 @@ export interface SessionState {
   goal: string | null // onboarding answers (shown in the app, not used by the rules)
   sports: string[]
   lang: Lang
+  done: Record<ISODate, Recommendation> // days the user marked today's advice as done (XP only)
+  missions: ISODate[] // start dates of accepted experiments (XP only)
 }
 
 export const DEFAULT_SESSION: SessionState = {
@@ -30,6 +32,8 @@ export const DEFAULT_SESSION: SessionState = {
   goal: null,
   sports: [],
   lang: 'en',
+  done: {},
+  missions: [],
 }
 
 export interface SessionApi {

@@ -46,6 +46,8 @@ export function DemoPanel() {
               personaId,
               dataLevel: personaId === 'tomek' ? 'basic' : 'full',
               checkins: {},
+              done: {},
+              missions: [],
               experiment: null,
               today: DEMO_DAY,
             })

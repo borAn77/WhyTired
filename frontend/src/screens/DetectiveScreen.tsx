@@ -48,7 +48,10 @@ export function DetectiveScreen() {
   const fakeNights = new Set(data.excluded.map((point) => point.date)).size
   const startMission = () => {
     if (!plan) return
-    update({ experiment: { cause_id: plan.cause_id, start: addDays(session.today, 1), days: plan.days } })
+    update({
+      experiment: { cause_id: plan.cause_id, start: addDays(session.today, 1), days: plan.days },
+      missions: [...session.missions, session.today],
+    })
     navigate('/experiment')
   }
 

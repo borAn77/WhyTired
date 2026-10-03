@@ -43,8 +43,9 @@ export function CheckInScreen() {
       soreness: answers.soreness!,
       ill: answers.ill ?? false,
     }
+    const isNew = !session.checkins[session.today]
     update({ checkins: { ...session.checkins, [session.today]: checkin } })
-    navigate('/')
+    navigate('/', { state: isNew ? { gained: 'checkin' } : null })
   }
 
   const [first, ...rest] = SCALES
