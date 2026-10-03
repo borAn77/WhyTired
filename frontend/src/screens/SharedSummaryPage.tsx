@@ -8,6 +8,7 @@ import { SummaryDocument } from '@/components/SummaryDocument'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { api } from '@/lib/api'
+import type { Observations } from '@/lib/clues'
 import { decodeShare } from '@/lib/share'
 import type { Ctx, Lang } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -16,18 +17,18 @@ import { useApi } from '@/lib/useApi'
 // The link carries everything needed to recompute it (docs/DECISIONS.md, D6).
 export function SharedSummaryPage() {
   const { token } = useParams()
-  const ctx = token ? decodeShare(token) : null
-  if (!ctx) {
+  const shared = token ? decodeShare(token) : null
+  if (!shared) {
     return (
       <div className="mx-auto max-w-md p-8">
         <ErrorState title="This link doesn't work" message="The summary link seems to be incomplete. Ask for a new one." />
       </div>
     )
   }
-  return <SharedSummary initial={ctx} />
+  return <SharedSummary initial={shared.ctx} observations={shared.observations} />
 }
 
-function SharedSummary({ initial }: { initial: Ctx }) {
+function SharedSummary({ initial, observations }: { initial: Ctx; observations: Observations | null }) {
   const [searchParams] = useSearchParams()
   const [lang, setLang] = useState<Lang>(initial.lang)
   const ctx = { ...initial, lang }
@@ -64,7 +65,7 @@ function SharedSummary({ initial }: { initial: Ctx }) {
       <div className="mx-auto max-w-[760px] rounded-2xl bg-white p-8 shadow-lg ring-1 ring-border print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0">
         {loading && <LoadingState label="Loading the summary" />}
         {error ? <ErrorState onRetry={retry} /> : null}
-        {data && <SummaryDocument summary={data} />}
+        {data && <SummaryDocument summary={data} observations={observations} />}
       </div>
       <p className="no-print mx-auto mt-3 max-w-[760px] text-center text-sm text-muted-foreground">
         {lang === 'pl' ? 'Podgląd tylko do odczytu, udostępniony z aplikacji WhyTired.' : 'Read-only view shared from the WhyTired app.'}

@@ -35,25 +35,26 @@ export interface DayClues {
 export interface ClueOption {
   id: string
   label: string
+  pl?: string // label on the Polish doctor summary
   icon: LucideIcon
   tip?: string // safe, everyday tip; no medical advice
 }
 
 export const SLEEP_CLUES: ClueOption[] = [
-  { id: 'screens', label: 'Screens in bed', icon: Smartphone, tip: 'Put the phone away 30 minutes before sleep.' },
-  { id: 'caffeine', label: 'Coffee after 2 pm', icon: Coffee, tip: 'No coffee or energy drinks after 2 pm for a few days.' },
-  { id: 'studying', label: 'Studying late', icon: BookOpen, tip: 'Pick a fixed time to stop studying in the evening.' },
-  { id: 'worries', label: 'Worries', icon: Brain, tip: "Write tomorrow's to-do list before bed." },
-  { id: 'alcohol', label: 'Alcohol in the evening', icon: Wine, tip: 'Try a few alcohol-free evenings this week.' },
-  { id: 'noise', label: 'Noise or light', icon: Volume2, tip: 'Try earplugs, a sleep mask or a cooler room.' },
+  { id: 'screens', label: 'Screens in bed', pl: 'Ekran w łóżku', icon: Smartphone, tip: 'Put the phone away 30 minutes before sleep.' },
+  { id: 'caffeine', label: 'Coffee after 2 pm', pl: 'Kawa lub napój energetyczny po 14:00', icon: Coffee, tip: 'No coffee or energy drinks after 2 pm for a few days.' },
+  { id: 'studying', label: 'Studying late', pl: 'Nauka do późna', icon: BookOpen, tip: 'Pick a fixed time to stop studying in the evening.' },
+  { id: 'worries', label: 'Worries', pl: 'Zmartwienia', icon: Brain, tip: "Write tomorrow's to-do list before bed." },
+  { id: 'alcohol', label: 'Alcohol in the evening', pl: 'Alkohol wieczorem', icon: Wine, tip: 'Try a few alcohol-free evenings this week.' },
+  { id: 'noise', label: 'Noise or light', pl: 'Hałas lub światło', icon: Volume2, tip: 'Try earplugs, a sleep mask or a cooler room.' },
   { id: 'nothing', label: 'Nothing special', icon: Minus },
 ]
 
 export const STRESS_CLUES: ClueOption[] = [
-  { id: 'exams', label: 'Exams or studying', icon: GraduationCap, tip: 'Study in 50-minute blocks with a short walk in between.' },
-  { id: 'work', label: 'Work', icon: Briefcase, tip: 'Plan one evening this week with no work at all.' },
-  { id: 'personal', label: 'Personal life', icon: Heart, tip: 'Talk it through with someone you trust.' },
-  { id: 'training', label: 'Training pressure', icon: Dumbbell, tip: 'Swap one hard session for an easy one this week.' },
+  { id: 'exams', label: 'Exams or studying', pl: 'Egzaminy lub nauka', icon: GraduationCap, tip: 'Study in 50-minute blocks with a short walk in between.' },
+  { id: 'work', label: 'Work', pl: 'Praca', icon: Briefcase, tip: 'Plan one evening this week with no work at all.' },
+  { id: 'personal', label: 'Personal life', pl: 'Sprawy osobiste', icon: Heart, tip: 'Talk it through with someone you trust.' },
+  { id: 'training', label: 'Training pressure', pl: 'Presja treningowa', icon: Dumbbell, tip: 'Swap one hard session for an easy one this week.' },
   { id: 'unsure', label: 'Not sure', icon: CircleHelp },
 ]
 
@@ -103,3 +104,28 @@ export function cluePattern(session: SessionState) {
   const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])
   return best && best[1] >= PATTERN_MIN ? { clue: best[0], count: best[1] } : null
 }
+
+/** What the user reported in the app over the last 28 days, for the doctor summary. */
+export interface Observations {
+  plan: Record<Adherence, number> // mission check answers
+  clues: Record<string, number> // clue id -> how many mornings it was named
+}
+
+const OBSERVATION_DAYS = 28
+const CLUE_IDS = new Set([...SLEEP_CLUES, ...STRESS_CLUES].filter((c) => c.tip).map((c) => c.id))
+
+export function observationsFor(session: SessionState): Observations | null {
+  const plan: Record<Adherence, number> = { yes: 0, partly: 0, no: 0 }
+  const clues: Record<string, number> = {}
+  for (let i = 0; i < OBSERVATION_DAYS; i++) {
+    const day = session.clues[addDays(session.today, -i)]
+    if (day?.mission) plan[day.mission] += 1
+    for (const id of [...(day?.sleep ?? []), ...(day?.stress ?? [])]) {
+      if (CLUE_IDS.has(id)) clues[id] = (clues[id] ?? 0) + 1
+    }
+  }
+  const empty = plan.yes + plan.partly + plan.no === 0 && Object.keys(clues).length === 0
+  return empty ? null : { plan, clues }
+}
+
+export const clueById = (id: string) => [...SLEEP_CLUES, ...STRESS_CLUES].find((c) => c.id === id)

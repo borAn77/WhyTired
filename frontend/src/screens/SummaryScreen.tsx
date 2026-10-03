@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { api } from '@/lib/api'
 import { toCtx, useSession } from '@/lib/session'
+import { observationsFor } from '@/lib/clues'
 import { shareUrl } from '@/lib/share'
 import type { Lang } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -21,7 +22,7 @@ export function SummaryScreen() {
   const [copied, setCopied] = useState(false)
   const ctx = toCtx(session, { lang })
   const { data, error, loading, retry } = useApi(`summary:${JSON.stringify(ctx)}`, () => api.summary(ctx))
-  const url = shareUrl(ctx)
+  const url = shareUrl(ctx, observationsFor(session))
 
   const copy = async () => {
     try {

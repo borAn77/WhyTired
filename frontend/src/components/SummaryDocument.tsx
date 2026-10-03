@@ -1,5 +1,6 @@
 import { LogoMark } from '@/components/Logo'
 import { MiniChart } from '@/components/MiniChart'
+import { clueById, type Observations } from '@/lib/clues'
 import { formatLongIn, formatShortIn } from '@/lib/dates'
 import type { DoctorSummary, Lang } from '@/lib/types'
 
@@ -16,6 +17,11 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     questions: 'Pytania do lekarza',
     bring: 'Co zabrać na wizytę',
     inShort: 'W skrócie',
+    noticed: 'Zgłoszone przez osobę (nie zmierzone)',
+    plan: 'Plan',
+    fully: 'dni w pełni',
+    partly: 'częściowo',
+    not: 'wcale',
     inShortAi: 'W skrócie (tekst napisany przez AI wyłącznie na podstawie liczb z tego podsumowania)',
   },
   en: {
@@ -29,12 +35,23 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     questions: 'Questions for the doctor',
     bring: 'What to bring',
     inShort: 'In short',
+    noticed: 'Self-reported (not measured)',
+    plan: 'Plan',
+    fully: 'days fully',
+    partly: 'partly',
+    not: 'not at all',
     inShortAi: 'In short (written by AI, using only the numbers in this summary)',
   },
 }
 
 // The one-page summary for the family doctor. Used on the share page (/s/<token>) and in print.
-export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
+export function SummaryDocument({
+  summary,
+  observations = null,
+}: {
+  summary: DoctorSummary
+  observations?: Observations | null
+}) {
   const h = HEADINGS[summary.lang]
   return (
     <article id="doctor-summary" lang={summary.lang} className="doc space-y-6 bg-white text-navy-900">
@@ -67,6 +84,8 @@ export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
               </li>
             ))}
           </ol>
+          {/* Left column: it is the shorter one, so this never adds a second printed page. */}
+          {observations && <Noticed observations={observations} lang={summary.lang} />}
         </section>
         <section className="space-y-2">
           <h2 className="doc-heading">{h.tried}</h2>
@@ -112,5 +131,34 @@ export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
 
       <footer className="border-t border-border pt-3 text-sm text-muted-foreground">{summary.disclaimer}</footer>
     </article>
+  )
+}
+
+// What the person reported in the app (mission checks, clue cards). One short paragraph so the
+// printed summary stays one A4 page; the heading says it is self-reported, not measured.
+function Noticed({ observations, lang }: { observations: Observations; lang: Lang }) {
+  const h = HEADINGS[lang]
+  const { yes, partly, no } = observations.plan
+  const answered = yes + partly + no
+  const plan =
+    answered > 0
+      ? `${h.plan}: ${yes}/${answered} ${h.fully}${partly ? `, ${h.partly} ${partly}` : ''}${no ? `, ${h.not} ${no}` : ''}.`
+      : ''
+  const clues = Object.entries(observations.clues)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([id, count]) => {
+      const clue = clueById(id)
+      return clue ? `${(lang === 'pl' && clue.pl) || clue.label} ×${count}` : null
+    })
+    .filter(Boolean)
+    .join(' · ')
+  return (
+    <>
+      <h2 className="doc-heading pt-2">{h.noticed}</h2>
+      <p>
+        {plan} {clues}
+      </p>
+    </>
   )
 }
