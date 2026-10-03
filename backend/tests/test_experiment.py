@@ -48,7 +48,10 @@ def test_improved_when_energy_up_and_heart_rate_back():
     result = evaluate({"energy": 4, "rhr": 55.0})
     assert result.status == "improved"
     assert (result.energy_before, result.energy_during) == (2.0, 4.0)
-    assert "Keep the change" in result.summary
+    assert result.summary == (
+        "Your energy recovered while you made this change (2.0 → 4.0 out of 5), and your resting heart "
+        "rate is back to 55 bpm. Keep it going. This is a quick personal test, not proof."
+    )
 
 
 def test_not_improved_when_energy_stays_low():

@@ -136,11 +136,13 @@ def evaluate_experiment(days: list[DayRecord], experiment: Experiment, today: dt
     energy_up = energy_during - energy_before >= IMPROVED_ENERGY_GAIN
     rhr_ok = rhr_during is None or rhr_baseline is None or rhr_during <= rhr_baseline + RHR_BACK_TO_NORMAL
     if energy_up and rhr_ok:
-        rhr_text = f" and your resting heart rate is back to {round(rhr_during)} bpm" if rhr_during else ""
+        # Careful wording: the experiment starts at a low point, so some of the recovery may have
+        # come on its own (regression to the mean). One week shows a pattern, not proof.
+        rhr_text = f", and your resting heart rate is back to {round(rhr_during)} bpm" if rhr_during else ""
         return result(
             "improved",
-            f"It worked: your energy went from {energy_before:.1f} to {energy_during:.1f} out of 5"
-            f"{rhr_text}. Keep the change.",
+            f"Your energy recovered while you made this change ({energy_before:.1f} → {energy_during:.1f} "
+            f"out of 5){rhr_text}. Keep it going. This is a quick personal test, not proof.",
         )
     rhr_text = (
         f" and your resting heart rate is still {round(rhr_during - rhr_baseline)} bpm above your usual"

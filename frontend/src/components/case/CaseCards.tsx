@@ -145,7 +145,7 @@ export function DetectiveNotes({ explanation }: { explanation: Explanation }) {
           </button>
         )}
         {explanation.source === 'llm' && (
-          <p className="mt-2 text-sm text-muted-foreground">Written by AI from our numbers, then fact-checked.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Written by AI from our numbers. Every number in it is checked.</p>
         )}
       </div>
     </section>

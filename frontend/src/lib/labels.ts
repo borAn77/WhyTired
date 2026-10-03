@@ -12,6 +12,6 @@ export const CONFIDENCE: Record<Confidence, { label: string; bars: number }> = {
 
 export const DATA_LEVELS: Record<DataLevel, { icon: LucideIcon; label: string; detail: string }> = {
   full: { icon: Watch, label: 'Full data', detail: 'watch + check-ins' },
-  medium: { icon: Smartphone, label: 'Medium data', detail: 'phone steps, pulse + check-ins' },
+  medium: { icon: Smartphone, label: 'Medium data', detail: 'phone steps + check-ins' },
   basic: { icon: ClipboardList, label: 'Basic data', detail: 'check-ins + logged sessions' },
 }

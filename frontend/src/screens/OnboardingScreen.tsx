@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, Check, FlaskConical, Search, Stethoscope, Sunrise, Watch, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Check, FlaskConical, Lock, Search, Stethoscope, Sunrise, Watch, type LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import { AnimatedLogo } from '@/components/AnimatedLogo'
@@ -34,7 +34,7 @@ export function OnboardingScreen() {
 
   if (step === 0) {
     return (
-      <div className="flex min-h-full flex-col px-6 pb-6 pt-14">
+      <div className="flex min-h-full flex-col px-6 pt-14">
         <AnimatedLogo className="self-center" />
         <h1 className="mt-10 text-3xl font-semibold leading-tight tracking-tight">Find out why you're tired.</h1>
         <ul className="mt-6 space-y-4">
@@ -47,7 +47,16 @@ export function OnboardingScreen() {
             </li>
           ))}
         </ul>
-        <div className="mt-auto pt-8">
+        <p className="mt-6 flex items-start gap-2.5 text-muted-foreground">
+          <Lock aria-hidden className="mt-1 size-4 shrink-0" />
+          No account, no database. Your history stays in this browser; our server only computes your result. The AI
+          sees computed numbers, never your name.
+        </p>
+        {/* Sticky, so "Get started" stays in view where the welcome is taller than the screen
+            (720p projectors, small phones), with a short fade above it for the text scrolling
+            underneath. On taller screens it simply sits at the bottom. */}
+        <div className="sticky bottom-0 -mx-6 mt-auto bg-app/95 px-6 pb-6 pt-4 backdrop-blur">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-full h-8 bg-linear-to-t from-app to-transparent" />
           <PrimaryButton onClick={() => setStep(1)}>Get started</PrimaryButton>
           <p className="mt-3 text-center text-sm text-muted-foreground">
             Takes under a minute. WhyTired gives no diagnoses.
