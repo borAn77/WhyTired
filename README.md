@@ -39,5 +39,5 @@ Demo data (synthetic, deterministic): `cd backend && uv run python -m scripts.ge
 | `docs/DISCLOSURE.md` | AI tools, APIs, libraries, research sources, data statement |
 
 ## Team workflow
-- `main` is the live demo: every push deploys (Vercel + Render). Run `uv run pytest` and `npm run build` before pushing.
-- Boran pushes to `main` directly. Berken works on `feature/<topic>` and opens a PR, and Boran merges it. Vercel's free plan only deploys commits from the account owner.
+- `main` is the live demo: every push deploys on Render (static site + API, see `render.yaml`). Run `uv run pytest` and `npm run build` before pushing.
+- Boran pushes to `main` directly. Berken works on `feature/<topic>` and opens a PR, and Boran merges it.

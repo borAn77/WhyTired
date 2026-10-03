@@ -20,7 +20,7 @@ The repo `borAn77/WhyTired` is pushed with `main` and `dev` and only holds a REA
 3. **Data level is a request parameter.** The engine reads only the fields that level allows. This means no-watch mode can also be shown on Kasia, and Tomek has no watch data at all.
 4. **Confidence is a points score with a cap per data level.** Basic can never go above Medium.
 5. **The share link is a base64url token of the request context** (`/s/<token>`). It is a real, read-only, reproducible link that needs no DB. The QR code encodes that link.
-6. **Deployment:** frontend on Vercel, which rewrites `/api/*` to the backend on Render, so there is no CORS setup and the app has one URL. The hello-world skeleton gets deployed in M0, so deployment can't become a 4 a.m. blocker.
+6. **Deployment:** both on Render (`render.yaml`): the frontend as a free static site, which calls the API service directly (`VITE_API_URL`, CORS on the API). See DECISIONS D7 for why we left Vercel.
 7. **LLM call setup:**
    - Model `claude-opus-5`, overridable with `ANTHROPIC_MODEL`.
    - `effort: low`, an 8 s timeout, and responses cached in memory by a hash of the input.
@@ -45,7 +45,6 @@ backend/                  # FastAPI, uv, Python 3.12 pinned for Render
   data/kasia.json tomek.json     # generated, committed
   tests/                  # pytest per engine module + persona integration + validator
 frontend/                 # Vite + React + TS + Tailwind + shadcn/ui, npm
-  vercel.json             # /api/* rewrite → Render
   src/styles/tokens.css   # design tokens (CSS vars → Tailwind theme)
   src/lib/                # api.ts types.ts (hand-mirrored models) session.ts share.ts
   src/components/         # PhoneFrame DemoPanel ConfidenceBadge DataLevelBadge CauseCard ExcludedList MiniChart Logo states/
@@ -153,7 +152,7 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 ## Needed from the team
 - **Logo:** put it at `frontend/public/logo.svg` (PNG also works). A placeholder wordmark is used until then.
 - **Anthropic key:** goes in `backend/.env`, which is never committed.
-- **Deploy accounts:** Vercel and Render accounts connected to GitHub, needed around 12:45 for the skeleton deploy.
+- **Deploy accounts:** a Render account connected to GitHub (static site + API).
 - **Teammate:** has accepted the repo invite and works on `feature/data-ai`.
 
 ## Verification
@@ -208,9 +207,9 @@ Shared rules:
   - Polish copy for the doctor summary, DISCLOSURE, slides
 - `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
-- `main` is the live demo: every push to `main` deploys (Vercel + Render).
+- `main` is the live demo: every push to `main` deploys on Render.
   - **Boran (+Claude):** push straight to `main`, but only after `uv run pytest` and `npm run build` pass.
-  - **Berken:** work on `feature/<topic>` and open a PR; Boran merges it. Vercel's free plan only deploys commits from the account owner, so this also keeps the live site deploying.
+  - **Berken:** work on `feature/<topic>` and open a PR; Boran merges it.
   - `dev` is no longer used.
 
 ## LLM layer interface (owner: Berken)

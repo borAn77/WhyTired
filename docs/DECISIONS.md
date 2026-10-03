@@ -42,12 +42,14 @@ One short entry per decision: what, why, alternatives considered.
 - **Why:** It is a real, working link with no storage, and opening it again later gives the same result.
 - **Alternatives:** storing summaries server-side (needs a DB) and a mock link (less convincing).
 
-## D7: Vercel frontend + Render API, joined by a rewrite
-- **What:** Vercel serves the React app and rewrites `/api/*` to the Render service (`frontend/vercel.json`). Render runs FastAPI from `render.yaml`.
-- **Why:** One public URL, no CORS configuration, and free tiers. The skeleton was deployed in M0 so deployment does not become a last-minute blocker.
+## D7: Everything on Render: static site (frontend) + web service (API)
+- **What:** The React app is a free Render static site, served from a CDN. It calls the API service directly through `VITE_API_URL`, and the API allows cross-origin requests (CORS). The API has no cookies and no logins. Both services deploy from `main` (`render.yaml`).
+- **Why:**
+  - We started with Vercel for the frontend and a `/api` rewrite to Render. Vercel's free plan blocked deploys of a teammate's commits, so the team moved everything to Render: one dashboard for both services.
+  - A static site has no cold start. The page appears instantly while the free API wakes up (about 50 s), and the app shows a loading state in the meantime.
 - **Alternatives:**
-  - One Docker service (slower to iterate).
-  - Serverless Python on Vercel (timeouts on LLM calls).
+  - Serving the built frontend from FastAPI: one service, but the page itself would wait for the cold start.
+  - Vercel with a rewrite: dropped, see above.
   - Fallback if hosting fails: local demo + screen recording.
 
 ## D8: Injury-risk rule applied to session duration
