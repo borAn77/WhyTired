@@ -15,6 +15,8 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     result: 'Wynik',
     questions: 'Pytania do lekarza',
     bring: 'Co zabrać na wizytę',
+    inShort: 'W skrócie',
+    inShortAi: 'W skrócie (tekst napisany przez AI wyłącznie na podstawie liczb z tego podsumowania)',
   },
   en: {
     person: 'Person',
@@ -26,6 +28,8 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     result: 'Result',
     questions: 'Questions for the doctor',
     bring: 'What to bring',
+    inShort: 'In short',
+    inShortAi: 'In short (written by AI, using only the numbers in this summary)',
   },
 }
 
@@ -69,7 +73,15 @@ export function SummaryDocument({ summary }: { summary: DoctorSummary }) {
           <p>{summary.tried}</p>
           <h2 className="doc-heading pt-2">{h.result}</h2>
           <p className="font-semibold">{summary.result}</p>
-          {summary.explanation && <p className="text-muted-foreground">{summary.explanation.text}</p>}
+          {summary.explanation && (
+            // On screen only: the printed page stays rule-based, deterministic and one A4 page.
+            <div className="rounded-xl bg-navy-50 p-3 print:hidden">
+              <p className="text-sm font-semibold">
+                {summary.explanation.source === 'llm' ? h.inShortAi : h.inShort}
+              </p>
+              <p className="mt-1">{summary.explanation.text}</p>
+            </div>
+          )}
           <h2 className="doc-heading pt-2">{h.questions}</h2>
           <ol className="list-decimal space-y-1.5 pl-5">
             {summary.questions.map((question) => (
