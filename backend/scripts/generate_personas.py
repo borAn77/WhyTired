@@ -106,7 +106,7 @@ CONFIG = {
             "sleep_quality": 3,
         },
         "artifact_night": {  # the strap came loose; she felt and trained as the day before
-            "day": -20,
+            "day": -10,  # 2026-09-24, inside the load spike
             "watch": {"resting_hr": 92.0, "sleep_coverage": 0.35, "sleep_min": 158, "sleep_hr_avg": 96.0, "day_hr_avg": 77.0},
         },
         "branches": {  # both branches follow the experiment: training load cut by more than 40%
@@ -185,7 +185,7 @@ CONFIG = {
             },
             "not_improved": {
                 "sleep_h_choices": (6.5, 7.0, 7.0, 7.5),  # sticks to the plan, but sleeps ~7 h
-                "energy": {2: 0.8, 3: 0.2},
+                "energy": {2: 0.7, 3: 0.3},
                 "stress": {3: 0.3, 4: 0.7},
             },
         },

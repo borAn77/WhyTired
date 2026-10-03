@@ -39,7 +39,7 @@ def test_kasia_detective_story():
     assert result.triggered and result.low_energy_days == 5
     assert [(c.id, c.confidence) for c in result.causes] == [("load_spike", "high"), ("rhr_elevated", "medium")]
     assert result.causes[0].history_check.period_tag == "holiday"
-    artifact_night = DEMO_DAY - dt.timedelta(days=20)
+    artifact_night = DEMO_DAY - dt.timedelta(days=10)
     assert {(p.date, p.metric) for p in result.excluded} == {(artifact_night, "sleep"), (artifact_night, "resting_hr")}
 
 
