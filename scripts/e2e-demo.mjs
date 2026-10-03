@@ -88,12 +88,12 @@ try {
   })
   await step('Detective: ranked causes', async () => {
     await click('Find out why')
-    await waitFor('Most likely causes')
+    await waitFor('The suspects')
     await waitFor('High confidence')
     await shot('e2e_2_detective')
   })
   await step('Experiment started', async () => {
-    await click('Start the 7-day experiment')
+    await click('Accept the mission')
     await waitFor('Starts tomorrow')
     await shot('e2e_3_experiment')
   })

@@ -1,20 +1,20 @@
-import { FlaskConical, Search, Sparkles } from 'lucide-react'
+import { Target } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { DataLevelBadge } from '@/components/badges'
-import { CauseCard } from '@/components/CauseCard'
-import { ExcludedList } from '@/components/ExcludedList'
-import { ExperimentPlanCard } from '@/components/ExperimentPlanCard'
-import { LogoMark } from '@/components/Logo'
+import { DetectiveNotes, FakeClues, MissionCard } from '@/components/case/CaseCards'
+import { CaseHeader, CaseStat, InvestigatingState, MascotBadge, Reveal } from '@/components/case/CaseParts'
+import { SuspectCard } from '@/components/case/SuspectCard'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
-import { EmptyState, ErrorState, LoadingState } from '@/components/states'
+import { EmptyState, ErrorState } from '@/components/states'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { addDays, formatDay } from '@/lib/dates'
 import { toCtx, useSession } from '@/lib/session'
 import type { DetectiveResult } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
+
+const CASE_TITLE = 'The case of the missing energy'
 
 export function DetectiveScreen() {
   const { session, update } = useSession()
@@ -25,17 +25,16 @@ export function DetectiveScreen() {
   if (loading) {
     return (
       <Screen>
-        <Intro />
-        <LoadingState label="Looking through your data" />
+        <InvestigatingState />
       </Screen>
     )
   }
   if (error || !data) {
     return (
       <Screen>
-        <Intro />
+        <CaseHeader title={CASE_TITLE} step={0} />
         <ErrorState
-          title="We couldn't run the detective"
+          title="We couldn't open the case"
           message="The server may be waking up, which takes up to a minute."
           onRetry={retry}
         />
@@ -43,10 +42,11 @@ export function DetectiveScreen() {
     )
   }
   if (!data.triggered) return <NothingToInvestigate />
-  if (data.causes.length === 0) return <NoClearCause result={data} />
+  if (data.causes.length === 0) return <NoSuspect result={data} />
 
   const plan = data.suggested_experiment
-  const startExperiment = () => {
+  const fakeNights = new Set(data.excluded.map((point) => point.date)).size
+  const startMission = () => {
     if (!plan) return
     update({ experiment: { cause_id: plan.cause_id, start: addDays(session.today, 1), days: plan.days } })
     navigate('/experiment')
@@ -57,71 +57,57 @@ export function DetectiveScreen() {
       footer={
         plan && (
           <>
-            <PrimaryButton onClick={startExperiment}>
-              <FlaskConical aria-hidden />
-              Start the 7-day experiment
+            <PrimaryButton onClick={startMission}>
+              <Target aria-hidden />
+              Accept the mission
             </PrimaryButton>
             <p className="mt-2 text-center text-sm text-muted-foreground">
-              Starts tomorrow, {formatDay(addDays(session.today, 1))}. You can stop at any time.
+              Starts tomorrow, {formatDay(addDays(session.today, 1))} · stop any time
             </p>
           </>
         )
       }
     >
-      <Intro lowDays={data.low_energy_days} />
-      <DataLevelBadge level={data.data_level} />
-      {data.data_level === 'basic' && (
-        <p className="rounded-xl bg-navy-50 p-4">
-          Without a watch we rely on your check-ins and logged sessions. That's enough to spot patterns, but no
-          finding can go above <strong className="font-semibold">medium confidence</strong>.
-        </p>
-      )}
-
+      <Reveal index={0}>
+        <CaseHeader
+          title={CASE_TITLE}
+          dataLevel={data.data_level}
+          step={2}
+          stats={
+            <>
+              <CaseStat value={data.low_energy_days} label="low days" />
+              <CaseStat value={data.causes.length} label={data.causes.length === 1 ? 'suspect' : 'suspects'} />
+              <CaseStat value={fakeNights} label={fakeNights === 1 ? 'fake clue' : 'fake clues'} />
+            </>
+          }
+        />
+      </Reveal>
       {data.explanation && (
-        <section className="rounded-2xl bg-navy-900 p-5 text-white">
-          <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-coral-500">
-            <Sparkles aria-hidden className="size-4" />
-            In short
-          </p>
-          <p className="mt-2 text-lg leading-relaxed">{data.explanation.text}</p>
-          <p className="mt-3 text-sm text-navy-100">
-            {data.explanation.source === 'llm'
-              ? 'Written by AI from the numbers below, then checked: it may only use numbers we calculated.'
-              : 'Summary of the findings below.'}
-          </p>
+        <Reveal index={1}>
+          <DetectiveNotes explanation={data.explanation} />
+        </Reveal>
+      )}
+      <Reveal index={2}>
+        <section className="space-y-3" aria-labelledby="suspects">
+          <h2 id="suspects" className="text-xl font-semibold">
+            The suspects
+          </h2>
+          {data.causes.map((cause, i) => (
+            <SuspectCard key={cause.id} cause={cause} rank={i + 1} />
+          ))}
         </section>
+      </Reveal>
+      {data.excluded.length > 0 && (
+        <Reveal index={3}>
+          <FakeClues points={data.excluded} />
+        </Reveal>
       )}
-
-      <section className="space-y-3" aria-labelledby="causes">
-        <h2 id="causes" className="text-xl font-semibold">
-          Most likely {data.causes.length === 1 ? 'cause' : 'causes'}
-        </h2>
-        {data.causes.map((cause, i) => (
-          <CauseCard key={cause.id} cause={cause} rank={i + 1} expanded={i === 0} />
-        ))}
-      </section>
-
-      <ExcludedList points={data.excluded} />
-      {plan && <ExperimentPlanCard plan={plan} />}
+      {plan && (
+        <Reveal index={4}>
+          <MissionCard plan={plan} />
+        </Reveal>
+      )}
     </Screen>
-  )
-}
-
-function Intro({ lowDays }: { lowDays?: number }) {
-  return (
-    <section className="space-y-2">
-      <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-coral-700">
-        <Search aria-hidden className="size-4" />
-        Detective mode
-      </p>
-      <h1 className="text-2xl font-semibold leading-tight tracking-tight">Let's find out why you're tired</h1>
-      {lowDays !== undefined && (
-        <p className="text-muted-foreground">
-          Your energy has been low for {lowDays} days in a row. We compared your last 7 days with your usual weeks.
-          Here's what stands out.
-        </p>
-      )}
-    </section>
   )
 }
 
@@ -129,10 +115,10 @@ function NothingToInvestigate() {
   return (
     <Screen>
       <div className="flex flex-col items-center pt-10 text-center">
-        <LogoMark className="h-20 w-auto" />
-        <h1 className="mt-6 text-2xl font-semibold">Nothing to investigate right now</h1>
+        <MascotBadge className="size-24 ring-navy-100" />
+        <h1 className="mt-6 text-2xl font-semibold">No case to open</h1>
         <p className="mt-2 text-muted-foreground">
-          Detective mode starts by itself after 3 low-energy mornings in a row. Your recent check-ins look fine.
+          The detective steps in after 3 low-energy mornings in a row. Yours look fine.
         </p>
         <Button asChild size="lg" className="mt-6 h-12 rounded-xl px-6 text-base">
           <Link to="/">Back to today</Link>
@@ -142,15 +128,26 @@ function NothingToInvestigate() {
   )
 }
 
-function NoClearCause({ result }: { result: DetectiveResult }) {
+function NoSuspect({ result }: { result: DetectiveResult }) {
   return (
     <Screen>
-      <Intro lowDays={result.low_energy_days} />
-      <EmptyState
-        title="No clear cause in your data"
-        message="Your training, sleep, stress and heart rate all look close to your usual. Keep checking in. If you still feel tired after two weeks, talk to your family doctor."
+      <CaseHeader
+        title={CASE_TITLE}
+        dataLevel={result.data_level}
+        step={1}
+        stats={
+          <>
+            <CaseStat value={result.low_energy_days} label="low days" />
+            <CaseStat value={0} label="suspects" />
+            <CaseStat value={new Set(result.excluded.map((p) => p.date)).size} label="fake clues" />
+          </>
+        }
       />
-      <ExcludedList points={result.excluded} />
+      <EmptyState
+        title="No suspect found"
+        message="Training, sleep, stress and heart rate all look like your usual. Keep checking in. Still tired in two weeks? Talk to your family doctor."
+      />
+      <FakeClues points={result.excluded} />
     </Screen>
   )
 }

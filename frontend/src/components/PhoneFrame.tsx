@@ -19,7 +19,7 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
             type="button"
             onClick={() => setControlsOpen(true)}
             aria-label="Open demo controls"
-            className="fixed right-3 top-16 z-20 grid size-10 place-items-center rounded-full bg-navy-900/80 text-white shadow-lg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="fixed right-0 top-1/3 z-20 grid h-12 w-8 place-items-center rounded-l-xl bg-navy-900/80 text-white shadow-lg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             <SlidersHorizontal aria-hidden className="size-5" />
           </button>
