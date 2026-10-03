@@ -334,10 +334,7 @@ def build_kasia() -> PersonaFile:
     history = [kasia_day(rng, offset) for offset in range(-(CONFIG["history_days"] - 1), 1)]
     add_artifact_night(history)
     future = {
-        branch: [
-            kasia_day(random.Random(cfg["seed"] + seed_offset), offset, branch)
-            for offset in range(1, CONFIG["future_days"] + 1)
-        ]
+        branch: branch_days(kasia_day, random.Random(cfg["seed"] + seed_offset), branch)
         for branch, seed_offset in CONFIG["branch_seed_offsets"].items()
     }
     return PersonaFile(
@@ -403,10 +400,7 @@ def build_tomek() -> PersonaFile:
     rng = random.Random(cfg["seed"])
     history = [tomek_day(rng, offset) for offset in range(-(CONFIG["history_days"] - 1), 1)]
     future = {
-        branch: [
-            tomek_day(random.Random(cfg["seed"] + seed_offset), offset, branch)
-            for offset in range(1, CONFIG["future_days"] + 1)
-        ]
+        branch: branch_days(tomek_day, random.Random(cfg["seed"] + seed_offset), branch)
         for branch, seed_offset in CONFIG["branch_seed_offsets"].items()
     }
     return PersonaFile(
@@ -422,6 +416,12 @@ def build_tomek() -> PersonaFile:
 def drop_checkins(days: list[DayRecord], offsets: list[int]) -> list[DayRecord]:
     missed = {date_of(offset) for offset in offsets}
     return [day.model_copy(update={"checkin": None}) if day.date in missed else day for day in days]
+
+
+def branch_days(make_day, rng: random.Random, branch: str) -> list[DayRecord]:
+    """D+1 .. D+14 of one experiment branch. One random generator for the whole branch, so
+    each day gets fresh noise; the history keeps its own generator, so it is unaffected."""
+    return [make_day(rng, offset, branch) for offset in range(1, CONFIG["future_days"] + 1)]
 
 
 def build_all() -> list[PersonaFile]:

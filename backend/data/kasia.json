@@ -2427,8 +2427,8 @@
     "date": "2026-10-06",
     "checkin": {
      "energy": 2,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
+     "sleep_hours": 7.0,
+     "sleep_quality": 4,
      "stress": 3,
      "soreness": 3,
      "ill": false
@@ -2440,38 +2440,38 @@
       "rpe": 4
      }
     ],
-    "steps": 14798,
+    "steps": 13784,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 60.9,
+     "hrv_ms": 48.3,
+     "sleep_min": 439.0,
+     "sleep_coverage": 0.96,
+     "sleep_hr_avg": 58.1,
+     "day_hr_avg": 76.4
     },
     "tags": []
    },
    {
     "date": "2026-10-07",
     "checkin": {
-     "energy": 2,
-     "sleep_hours": 7.5,
+     "energy": 3,
+     "sleep_hours": 8.0,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 8798,
+    "steps": 9763,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 60.4,
+     "hrv_ms": 48.5,
+     "sleep_min": 475.0,
+     "sleep_coverage": 1.0,
+     "sleep_hr_avg": 57.8,
+     "day_hr_avg": 73.1
     },
     "tags": []
    },
@@ -2479,10 +2479,10 @@
     "date": "2026-10-08",
     "checkin": {
      "energy": 2,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
+     "sleep_hours": 8.0,
+     "sleep_quality": 4,
      "stress": 3,
-     "soreness": 3,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [
@@ -2492,15 +2492,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14048,
+    "steps": 15010,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 61.3,
+     "hrv_ms": 53.2,
+     "sleep_min": 470.0,
+     "sleep_coverage": 0.98,
+     "sleep_hr_avg": 58.9,
+     "day_hr_avg": 75.1
     },
     "tags": []
    },
@@ -2508,22 +2508,22 @@
     "date": "2026-10-09",
     "checkin": {
      "energy": 2,
-     "sleep_hours": 7.5,
+     "sleep_hours": 7.0,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 8798,
+    "steps": 6715,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
+     "resting_hr": 59.8,
+     "hrv_ms": 48.7,
+     "sleep_min": 451.0,
      "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "sleep_hr_avg": 56.6,
+     "day_hr_avg": 75.9
     },
     "tags": []
    },
@@ -2532,9 +2532,9 @@
     "checkin": {
      "energy": 2,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
-     "soreness": 3,
+     "sleep_quality": 4,
+     "stress": 2,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [
@@ -2544,25 +2544,25 @@
       "rpe": 5
      }
     ],
-    "steps": 15548,
+    "steps": 11813,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 59.6,
+     "hrv_ms": 54.0,
+     "sleep_min": 466.0,
+     "sleep_coverage": 1.0,
+     "sleep_hr_avg": 57.5,
+     "day_hr_avg": 71.0
     },
     "tags": []
    },
    {
     "date": "2026-10-11",
     "checkin": {
-     "energy": 2,
+     "energy": 3,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 3,
      "ill": false
     },
@@ -2573,15 +2573,15 @@
       "rpe": 4
      }
     ],
-    "steps": 13298,
+    "steps": 11649,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
+     "resting_hr": 60.8,
+     "hrv_ms": 50.5,
+     "sleep_min": 443.0,
      "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "sleep_hr_avg": 58.7,
+     "day_hr_avg": 76.1
     },
     "tags": []
    },
@@ -2590,21 +2590,21 @@
     "checkin": {
      "energy": 2,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
+     "sleep_quality": 4,
      "stress": 3,
-     "soreness": 3,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 8798,
+    "steps": 8705,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
+     "resting_hr": 59.9,
+     "hrv_ms": 49.9,
      "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 56.3,
+     "day_hr_avg": 77.5
     },
     "tags": []
    },
@@ -2613,9 +2613,9 @@
     "checkin": {
      "energy": 2,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
-     "soreness": 3,
+     "sleep_quality": 4,
+     "stress": 2,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [
@@ -2625,15 +2625,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14798,
+    "steps": 15185,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 61.8,
+     "hrv_ms": 52.2,
+     "sleep_min": 448.0,
+     "sleep_coverage": 0.98,
+     "sleep_hr_avg": 60.8,
+     "day_hr_avg": 74.1
     },
     "tags": []
    },
@@ -2641,22 +2641,22 @@
     "date": "2026-10-14",
     "checkin": {
      "energy": 2,
-     "sleep_hours": 7.5,
+     "sleep_hours": 7.0,
      "sleep_quality": 3,
-     "stress": 3,
+     "stress": 2,
      "soreness": 3,
      "ill": false
     },
     "sessions": [],
-    "steps": 8798,
+    "steps": 6602,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 60.3,
+     "hrv_ms": 52.0,
+     "sleep_min": 439.0,
+     "sleep_coverage": 0.96,
+     "sleep_hr_avg": 56.7,
+     "day_hr_avg": 73.3
     },
     "tags": []
    },
@@ -2677,15 +2677,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14048,
+    "steps": 12514,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
+     "resting_hr": 60.3,
+     "hrv_ms": 46.3,
+     "sleep_min": 436.0,
      "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "sleep_hr_avg": 56.2,
+     "day_hr_avg": 73.6
     },
     "tags": []
    },
@@ -2700,15 +2700,15 @@
      "ill": false
     },
     "sessions": [],
-    "steps": 8798,
+    "steps": 10642,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 60.5,
+     "hrv_ms": 53.5,
+     "sleep_min": 440.0,
+     "sleep_coverage": 1.0,
+     "sleep_hr_avg": 57.3,
+     "day_hr_avg": 73.3
     },
     "tags": []
    },
@@ -2717,9 +2717,9 @@
     "checkin": {
      "energy": 2,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
-     "soreness": 3,
+     "sleep_quality": 4,
+     "stress": 2,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [
@@ -2729,15 +2729,15 @@
       "rpe": 5
      }
     ],
-    "steps": 15548,
+    "steps": 14206,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 60.6,
+     "hrv_ms": 48.9,
+     "sleep_min": 441.0,
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 56.5,
+     "day_hr_avg": 80.2
     },
     "tags": []
    },
@@ -2745,10 +2745,10 @@
     "date": "2026-10-18",
     "checkin": {
      "energy": 2,
-     "sleep_hours": 7.5,
+     "sleep_hours": 8.0,
      "sleep_quality": 3,
      "stress": 3,
-     "soreness": 3,
+     "soreness": 2,
      "ill": false
     },
     "sessions": [
@@ -2758,15 +2758,15 @@
       "rpe": 4
      }
     ],
-    "steps": 13298,
+    "steps": 9127,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 61.1,
-     "hrv_ms": 54.8,
-     "sleep_min": 450.0,
-     "sleep_coverage": 0.99,
-     "sleep_hr_avg": 59.3,
-     "day_hr_avg": 77.8
+     "resting_hr": 61.8,
+     "hrv_ms": 53.4,
+     "sleep_min": 472.0,
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 57.2,
+     "day_hr_avg": 74.3
     },
     "tags": []
    }
@@ -2800,8 +2800,8 @@
     "checkin": {
      "energy": 3,
      "sleep_hours": 7.5,
-     "sleep_quality": 4,
-     "stress": 2,
+     "sleep_quality": 3,
+     "stress": 3,
      "soreness": 2,
      "ill": false
     },
@@ -2812,15 +2812,15 @@
       "rpe": 4
      }
     ],
-    "steps": 11722,
+    "steps": 13930,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 57.3,
-     "hrv_ms": 56.1,
-     "sleep_min": 455.0,
+     "resting_hr": 57.4,
+     "hrv_ms": 56.8,
+     "sleep_min": 473.0,
      "sleep_coverage": 0.98,
-     "sleep_hr_avg": 55.4,
-     "day_hr_avg": 76.1
+     "sleep_hr_avg": 53.6,
+     "day_hr_avg": 82.4
     },
     "tags": []
    },
@@ -2828,22 +2828,22 @@
     "date": "2026-10-07",
     "checkin": {
      "energy": 3,
-     "sleep_hours": 7.5,
-     "sleep_quality": 4,
+     "sleep_hours": 8.0,
+     "sleep_quality": 3,
      "stress": 2,
      "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 5722,
+    "steps": 7808,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 55.8,
-     "hrv_ms": 59.1,
-     "sleep_min": 455.0,
+     "resting_hr": 56.9,
+     "hrv_ms": 64.8,
+     "sleep_min": 487.0,
      "sleep_coverage": 0.98,
-     "sleep_hr_avg": 53.9,
-     "day_hr_avg": 76.1
+     "sleep_hr_avg": 53.7,
+     "day_hr_avg": 75.9
     },
     "tags": []
    },
@@ -2853,7 +2853,7 @@
      "energy": 4,
      "sleep_hours": 7.5,
      "sleep_quality": 3,
-     "stress": 3,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
@@ -2864,15 +2864,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14751,
+    "steps": 13739,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 54.8,
+     "hrv_ms": 60.8,
+     "sleep_min": 464.0,
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 49.9,
+     "day_hr_avg": 79.2
     },
     "tags": []
    },
@@ -2880,22 +2880,22 @@
     "date": "2026-10-09",
     "checkin": {
      "energy": 4,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "sleep_hours": 8.0,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 9501,
+    "steps": 7846,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
+     "resting_hr": 54.7,
+     "hrv_ms": 61.4,
+     "sleep_min": 467.0,
      "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "sleep_hr_avg": 52.2,
+     "day_hr_avg": 79.1
     },
     "tags": []
    },
@@ -2904,7 +2904,7 @@
     "checkin": {
      "energy": 4,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
+     "sleep_quality": 4,
      "stress": 3,
      "soreness": 2,
      "ill": false
@@ -2916,25 +2916,25 @@
       "rpe": 5
      }
     ],
-    "steps": 16251,
+    "steps": 13154,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.1,
+     "hrv_ms": 57.3,
+     "sleep_min": 461.0,
+     "sleep_coverage": 0.95,
+     "sleep_hr_avg": 52.4,
+     "day_hr_avg": 71.6
     },
     "tags": []
    },
    {
     "date": "2026-10-11",
     "checkin": {
-     "energy": 4,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "energy": 5,
+     "sleep_hours": 6.5,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
@@ -2945,38 +2945,38 @@
       "rpe": 4
      }
     ],
-    "steps": 14001,
+    "steps": 11899,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.0,
+     "hrv_ms": 61.4,
+     "sleep_min": 413.0,
+     "sleep_coverage": 1.0,
+     "sleep_hr_avg": 53.7,
+     "day_hr_avg": 82.2
     },
     "tags": []
    },
    {
     "date": "2026-10-12",
     "checkin": {
-     "energy": 4,
+     "energy": 5,
      "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 9501,
+    "steps": 7729,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.3,
+     "hrv_ms": 57.7,
+     "sleep_min": 439.0,
+     "sleep_coverage": 0.98,
+     "sleep_hr_avg": 53.8,
+     "day_hr_avg": 77.2
     },
     "tags": []
    },
@@ -2984,9 +2984,9 @@
     "date": "2026-10-13",
     "checkin": {
      "energy": 4,
-     "sleep_hours": 7.5,
+     "sleep_hours": 7.0,
      "sleep_quality": 3,
-     "stress": 3,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
@@ -2997,48 +2997,48 @@
       "rpe": 4
      }
     ],
-    "steps": 15501,
+    "steps": 15187,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 54.8,
+     "hrv_ms": 58.4,
+     "sleep_min": 439.0,
+     "sleep_coverage": 0.99,
+     "sleep_hr_avg": 52.5,
+     "day_hr_avg": 71.9
     },
     "tags": []
    },
    {
     "date": "2026-10-14",
     "checkin": {
-     "energy": 4,
-     "sleep_hours": 7.5,
+     "energy": 5,
+     "sleep_hours": 8.5,
      "sleep_quality": 3,
-     "stress": 3,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 9501,
+    "steps": 8564,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
+     "resting_hr": 54.9,
+     "hrv_ms": 59.6,
+     "sleep_min": 483.0,
      "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "sleep_hr_avg": 52.4,
+     "day_hr_avg": 75.2
     },
     "tags": []
    },
    {
     "date": "2026-10-15",
     "checkin": {
-     "energy": 4,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "energy": 5,
+     "sleep_hours": 8.0,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
@@ -3049,15 +3049,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14751,
+    "steps": 14729,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.1,
+     "hrv_ms": 60.3,
+     "sleep_min": 490.0,
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 53.5,
+     "day_hr_avg": 68.8
     },
     "tags": []
    },
@@ -3065,22 +3065,22 @@
     "date": "2026-10-16",
     "checkin": {
      "energy": 4,
-     "sleep_hours": 7.5,
-     "sleep_quality": 3,
-     "stress": 3,
+     "sleep_hours": 6.5,
+     "sleep_quality": 4,
+     "stress": 2,
      "soreness": 2,
      "ill": false
     },
     "sessions": [],
-    "steps": 9501,
+    "steps": 7386,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 53.9,
+     "hrv_ms": 58.0,
+     "sleep_min": 385.0,
+     "sleep_coverage": 1.0,
+     "sleep_hr_avg": 49.4,
+     "day_hr_avg": 81.7
     },
     "tags": []
    },
@@ -3101,15 +3101,15 @@
       "rpe": 5
      }
     ],
-    "steps": 16251,
+    "steps": 16638,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.0,
+     "hrv_ms": 57.2,
+     "sleep_min": 436.0,
+     "sleep_coverage": 0.97,
+     "sleep_hr_avg": 53.4,
+     "day_hr_avg": 81.0
     },
     "tags": []
    },
@@ -3130,15 +3130,15 @@
       "rpe": 4
      }
     ],
-    "steps": 14001,
+    "steps": 14496,
     "manual_pulse": null,
     "watch": {
-     "resting_hr": 54.3,
-     "hrv_ms": 60.1,
-     "sleep_min": 455.0,
-     "sleep_coverage": 0.96,
-     "sleep_hr_avg": 50.4,
-     "day_hr_avg": 72.7
+     "resting_hr": 55.6,
+     "hrv_ms": 58.8,
+     "sleep_min": 428.0,
+     "sleep_coverage": 0.98,
+     "sleep_hr_avg": 52.9,
+     "day_hr_avg": 80.4
     },
     "tags": []
    }
