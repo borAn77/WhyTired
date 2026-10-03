@@ -66,6 +66,9 @@ Demo data (synthetic, deterministic): `cd backend && uv run python -m scripts.ge
 Before the demo, rehearse the whole flow on the live site (Chrome needed):
 `node scripts/e2e-demo.mjs https://whytired-vnvu.onrender.com /tmp/whytired-e2e`
 
+And every path a presenter might take (restart, skipping onboarding, both personas, both outcomes):
+`node scripts/demo-sweep.mjs https://whytired-vnvu.onrender.com`
+
 ## Demo walkthrough
 
 The DemoPanel (desktop: right of the phone frame; mobile: a button that opens a bottom sheet) switches persona, moves "today" forward, and switches the data level and scenario — this is how the whole story below is driven live, with no need to wait out real days.

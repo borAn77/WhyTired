@@ -167,6 +167,8 @@ function CheckInCards() {
       stress: steps.includes('stress_clue') ? clues.stress : undefined,
     }
     update({
+      // Someone who finished a check-in is using the app: never send them back to onboarding.
+      onboarded: true,
       checkins: { ...session.checkins, [session.today]: checkin },
       clues: { ...session.clues, [session.today]: kept },
     })

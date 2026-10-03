@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { api } from '@/lib/api'
 import { DEMO_DAY, FIRST_ALLOWED_DAY, LAST_ALLOWED_DAY, addDays, daysBetween, formatDay } from '@/lib/dates'
 import { useSession } from '@/lib/session'
+import { useApi } from '@/lib/useApi'
 import type { DataLevel, Scenario } from '@/lib/types'
 
 const JUMPS: [string, string][] = [
@@ -22,6 +24,21 @@ export function DemoPanel() {
   const { session, update, reset } = useSession()
   const navigate = useNavigate()
   const offset = daysBetween(DEMO_DAY, session.today)
+  const personas = useApi('personas', () => api.personas())
+
+  // Jumping past onboarding (e.g. right after "Restart the demo") fills in the persona's own
+  // goal and sports, so no screen sends the presenter back to onboarding.
+  const jump = (path: string) => {
+    if (path !== '/onboarding' && !session.onboarded) {
+      const profile = personas.data?.find((persona) => persona.id === session.personaId)
+      update({
+        onboarded: true,
+        goal: session.goal ?? profile?.goal ?? null,
+        sports: session.sports.length > 0 ? session.sports : (profile?.sports ?? []),
+      })
+    }
+    navigate(path)
+  }
 
   const travel = (days: number) => {
     const target = Math.min(LAST_ALLOWED_DAY, Math.max(FIRST_ALLOWED_DAY, offset + days))
@@ -115,7 +132,7 @@ export function DemoPanel() {
       <Field label="Jump to">
         <div className="flex flex-wrap gap-2">
           {JUMPS.map(([label, path]) => (
-            <Button key={path} variant="outline" size="sm" onClick={() => navigate(path)}>
+            <Button key={path} variant="outline" size="sm" onClick={() => jump(path)}>
               {label}
             </Button>
           ))}
