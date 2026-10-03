@@ -14,6 +14,8 @@ from .engine.coach import coach_today
 from .engine.detective import run_detective
 from .engine.experiment import evaluate_experiment
 from .engine.summary import build_summary
+from .llm import explain_detective, explain_summary
+from .llm.providers import active_provider
 from .models import (
     CoachRequest,
     CoachResult,
@@ -63,7 +65,7 @@ def health() -> Health:
     return Health(
         status="ok",
         personas=sorted(store.load_personas()),
-        llm_provider=os.getenv("LLM_PROVIDER", "none"),
+        llm_provider=active_provider(),
     )
 
 
@@ -80,7 +82,10 @@ def coach(request: CoachRequest) -> CoachResult:
 
 @app.post("/api/detective", response_model=DetectiveResult)
 def detective(ctx: Ctx) -> DetectiveResult:
-    return run_detective(days_for(ctx))
+    result = run_detective(days_for(ctx))
+    if result.triggered:
+        result.explanation = explain_detective(result, ctx.lang)
+    return result
 
 
 @app.post("/api/experiment", response_model=ExperimentResult)
@@ -96,4 +101,6 @@ def summary(ctx: Ctx) -> DoctorSummary:
     """The doctor summary. Also behind the read-only share link (/s/<token> in the frontend)."""
     days = days_for(ctx)
     profile = store.get_persona(ctx.persona_id).profile
-    return build_summary(profile, days, ctx.experiment, ctx.lang)
+    doctor_summary = build_summary(profile, days, ctx.experiment, ctx.lang)
+    doctor_summary.explanation = explain_summary(doctor_summary)
+    return doctor_summary
