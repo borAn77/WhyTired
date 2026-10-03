@@ -169,7 +169,8 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 - Summary page: print preview fits one A4 page, and the share link opens in a private window.
 - Repeat the walkthrough on the deployed URL. Before the demo, call `/api/health` to wake Render from its cold start.
 
-## Persona data spec (for `backend/scripts/generate_personas.py`)
+## Persona data spec (implemented in `backend/scripts/generate_personas.py`)
+Regenerate with `cd backend && uv run python -m scripts.generate_personas`. A test fails if the committed JSON doesn't match the generator.
 Shared rules:
 - `DEMO_DAY = 2026-10-04` (D0).
 - `history` = 90 days, D−89…D0 inclusive. `future[scenario]` = 14 days, D+1…D+14.
@@ -199,11 +200,12 @@ Shared rules:
 ## Ownership and git workflow
 - **Boran (+Claude):**
   - `backend/app/` (except `llm/`)
+  - `backend/scripts/` + `backend/data/` (generator done in M1, story beats from Berken's first dataset)
   - `frontend/`
   - deploy config and docs
-- **Teammate:**
-  - `backend/scripts/`, `backend/data/`
-  - `backend/app/llm/`
-  - their tests
+- **Berken:**
+  - `backend/app/llm/` (prompt, provider, validator, EN/PL templates) + tests
+  - Polish copy for the doctor summary, DISCLOSURE, slides
+- `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
 - Branches: `feature/<topic>` → PR into `dev`. `dev` goes into `main` when a milestone is green. Vercel and Render deploy from `main`.

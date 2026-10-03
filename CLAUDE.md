@@ -10,8 +10,8 @@ Time available: LESS THAN 24 HOURS in total, including slides and demo prep.
 Deadline: **Sunday 4 Oct 2026, 10:00 CEST**. Feature freeze: **Sunday 06:00**. Submit by 09:00.
 
 Team: 2 people.
-- **Boran**: backend (FastAPI + rule engine), frontend, app integration, deploy.
-- **Teammate**: synthetic data generator and the AI/LLM layer.
+- **Boran**: backend (FastAPI + rule engine), synthetic data generator, frontend, app integration, deploy.
+- **Berken**: the AI/LLM layer (`backend/app/llm/`), Polish copy for the doctor summary, DISCLOSURE, slides.
 
 ### Judging criteria and what they mean for this build
 - Idea & Innovation (30%): the detective mode and the personal experiment loop are our innovation. They must be the clearest part of the demo.
