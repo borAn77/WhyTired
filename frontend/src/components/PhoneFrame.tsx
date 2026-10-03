@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 
+import { AskWhyTired } from '@/components/helper/AskWhyTired'
 import '@/components/stage/stage.css'
 import { StageBackdrop } from '@/components/stage/StageBackdrop'
 import { StoryPanel } from '@/components/stage/StoryPanel'
@@ -32,6 +33,7 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
           <div data-phone-scroll ref={scrollRef} className="flex-1 overflow-y-auto">
             {children}
           </div>
+          <AskWhyTired scrollRef={scrollRef} />
         </div>
       </div>
 
