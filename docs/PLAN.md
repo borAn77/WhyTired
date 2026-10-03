@@ -209,3 +209,33 @@ Shared rules:
 - `engine/` and the root `requirements.txt` hold Berken's first dataset (CSV). The app doesn't use them; Berken decides whether to keep them.
 - `backend/app/models.py` is the shared contract. Change it only through a PR that both of you look at.
 - Branches: `feature/<topic>` → PR into `dev`. `dev` goes into `main` when a milestone is green. Vercel and Render deploy from `main`.
+
+## LLM layer interface (owner: Berken)
+Everything lives in `backend/app/llm/`: `providers.py`, `explain.py`, `validate.py`, `templates.py`. Tests go in `backend/tests/test_llm.py`.
+
+```python
+# backend/app/llm/explain.py
+from app.models import DetectiveResult, Explanation, Lang
+
+def explain_detective(result: DetectiveResult, lang: Lang) -> Explanation: ...
+```
+- **Where it's called:** `POST /api/detective` calls this only when `result.triggered`. Boran wires it into `main.py` once the module exists.
+- **Model input:** only the computed findings, no names, no dates and no raw time series:
+  - `low_energy_days`, `data_level`
+  - per cause: id, title, confidence, evidence (text, value, baseline, unit), and history (supports, energy_delta, rhr_delta)
+  - the number of excluded nights and the experiment title
+- **Output:** 2–4 plain sentences in `lang` (`en` / `pl`), returned as `Explanation(text=..., source="llm")`.
+- **Validation (`validate.py`):** if either check fails, return the `templates.py` text with `source="template"`.
+  1. Every number in the text must exist in the input JSON. Normalise Polish decimals (`6,5` → `6.5`) and allow the same rounding.
+  2. No blocked terms, in EN or PL: diagnoses and diseases, medication and supplements, lab and blood tests. **Match whole words only.** For example, `lekarz` (doctor) is fine but `leki` (medication) is not, and `lab` must not match `label`.
+- **Provider (`providers.py`):**
+  - `LLM_PROVIDER=anthropic|none`. With `none`, always use the template.
+  - `ANTHROPIC_MODEL`, default `claude-opus-5`, using the official `anthropic` SDK (already a dependency).
+  - Low effort, about 8 s timeout, at most 1 retry.
+  - Errors, timeouts and `stop_reason == "refusal"` all fall back to the template.
+  - Cache answers in memory by a hash of the input JSON.
+- **Tests:**
+  - the validator rejects an invented number and a blocked word
+  - `LLM_PROVIDER=none` returns the template
+  - templates exist for all 4 cause ids in both languages
+- **Later (M4):** `explain_summary(summary: DoctorSummary) -> Explanation` writes the "In short" paragraph of the Polish doctor summary.
