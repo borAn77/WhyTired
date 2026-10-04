@@ -128,6 +128,7 @@ try {
     ['Alibi check in view', () => inView('Alibi check')],
     ['Fake clue in view', () => inView('sensor glitches')],
     ['Tomek detective', async () => (await has('Basic data')) && (await has('sleeping less'))],
+    ['Eye check card in view', () => inView('New clue')],
     ['Tomek mission', async () => (await path()) === '/experiment' && (await has('Starts tomorrow'))],
     ['Mission check card', async () => (await path()) === '/check-in' && (await has('Did you keep your sleep window'))],
     ['Pulse card', async () => (await path()) === '/check-in' && (await has('Tap on every beat'))],
@@ -154,12 +155,18 @@ try {
   // The tour walks the same scenes as the demo script, so the step numbers come from that list.
   const STEPS = SCENE_CHECKS.length
   const PULSE_STEP = SCENE_CHECKS.findIndex(([name]) => name === 'Pulse card') + 1
+  const EYE_STEP = SCENE_CHECKS.findIndex(([name]) => name === 'Eye check card in view') + 1
   await check('Judge: tour step 1 is the check-in', await until(async () => (await path()) === '/check-in' && (await has(`Step 1 of ${STEPS}`))))
   for (let step = 2; step < STEPS; step++) {
     await tourNext(); await sleep(400)
-    if (step !== PULSE_STEP) continue
-    await until(() => has('Tap on every beat'), 10000); await tapHeart(); await sleep(300)
-    await check(`Judge: step ${step} is the pulse card, and a real tap counts`, (await has(`Step ${step} of ${STEPS}`)) && (await has('1 tap')))
+    if (step === EYE_STEP) {
+      await until(() => has('New clue: check your eyes'), 30000); await click('Start the eye check'); await sleep(500)
+      await check(`Judge: step ${step} is the eye check, and its sheet opens (camera not started)`, (await has(`Step ${step} of ${STEPS}`)) && (await has('Start the camera')))
+    }
+    if (step === PULSE_STEP) {
+      await until(() => has('Tap on every beat'), 10000); await tapHeart(); await sleep(300)
+      await check(`Judge: step ${step} is the pulse card, and a real tap counts`, (await has(`Step ${step} of ${STEPS}`)) && (await has('1 tap')))
+    }
   }
   await check(`Judge: step ${STEPS - 1} is the doctor page with the tour bar`, await until(async () => (await path()).startsWith('/s/') && (await has(`Step ${STEPS - 1} of ${STEPS}`)) && (await has('Pytania do lekarza'))))
   await tourNext()

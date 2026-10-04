@@ -181,6 +181,16 @@ export const SCENES: Scene[] = [
     route: '/detective',
   },
   {
+    title: 'Tomek: eye check',
+    headline: 'A new clue from the camera',
+    caption: 'Sleep is a suspect, so the detective asks for one more clue: 30 seconds in front of the camera. Nothing is recorded. Try it.',
+    say: 'Sleep is a suspect, so the detective asks for one more clue: 30 seconds in front of the camera. It measures how he blinks, on the phone, and adds it as evidence. It never changes the ranking.',
+    seconds: 8,
+    state: tomekDetective,
+    route: '/detective',
+    scrollTo: 'New clue',
+  },
+  {
     title: 'Tomek: the mission',
     headline: 'One safe change for 7 days',
     caption: 'Not a diagnosis. Tomek tries a fixed sleep window for a week.',
