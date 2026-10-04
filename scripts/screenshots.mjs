@@ -53,8 +53,8 @@ async function skipTour() {
 }
 
 try {
-  // Fresh start: onboarding
-  await goto(`${SITE}/`)
+  // Fresh start: onboarding. Presenter mode shows the demo controls (hidden by default).
+  await goto(`${SITE}/?presenter=1`)
   await waitFor('Find out why')
   await phone('01-onboarding')
   await click('Get started')

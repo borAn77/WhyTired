@@ -30,7 +30,7 @@ const step = async (label, fn) => {
 }
 
 try {
-  await goto(`${SITE}/`)
+  await goto(`${SITE}/?presenter=1`) // the demo controls are hidden until presenter mode is on
   await waitFor('WhyTired')
   await evaluate(`localStorage.setItem('whytired.session.v1', JSON.stringify({
     personaId: 'kasia', today: '2026-10-04', scenario: 'not_improved', dataLevel: 'full',

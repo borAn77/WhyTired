@@ -3,12 +3,14 @@ import { Printer } from 'lucide-react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 import { Logo } from '@/components/Logo'
+import { TourBar } from '@/components/stage/TourBar'
 import { ErrorState, LoadingState } from '@/components/states'
 import { SummaryDocument } from '@/components/SummaryDocument'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { api } from '@/lib/api'
 import type { Observations } from '@/lib/clues'
+import { useScenes } from '@/lib/sceneContext'
 import { decodeShare } from '@/lib/share'
 import type { Ctx, Lang } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -34,6 +36,7 @@ function SharedSummary({ initial, observations }: { initial: Ctx; observations: 
   const ctx = { ...initial, lang }
   const { data, error, loading, retry } = useApi(`summary:${JSON.stringify(ctx)}`, () => api.summary(ctx))
   const autoPrint = searchParams.get('print') === '1'
+  const touring = useScenes().index !== null // this page is one step of the guided tour
 
   useEffect(() => {
     if (!data || !autoPrint) return
@@ -42,7 +45,7 @@ function SharedSummary({ initial, observations }: { initial: Ctx; observations: 
   }, [data, autoPrint])
 
   return (
-    <div className="min-h-dvh bg-navy-50 px-4 py-6 print:bg-white print:p-0">
+    <div className={`min-h-dvh bg-navy-50 px-4 py-6 print:bg-white print:p-0${touring ? ' pb-48' : ''}`}>
       <div className="no-print mx-auto mb-4 flex max-w-[760px] flex-wrap items-center justify-between gap-3">
         <Logo size="sm" />
         <div className="flex flex-wrap items-center gap-2">
@@ -70,6 +73,7 @@ function SharedSummary({ initial, observations }: { initial: Ctx; observations: 
       <p className="no-print mx-auto mt-3 max-w-[760px] text-center text-sm text-muted-foreground">
         {lang === 'pl' ? 'Podgląd tylko do odczytu, udostępniony z aplikacji WhyTired.' : 'Read-only view shared from the WhyTired app.'}
       </p>
+      <TourBar floating />
     </div>
   )
 }

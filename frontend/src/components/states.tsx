@@ -18,7 +18,7 @@ export function LoadingState({ label = 'Loading…' }: { label?: string }) {
   }, [])
 
   return (
-    <div role="status" aria-live="polite" className="space-y-3">
+    <div role="status" aria-live="polite" data-loading className="space-y-3">
       <span className="sr-only">{label}</span>
       {slow && (
         <p className="flex gap-2.5 rounded-xl bg-navy-50 p-4">

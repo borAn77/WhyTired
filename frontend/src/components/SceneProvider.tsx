@@ -23,6 +23,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const location = useLocation()
   const [index, setIndex] = useState<number | null>(null)
   const [startedAt, setStartedAt] = useState<number | null>(null)
+  const [done, setDone] = useState(false)
   const scrollJob = useRef(0)
 
   const go = useCallback(
@@ -41,7 +42,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     () => ({
       index,
       startedAt,
+      done,
       start: () => {
+        setDone(false)
         setStartedAt(Date.now())
         go(0)
       },
@@ -49,9 +52,15 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       stop: () => {
         setIndex(null)
         setStartedAt(null)
+        setDone(false)
+      },
+      finish: () => {
+        setIndex(null)
+        setStartedAt(null)
+        setDone(true)
       },
     }),
-    [index, startedAt, go],
+    [index, startedAt, done, go],
   )
 
   // ?scene=N opens scene N directly, e.g. to recover mid-demo. Only once: `go` changes with
@@ -94,8 +103,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   return <SceneContext.Provider value={api}>{children}</SceneContext.Provider>
 }
 
-// Scrolls the phone to the element containing `text` (or to the top), waiting for the screen to
-// load. A newer scene cancels an older scroll.
+// Scrolls the phone to the element containing `text` (or to the top), waiting until the screen
+// has loaded: a card still loading above the target would push it down after the scroll.
+// A newer scene cancels an older scroll.
 function scrollPhoneTo(text: string | undefined, job: number, current: { current: number }) {
   const behavior: ScrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
   const started = Date.now()
@@ -110,7 +120,7 @@ function scrollPhoneTo(text: string | undefined, job: number, current: { current
     const target = scroller
       ? [...scroller.querySelectorAll<HTMLElement>('h1, h2, h3, p')].find((el) => el.textContent?.includes(text))
       : undefined
-    if (scroller && target) {
+    if (scroller && target && !scroller.querySelector('[data-loading]')) {
       const top = scroller.scrollTop + target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - HEADER_OFFSET
       scroller.scrollTo({ top, behavior })
     } else if (Date.now() - started < SCROLL_TIMEOUT_MS) {

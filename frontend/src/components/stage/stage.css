@@ -217,6 +217,204 @@
   font-size: 1.5rem;
 }
 
+/* ---------- Guided tour: welcome, tour steps and the end card (StagePanel.tsx) ---------- */
+
+.stage-tour {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  color: var(--wt-navy-900);
+}
+
+.stage-tour__visual {
+  width: 100%;
+  animation: stage-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* In the tour the words carry the step, so the face is a little smaller than on the welcome. */
+.stage-tour__visual .stage-story__mark {
+  width: 176px;
+}
+
+/* Fixed heights for the picture and the text, so the buttons below stay in one place from step
+   to step (the detective's bar chart is taller than the face). */
+.stage-tour.is-step .stage-tour__visual {
+  display: flex;
+  align-items: flex-end;
+  height: 318px;
+}
+
+.stage-tour.is-step .stage-tour__visual .stage-scene {
+  margin-bottom: 0;
+}
+
+.stage-tour.is-step .stage-tour__text {
+  align-content: start;
+  min-height: 272px;
+}
+
+.stage-tour.is-step.is-compact .stage-tour__visual,
+.stage-tour.is-step.is-compact .stage-tour__text {
+  height: auto;
+  min-height: 0;
+}
+
+.stage-tour__progress {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.stage-tour__progress span {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--wt-navy-100);
+  transition: background-color 300ms ease-out;
+}
+
+.stage-tour__progress span.is-done {
+  background: var(--wt-coral-500);
+}
+
+.stage-tour__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.stage-tour .stage-tour__primary {
+  height: 56px;
+  gap: 8px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: var(--wt-coral-500);
+  color: var(--wt-navy-900);
+  font-size: 1.125rem;
+  font-weight: 600;
+  box-shadow: 0 14px 28px -16px rgba(184, 58, 46, 0.7);
+}
+
+.stage-tour .stage-tour__primary:hover {
+  background: #f18471;
+}
+
+.stage-tour .stage-tour__primary svg {
+  width: 20px;
+  height: 20px;
+}
+
+.stage-tour .stage-tour__back {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--wt-surface);
+}
+
+.stage-tour .stage-tour__back svg {
+  width: 22px;
+  height: 22px;
+}
+
+.stage-tour .stage-tour__secondary {
+  height: 48px;
+  gap: 8px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--wt-surface);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.stage-tour__exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--wt-muted);
+}
+
+.stage-tour__exit:hover {
+  color: var(--wt-navy-900);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.stage-tour__exit:focus-visible {
+  outline: 2px solid var(--wt-navy-900);
+  outline-offset: 2px;
+}
+
+.stage-tour__hint {
+  font-size: 1rem;
+  color: var(--wt-muted);
+}
+
+.stage-tour__hint b {
+  color: var(--wt-navy-900);
+}
+
+/* The product in four icons, joined by a thin line. */
+.stage-tour__journey {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+  margin: 4px 0 8px;
+}
+
+.stage-tour__journey li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.stage-tour__journey li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: calc(50% + 34px);
+  width: calc(100% - 60px);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--wt-navy-100);
+}
+
+.stage-tour__journey-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--wt-coral-50);
+  color: var(--wt-coral-700);
+  box-shadow: inset 0 0 0 1px rgba(239, 117, 96, 0.35);
+}
+
+.stage-tour__journey-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.stage-tour.is-compact .stage-tour__visual .stage-story__mark {
+  width: 120px;
+}
+
+.stage-tour.is-compact .stage-story__title {
+  font-size: 1.5rem;
+}
+
 /* ---------- Detective scene: the magnifier finds the cause ---------- */
 
 .stage-scene {
@@ -493,6 +691,72 @@
     min-height: 44px;
     font-size: 1rem;
   }
+
+  /* Without the presenter column (the default): the welcome or tour on the left, the phone on
+     the right, centred together like a landing page. */
+  .stage:not(.has-presenter) {
+    grid-template-columns: minmax(0, 420px) auto;
+    gap: 48px;
+  }
+
+  .stage:not(.has-presenter) .stage__story {
+    display: block;
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    width: 100%;
+  }
+
+  /* Opens the presenter column. Small and out of the way: a judge never needs it. */
+  .stage__presenter-toggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 5;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--wt-border);
+    background: var(--wt-surface);
+    color: var(--wt-muted);
+    box-shadow: 0 8px 20px -14px rgba(27, 42, 78, 0.5);
+  }
+
+  .stage__presenter-toggle:hover {
+    color: var(--wt-navy-900);
+  }
+
+  .stage__presenter-toggle:focus-visible,
+  .stage__presenter-hide:focus-visible {
+    outline: 2px solid var(--wt-navy-900);
+    outline-offset: 2px;
+  }
+
+  .stage__presenter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .stage__presenter-hide {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--wt-muted);
+  }
+
+  .stage__presenter-hide:hover {
+    color: var(--wt-navy-900);
+    background: var(--wt-navy-50);
+  }
 }
 
 @media (min-width: 768px) and (max-height: 920px) {
@@ -531,6 +795,11 @@
     width: 100%;
     max-width: 392px;
   }
+
+  .stage:not(.has-presenter) {
+    grid-template-columns: minmax(0, 480px) auto;
+    gap: 96px;
+  }
 }
 
 /* Tall enough (1440x900 full screen): a slightly larger phone, same proportions. The case is
@@ -557,6 +826,32 @@
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
   }
+
+  /* The welcome and the tour stay beside the phone, centred, with a smaller face. */
+  .stage__story {
+    align-self: center;
+  }
+
+  .stage-tour .stage-story__mark,
+  .stage-tour__visual .stage-story__mark {
+    width: 152px;
+  }
+
+  .stage-tour.is-step .stage-tour__visual {
+    height: 236px;
+  }
+
+  .stage-tour.is-step .stage-tour__visual .stage-scene {
+    max-width: 250px;
+  }
+
+  .stage-tour.is-step .stage-tour__text {
+    min-height: 252px;
+  }
+
+  .stage-tour .stage-story__character {
+    margin-bottom: 0;
+  }
 }
 
 /* Pause everything while the tab is hidden. */
@@ -581,7 +876,8 @@
   .wt-char__heartbeat,
   .wt-char__magnifier,
   .stage-backdrop__line,
-  .stage-story__inner {
+  .stage-story__inner,
+  .stage-tour__visual {
     animation: none !important;
   }
 
@@ -591,7 +887,8 @@
   .wt-char__beat,
   .stage-scene__lens,
   .stage-scene__bar,
-  .stage-scene__delta {
+  .stage-scene__delta,
+  .stage-tour__progress span {
     transition: none;
   }
 }

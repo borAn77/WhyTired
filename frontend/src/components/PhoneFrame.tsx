@@ -5,24 +5,29 @@ import { useLocation } from 'react-router-dom'
 import { AskWhyTired } from '@/components/helper/AskWhyTired'
 import '@/components/stage/stage.css'
 import { StageBackdrop } from '@/components/stage/StageBackdrop'
-import { StoryPanel } from '@/components/stage/StoryPanel'
+import { StagePanel } from '@/components/stage/StagePanel'
+import { TourBar } from '@/components/stage/TourBar'
 import { usePageVisible, usePrefersReducedMotion } from '@/components/stage/motion'
 
-// On phones the app is full screen. On desktop (demo) it sits in a phone-sized frame on a
-// "stage": the story panel with the animated logo on the left, the presenter-only demo
-// controls on the right. On phones the same controls open from a small button, so the demo
-// also works from a phone. The stage only reads the session; it never changes app state.
+// On phones the app is full screen, with the guided tour as a bar on top. On desktop (demo) it
+// sits in a phone-sized frame on a "stage": the welcome and the guided tour on the left (for
+// someone opening the link cold, like a judge), the phone on the right. The presenter's demo
+// controls stay out of the way until "Presenter tools" (or ?presenter=1) opens them as a third
+// column; on phones they then open from a small button. The stage never changes app state
+// itself, except through the tour and the presenter controls.
 export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   const [controlsOpen, setControlsOpen] = useState(false)
+  const [presenter, setPresenter] = usePresenterMode()
   const pageVisible = usePageVisible()
   const scrollRef = useScreenTransition()
+  const showControls = !!aside && presenter
 
   return (
-    <div className={`stage min-h-dvh bg-navy-50${pageVisible ? '' : ' is-paused'}`}>
+    <div className={`stage min-h-dvh bg-navy-50${showControls ? ' has-presenter' : ''}${pageVisible ? '' : ' is-paused'}`}>
       <StageBackdrop />
 
       <div className="stage__story">
-        <StoryPanel />
+        <StagePanel />
       </div>
 
       <div className="stage__device">
@@ -30,6 +35,7 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
           data-phone-frame
           className="stage__screen relative flex h-dvh w-full flex-col overflow-hidden bg-app"
         >
+          <TourBar className="md:hidden" />
           <div data-phone-scroll ref={scrollRef} className="flex-1 overflow-y-auto">
             {children}
           </div>
@@ -37,17 +43,35 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
         </div>
       </div>
 
-      {aside && (
+      {showControls && (
         <aside className="stage__controls hidden md:block">
           <div className="stage__story-compact">
-            <StoryPanel compact />
+            <StagePanel compact />
           </div>
-          <p className="stage__presenter">For the presenter</p>
+          <div className="stage__presenter-row">
+            <p className="stage__presenter">For the presenter</p>
+            <button type="button" onClick={() => setPresenter(false)} className="stage__presenter-hide">
+              <X aria-hidden className="size-4" />
+              Hide
+            </button>
+          </div>
           {aside}
         </aside>
       )}
 
-      {aside && (
+      {aside && !showControls && (
+        <button
+          type="button"
+          onClick={() => setPresenter(true)}
+          aria-label="Presenter tools"
+          title="Presenter tools"
+          className="stage__presenter-toggle hidden md:inline-flex"
+        >
+          <SlidersHorizontal aria-hidden className="size-4" />
+        </button>
+      )}
+
+      {showControls && (
         <div className="md:hidden">
           <button
             type="button"
@@ -78,6 +102,40 @@ export function PhoneFrame({ children, aside }: { children: ReactNode; aside?: R
       )}
     </div>
   )
+}
+
+// Presenter mode shows the demo controls next to the phone. Off by default, so a judge opening
+// the link sees the app and the tour, not 19 buttons. Remembered per browser; ?presenter=1 or
+// ?presenter=0 in the URL switches it.
+const PRESENTER_KEY = 'whytired.presenter.v1'
+
+function usePresenterMode() {
+  const [on, setOn] = useState(() => {
+    const param = new URLSearchParams(window.location.search).get('presenter')
+    if (param !== null) {
+      writePresenter(param !== '0')
+      return param !== '0'
+    }
+    try {
+      return localStorage.getItem(PRESENTER_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
+  const set = (value: boolean) => {
+    setOn(value)
+    writePresenter(value)
+  }
+  return [on, set] as const
+}
+
+function writePresenter(on: boolean) {
+  try {
+    if (on) localStorage.setItem(PRESENTER_KEY, '1')
+    else localStorage.removeItem(PRESENTER_KEY)
+  } catch {
+    // storage blocked: presenter mode just won't survive a reload
+  }
 }
 
 // Fades the phone content in on every route change and starts the new screen at the top (the

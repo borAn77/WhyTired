@@ -119,6 +119,13 @@ const STORIES: Record<string, Record<PersonaKey, Story>> = {
   },
 }
 
+// Today before the morning check-in: the coach has nothing to say yet.
+export const TODAY_BEFORE_CHECKIN: Story = {
+  step: 'Today',
+  title: 'First, the check-in.',
+  body: '5 taps, 15 seconds. Then the coach answers: train hard, train easy or rest.',
+}
+
 // Shown on the experiment screen once the 7 days are over.
 export const AFTER: Record<'improved' | 'not_improved', Story> = {
   improved: {

@@ -10,6 +10,8 @@ import type { CheckIn, ISODate } from './types'
 
 export interface Scene {
   title: string
+  headline: string // the guided tour's title for this step (what the audience reads)
+  caption: string // the guided tour's one sentence
   say: string // what the presenter says
   tap?: string // what to tap live, if anything
   seconds: number // pace target
@@ -107,6 +109,8 @@ const kasiaClosed = session({
 export const SCENES: Scene[] = [
   {
     title: 'Kasia: morning check-in',
+    headline: 'A 15-second morning check-in',
+    caption: 'Kasia, 23, a runner with a watch, answers 5 quick questions each morning.',
     say: 'Kasia, 23, runner, has a watch. Every morning: a 15-second check-in. A short night, so the app asks why.',
     tap: 'Low → That’s right → OK → Coffee after 2 pm → Next → Somewhat → Somewhat → Finish',
     seconds: 20,
@@ -115,6 +119,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Kasia: today’s advice',
+    headline: 'One clear answer for today',
+    caption: 'Rest today. The reasons come from her own numbers.',
     say: 'One clear answer: rest today, with the reasons. Small rewards keep the habit going.',
     seconds: 8,
     state: kasiaAfter,
@@ -122,6 +128,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Kasia: the app noticed',
+    headline: 'It notices patterns',
+    caption: 'Late coffee, twice this week. After 3 low mornings, the detective opens a case.',
     say: 'It noticed a pattern: coffee after 2 pm, twice this week, with one small tip. And a third low morning in a row: the detective opens a case.',
     seconds: 10,
     state: kasiaAfter,
@@ -130,6 +138,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Detective: the case file',
+    headline: 'The detective ranks the causes',
+    caption: 'All from her own data. Prime suspect: training load, 2,700 against her usual 1,050.',
     say: 'The detective ranks suspects from her own data. Prime suspect: her training load, far above her usual week.',
     seconds: 12,
     state: kasiaAfter,
@@ -137,6 +147,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Detective: alibi check',
+    headline: 'Checked against her own past',
+    caption: 'In her holiday week she trained less: more energy, resting heart rate 6 bpm lower.',
     say: 'It checks her own past: in her holiday week she trained less, and her resting heart rate was lower.',
     seconds: 10,
     state: kasiaAfter,
@@ -145,6 +157,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Detective: fake clue',
+    headline: 'Bad sensor data is left out',
+    caption: 'One night of impossible watch readings is thrown out, with the reason shown.',
     say: 'One night a loose strap gave an impossible heart-rate jump. It is thrown out, with the reason shown.',
     seconds: 10,
     state: kasiaAfter,
@@ -153,6 +167,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Tomek: no watch',
+    headline: 'No watch? It still works',
+    caption: 'Tomek, 21, uses check-ins only. It finds his exam-time sleep debt, at medium confidence.',
     say: 'Tomek, 21, gym, no watch. Same detective on check-ins only: it finds his exam-time sleep debt and honestly caps confidence at medium.',
     seconds: 15,
     state: tomekDetective,
@@ -160,6 +176,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Tomek: the mission',
+    headline: 'One safe change for 7 days',
+    caption: 'Not a diagnosis. Tomek tries a fixed sleep window for a week.',
     say: 'Not a diagnosis: one safe change for 7 days. A fixed sleep window.',
     seconds: 8,
     state: tomekMission,
@@ -167,6 +185,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Next morning: mission check',
+    headline: 'One tap each morning',
+    caption: 'Did you stick to it? The check-in starts with this question.',
     say: 'Every morning starts with one tap: did you stick to it?',
     tap: 'Yes, fully',
     seconds: 10,
@@ -175,6 +195,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'A week later: the verdict',
+    headline: 'A week later: the verdict',
+    caption: 'He stuck to it and is still tired. Next step: the family doctor.',
     say: 'He stuck to it almost every day and is still tired. Verdict: time for the family doctor.',
     seconds: 12,
     state: tomekVerdict,
@@ -182,6 +204,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Doctor summary',
+    headline: 'Ready for the doctor',
+    caption: 'One page in Polish for the family doctor, to print or share by QR code.',
     say: 'The app prepares one page for the family doctor, in Polish, to print or share as a QR code.',
     tap: 'Show link and QR code',
     seconds: 8,
@@ -190,6 +214,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'What the doctor sees',
+    headline: 'What the doctor sees',
+    caption: 'Timeline, trends, what he tried and questions to ask. No diagnoses.',
     say: 'Timeline, trends, what he tried, what he noticed himself, and questions to ask. No diagnoses.',
     seconds: 15,
     state: tomekVerdict,
@@ -197,6 +223,8 @@ export const SCENES: Scene[] = [
   },
   {
     title: 'Bonus: when it works',
+    headline: 'And when the change works',
+    caption: 'Kasia’s energy came back, so the case is closed. She keeps the change.',
     say: 'If the change works: case closed, keep the change. For questions.',
     seconds: 0,
     bonus: true,

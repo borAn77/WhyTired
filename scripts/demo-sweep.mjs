@@ -33,7 +33,7 @@ async function checkIn(energy = '2: Low') {
 }
 const restart = async () => { await click('Restart the demo'); await sleep(600) }
 try {
-  await goto(SITE + '/'); await sleep(800); await watchErrors()
+  await goto(SITE + '/?presenter=1'); await sleep(800); await watchErrors() // demo controls are hidden until presenter mode is on
 
   await restart(); await btn('Check-in'); await sleep(400); await checkIn()
   await check('B restart -> jump Check-in -> finish lands on Today', (await path()) === '/' && await text('Find out why'))
