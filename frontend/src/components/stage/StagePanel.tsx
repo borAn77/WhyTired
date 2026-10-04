@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useId, useRef } from 'react'
 import { ChevronLeft, ChevronRight, FlaskConical, Play, RotateCcw, Search, Stethoscope, Sunrise, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -46,13 +46,14 @@ export function StagePanel({ compact = false }: { compact?: boolean }) {
 
 function Welcome({ compact }: { compact: boolean }) {
   const { start } = useScenes()
+  const titleId = useId()
   return (
-    <section className={cn('stage-story stage-tour', compact && 'is-compact')} aria-labelledby="stage-welcome">
+    <section className={cn('stage-story stage-tour', compact && 'is-compact')} aria-labelledby={titleId}>
       <div className="stage-story__inner">
         <div className="stage-story__character">
           <LogoCharacter mood="tired" className="stage-story__mark" title="WhyTired logo" />
         </div>
-        <h2 id="stage-welcome" className="stage-story__title">
+        <h2 id={titleId} className="stage-story__title">
           A detective for your tiredness.
         </h2>
         <p className="stage-story__body">For students who train, with or without a smartwatch.</p>
@@ -135,6 +136,7 @@ function TourDone({ compact }: { compact: boolean }) {
   const { reset } = useSession()
   const { mood } = useStageState()
   const navigate = useNavigate()
+  const titleId = useId()
 
   const tryIt = () => {
     stop()
@@ -143,12 +145,12 @@ function TourDone({ compact }: { compact: boolean }) {
   }
 
   return (
-    <section className={cn('stage-story stage-tour', compact && 'is-compact')} aria-labelledby="stage-done">
+    <section className={cn('stage-story stage-tour', compact && 'is-compact')} aria-labelledby={titleId}>
       <div className="stage-story__inner">
         <div className="stage-story__character">
           <LogoCharacter mood={mood} className="stage-story__mark" title={`WhyTired logo, ${mood}`} />
         </div>
-        <h2 id="stage-done" className="stage-story__title">
+        <h2 id={titleId} className="stage-story__title">
           That’s WhyTired.
         </h2>
         <Journey />

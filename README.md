@@ -9,7 +9,7 @@ WhyTired works in three steps:
 
 Built at HackYeah 2026 (Sport & Healthcare).
 
-**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
+**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
 
 ## Screenshots
 | Morning coach | Detective mode | Experiment result | Doctor summary (PL) |
@@ -78,7 +78,13 @@ And every path a presenter might take (restart, skipping onboarding, both person
 
 ## Demo walkthrough
 
-The demo controls (desktop: right of the phone frame; phone: a tab on the right edge that opens a bottom sheet) switch the persona, move "today" forward, switch the data level and the experiment outcome, and jump between screens. This is how the whole story is driven live, with no need to wait out real days. "Restart the demo" starts again from onboarding.
+**The 2-minute tour.** On desktop the first screen is a welcome beside the phone with one action: **Take the 2-min tour**. It steps through every screen with one caption each (Next / Back, the arrow keys or a clicker): Kasia (watch) first, then Tomek (no watch), the doctor's page, and the "case closed" ending. It ends with "Try it yourself" or "Watch again". On a phone the tour is a bar above the app.
+
+**On your own.** Tap *Get started* in the phone. A demo tip on the first check-in question says which answer opens the detective, and on the mission screen *Demo: skip to day 7* shows the verdict without waiting a week.
+
+**Presenter tools** (the small icon in the bottom-right corner, or `?presenter=1`) switch the persona, move "today" forward, switch the data level and the experiment outcome, jump between screens, and run the demo script with speaker notes. They stay open in that browser until hidden. "Restart the demo" starts again from onboarding.
+
+The full story, step by step:
 
 1. **Onboarding (persona Kasia, full data).** A goal, sports, and whether she wears a watch. The watch answer sets the data level.
 2. **Morning check-in, one card per question.** Energy, hours slept (prefilled from the watch), sleep quality, stress, soreness, and "I feel ill". A tap answers and moves on. After a short or bad night a follow-up card asks what got in the way (screens, coffee after 2 pm, studying late, worries, alcohol, noise); high stress gets a similar card. The check-in earns +10 XP and keeps the streak going.
@@ -91,7 +97,7 @@ The demo controls (desktop: right of the phone frame; phone: a tab on the right 
 
 ### Presenting with the demo script (12 scenes, under 2½ minutes)
 
-"Demo script" at the top of the demo controls runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same.
+"Demo script" at the top of the presenter tools runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same. The guided tour is the same script with a caption for the audience beside the phone, so on stage the presenter tools are optional: start the tour and click through it.
 
 - **→ / PageDown** next scene, **← / PageUp** previous. A presentation clicker sends these keys.
 - The card shows what to say, what to tap live (only the first check-in and the mission check), and the elapsed time against the planned pace (it turns coral when you are more than 10 seconds behind).
