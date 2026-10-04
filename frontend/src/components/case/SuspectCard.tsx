@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 
 import { ChartKey } from '@/components/case/CaseParts'
+import { EvidenceTest } from '@/components/evidence/EvidenceTest'
 import { MiniChart } from '@/components/MiniChart'
 import { CONFIDENCE } from '@/lib/labels'
 import { formatShort } from '@/lib/dates'
@@ -122,6 +123,7 @@ export function SuspectCard({ cause, rank }: { cause: Cause; rank: number }) {
           </div>
         )}
         {cause.history_check && <AlibiCheck check={cause.history_check} />}
+        <EvidenceTest causeId={cause.id} />
         <HowSure cause={cause} />
       </div>
     </article>

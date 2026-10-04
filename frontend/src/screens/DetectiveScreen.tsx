@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { DetectiveNotes, FakeClues, MissionCard } from '@/components/case/CaseCards'
 import { CaseHeader, CaseStat, InvestigatingState, MascotBadge, Reveal } from '@/components/case/CaseParts'
 import { SuspectCard } from '@/components/case/SuspectCard'
+import { EyeCheckCard } from '@/components/evidence/EyeCheckCard'
+import { EyeCheckProvider } from '@/components/evidence/EyeCheckProvider'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState } from '@/components/states'
@@ -53,59 +55,62 @@ export function DetectiveScreen() {
   }
 
   return (
-    <Screen
-      footer={
-        plan && (
-          <>
-            <PrimaryButton onClick={startMission}>
-              <Target aria-hidden />
-              Accept the mission
-            </PrimaryButton>
-            <p className="mt-2 text-center text-sm text-muted-foreground">Starts tomorrow · stop any time</p>
-          </>
-        )
-      }
-    >
-      <Reveal index={0}>
-        <CaseHeader
-          title={CASE_TITLE}
-          dataLevel={data.data_level}
-          step={2}
-          stats={
+    <EyeCheckProvider>
+      <Screen
+        footer={
+          plan && (
             <>
-              <CaseStat value={data.low_energy_days} label="low days" />
-              <CaseStat value={data.causes.length} label={data.causes.length === 1 ? 'suspect' : 'suspects'} />
-              <CaseStat value={fakeNights} label={fakeNights === 1 ? 'fake clue' : 'fake clues'} />
+              <PrimaryButton onClick={startMission}>
+                <Target aria-hidden />
+                Accept the mission
+              </PrimaryButton>
+              <p className="mt-2 text-center text-sm text-muted-foreground">Starts tomorrow · stop any time</p>
             </>
-          }
-        />
-      </Reveal>
-      {data.explanation && (
-        <Reveal index={1}>
-          <DetectiveNotes explanation={data.explanation} />
+          )
+        }
+      >
+        <Reveal index={0}>
+          <CaseHeader
+            title={CASE_TITLE}
+            dataLevel={data.data_level}
+            step={2}
+            stats={
+              <>
+                <CaseStat value={data.low_energy_days} label="low days" />
+                <CaseStat value={data.causes.length} label={data.causes.length === 1 ? 'suspect' : 'suspects'} />
+                <CaseStat value={fakeNights} label={fakeNights === 1 ? 'fake clue' : 'fake clues'} />
+              </>
+            }
+          />
         </Reveal>
-      )}
-      <Reveal index={2}>
-        <section className="space-y-3" aria-labelledby="suspects">
-          <h2 id="suspects" className="text-xl font-semibold">
-            The suspects
-          </h2>
-          {data.causes.map((cause, i) => (
-            <SuspectCard key={cause.id} cause={cause} rank={i + 1} />
-          ))}
-        </section>
-      </Reveal>
-      {data.excluded.length > 0 && (
-        <Reveal index={3}>
-          <FakeClues points={data.excluded} />
+        <EyeCheckCard causes={data.causes} />
+        {data.explanation && (
+          <Reveal index={1}>
+            <DetectiveNotes explanation={data.explanation} />
+          </Reveal>
+        )}
+        <Reveal index={2}>
+          <section className="space-y-3" aria-labelledby="suspects">
+            <h2 id="suspects" className="text-xl font-semibold">
+              The suspects
+            </h2>
+            {data.causes.map((cause, i) => (
+              <SuspectCard key={cause.id} cause={cause} rank={i + 1} />
+            ))}
+          </section>
         </Reveal>
-      )}
-      {plan && (
-        <Reveal index={4}>
-          <MissionCard plan={plan} />
-        </Reveal>
-      )}
-    </Screen>
+        {data.excluded.length > 0 && (
+          <Reveal index={3}>
+            <FakeClues points={data.excluded} />
+          </Reveal>
+        )}
+        {plan && (
+          <Reveal index={4}>
+            <MissionCard plan={plan} />
+          </Reveal>
+        )}
+      </Screen>
+    </EyeCheckProvider>
   )
 }
 

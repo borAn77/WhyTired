@@ -1,0 +1,14 @@
+/* Eye check: the logo character's lids (stage/LogoCharacter) follow the user's eyes. EyeCheck
+   sets --lid every frame; no easing and no blinking of its own, so it mirrors in real time. */
+.evidence-eyes .wt-char__lid,
+.evidence-eyes .wt-char__pupil {
+  transition: none;
+}
+
+.evidence-eyes .wt-char__blink {
+  animation: none;
+}
+
+.evidence-eyes .wt-char__lid {
+  transform: translateY(var(--lid, 0px));
+}
