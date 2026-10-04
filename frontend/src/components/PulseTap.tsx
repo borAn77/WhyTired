@@ -151,7 +151,8 @@ function HeartButton({ taps, elapsed, onTap }: { taps: number[]; elapsed: number
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="relative grid size-50 place-items-center">
-        <svg aria-hidden viewBox="0 0 200 200" className="absolute inset-0 -rotate-90">
+        {/* Decoration only: without pointer-events-none the ring sits on top of the heart and takes every tap. */}
+        <svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute inset-0 -rotate-90">
           <circle cx="100" cy="100" r={RING_RADIUS} fill="none" strokeWidth="8" className="stroke-navy-100" />
           {started && (
             <circle

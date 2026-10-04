@@ -21,7 +21,14 @@ const watchErrors = () => evaluate(`window.__errs = []; window.addEventListener(
 const errors = async () => (await evaluate('JSON.stringify(window.__errs || [])'))
 const results = []
 const check = async (name, ok) => { results.push(`${ok ? 'PASS' : 'FAIL'}  ${name}`) }
-// pulse: a number to type on the optional pulse card (no-watch check-ins only).
+// A real mouse click at the centre of the pulse heart. Unlike el.click() it is hit-tested like a
+// finger, so it fails if anything covers the heart (the progress ring once did).
+const tapHeart = async () => {
+  const { x, y } = await evaluate(`(() => { const r = [...document.querySelectorAll('button')].find((b) => b.innerText.includes('Tap on every beat')).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 } })()`)
+  for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 })
+}
+// pulse: a number to type on the optional pulse card, or 'tap' for two real taps on the heart
+// (no-watch check-ins only). Returns whether the two taps were counted.
 async function checkIn(energy = '2: Low', pulse = null) {
   await waitFor('How much energy do you have?', 90000)
   await clickSel(`[aria-label="${energy}"]`); await sleep(700)
@@ -31,12 +38,17 @@ async function checkIn(energy = '2: Low', pulse = null) {
   await clickSel('[aria-label="2: A little"]'); await sleep(700)
   // Without a watch, soreness moves on (280 ms) to the optional pulse card, which has the Finish button.
   await clickSel('[aria-label="4: Very"]'); await waitFor('Finish check-in', 5000)
-  if (pulse !== null) {
+  let tapped = false
+  if (pulse === 'tap') {
+    await tapHeart(); await sleep(900); await tapHeart(); await sleep(300)
+    tapped = await text('2 taps')
+  } else if (pulse !== null) {
     await click('Enter a number instead'); await sleep(300)
     await evaluate(`document.querySelector('input[type="number"]').focus()`)
     await send('Input.insertText', { text: String(pulse) }); await sleep(200)
   }
   await click('Finish check-in'); await sleep(1500)
+  return tapped
 }
 const restart = async () => { await click('Restart the demo'); await sleep(600) }
 try {
@@ -85,7 +97,7 @@ try {
   await click('Accept the mission'); await waitFor('Starts tomorrow', 90000)
   await click('+1 day'); await sleep(800)
   await check('Tomek +1 day opens check-in', (await path()) === '/check-in')
-  await checkIn('2: Low')
+  await check('Tomek: real clicks on the pulse heart count as taps', await checkIn('2: Low', 'tap'))
   await check('Tomek day-1 check-in lands on Today', (await path()) === '/')
   await click('+7 days'); await sleep(500); await btn('Experiment'); await sleep(2500)
   await check('Tomek verdict shown', await text('VERDICT') || await text('Verdict'))
