@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, Play, Timer, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Timer, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { useScenes } from '@/lib/sceneContext'
@@ -7,14 +7,13 @@ import { SCENES } from '@/lib/scenes'
 import { cn } from '@/lib/utils'
 
 const TIMED = SCENES.filter((scene) => !scene.bonus)
-const TOTAL_SECONDS = TIMED.reduce((sum, scene) => sum + scene.seconds, 0)
 const SLACK_SECONDS = 10
 
 const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
 
 // The presenter's script card: what to say and tap in each scene, and whether we are on time.
 export function ScenePanel() {
-  const { index, startedAt, start, go, stop } = useScenes()
+  const { index, startedAt, go, stop } = useScenes()
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
     if (index === null) return
@@ -22,18 +21,8 @@ export function ScenePanel() {
     return () => window.clearInterval(timer)
   }, [index])
 
-  // Idle: one compact row, so the presenter column stays shorter than the phone.
-  if (index === null) {
-    return (
-      <Button className="h-11 w-full gap-2 bg-navy-900 font-semibold text-white hover:bg-navy-800" onClick={start}>
-        <Play aria-hidden className="text-coral-500" />
-        Demo script
-        <span className="ml-auto font-normal text-navy-100">
-          {TIMED.length} scenes · {clock(TOTAL_SECONDS)}
-        </span>
-      </Button>
-    )
-  }
+  // Idle: nothing here. The script starts from "Take the 2-min tour" on the stage (TourBar on phones).
+  if (index === null) return null
 
   const scene = SCENES[index]
   const elapsed = startedAt ? Math.max(0, (now - startedAt) / 1000) : 0
