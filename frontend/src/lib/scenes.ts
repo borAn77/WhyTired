@@ -1,5 +1,6 @@
 import { observationsFor, type DayClues } from './clues'
 import { DEMO_DAY } from './dates'
+import { PERSONAS } from './profile'
 import { DEFAULT_SESSION, toCtx, type SessionState } from './session'
 import { encodeShare } from './share'
 import type { CheckIn, ISODate } from './types'
@@ -46,8 +47,7 @@ const KASIA_CLUES_PAST: Record<ISODate, DayClues> = {
 const kasia = {
   personaId: 'kasia',
   dataLevel: 'full' as const,
-  goal: 'Run my first half marathon in spring',
-  sports: ['Running'],
+  ...PERSONAS.kasia,
 }
 const kasiaBefore = session({ ...kasia, checkins: KASIA_PAST, clues: KASIA_CLUES_PAST })
 const kasiaAfter = session({
@@ -78,8 +78,7 @@ const VERDICT_DAY = '2026-10-12'
 const tomek = {
   personaId: 'tomek',
   dataLevel: 'basic' as const,
-  goal: 'Get stronger and train consistently',
-  sports: ['Gym', 'Football'],
+  ...PERSONAS.tomek,
 }
 const tomekDetective = session({ ...tomek, clues: TOMEK_CLUES_PAST })
 const tomekMission = session({

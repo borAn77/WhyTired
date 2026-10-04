@@ -5,11 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import { ScenePanel } from '@/components/ScenePanel'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { api } from '@/lib/api'
+import { PERSONAS } from '@/lib/profile'
 import { DEMO_DAY, FIRST_ALLOWED_DAY, LAST_ALLOWED_DAY, addDays, daysBetween, formatDay } from '@/lib/dates'
 import { useScenes } from '@/lib/sceneContext'
 import { useSession } from '@/lib/session'
-import { useApi } from '@/lib/useApi'
 import { cn } from '@/lib/utils'
 import type { DataLevel, Scenario } from '@/lib/types'
 
@@ -27,21 +26,21 @@ export function DemoPanel() {
   const { session, update, reset } = useSession()
   const navigate = useNavigate()
   const offset = daysBetween(DEMO_DAY, session.today)
-  const personas = useApi('personas', () => api.personas())
   // While the demo script runs, the manual controls fold away to keep the projector view calm.
   const scriptRunning = useScenes().index !== null
   const [manualOpen, setManualOpen] = useState(false)
   const showManual = !scriptRunning || manualOpen
 
   // Jumping past onboarding (e.g. right after "Restart the demo") fills in the persona's own
-  // goal and sports, so no screen sends the presenter back to onboarding.
+  // onboarding answers, so no screen sends the presenter back to onboarding.
   const jump = (path: string) => {
     if (path !== '/onboarding' && !session.onboarded) {
-      const profile = personas.data?.find((persona) => persona.id === session.personaId)
+      const persona = PERSONAS[session.personaId]
       update({
         onboarded: true,
-        goal: session.goal ?? profile?.goal ?? null,
-        sports: session.sports.length > 0 ? session.sports : (profile?.sports ?? []),
+        goal: session.goal ?? persona?.goal ?? null,
+        sports: session.sports.length > 0 ? session.sports : (persona?.sports ?? []),
+        profile: session.profile ?? persona?.profile ?? null,
       })
     }
     navigate(path)
@@ -89,6 +88,7 @@ export function DemoPanel() {
                 update({
                   personaId,
                   dataLevel: personaId === 'tomek' ? 'basic' : 'full',
+                  ...PERSONAS[personaId],
                   checkins: {},
                   done: {},
                   clues: {},

@@ -33,7 +33,7 @@ async function checkIn(energy = '2: Low') {
 }
 const restart = async () => { await click('Restart the demo'); await sleep(600) }
 try {
-  await goto(SITE + '/?presenter=1'); await sleep(800); await watchErrors() // demo controls are hidden until presenter mode is on
+  await goto(SITE + '/?presenter=1'); await waitFor('Restart the demo', 90000); await watchErrors() // demo controls are hidden until presenter mode is on
 
   await restart(); await btn('Check-in'); await sleep(400); await checkIn()
   await check('B restart -> jump Check-in -> finish lands on Today', (await path()) === '/' && await text('Find out why'))
@@ -140,7 +140,11 @@ try {
   await click('Try it yourself'); await sleep(800)
   await check('Judge: try it yourself starts onboarding', (await path()) === '/onboarding')
   await click('Get started'); await click('Train for a race'); await click('Continue'); await click('Running'); await click('Continue')
-  await click('Yes, I wear one'); await sleep(300); await click('Start my first check-in')
+  await click('3–4'); await click('30–60 min'); await click('Regularly'); await click('Continue')
+  await click('Exams soon'); await click('Continue')
+  await click('Just my phone'); await click('Open my case file'); await sleep(300)
+  await check('Judge: onboarding opens a case file with the medium data level', await text('Your case file is open') && await text('Medium data'))
+  await click('Start my first check-in')
   await checkIn('2: Low')
   await check('Judge: own check-in opens the detective', await until(async () => (await path()) === '/' && (await text('Find out why'))))
   await click('Find out why'); await waitFor('The suspects', 90000)

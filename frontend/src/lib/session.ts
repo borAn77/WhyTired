@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react'
 
 import type { DayClues } from './clues'
 import { DEMO_DAY } from './dates'
+import type { Profile } from './profile'
 import type { CheckIn, Ctx, DataLevel, Experiment, ISODate, Lang, Recommendation, Scenario } from './types'
 
 // The backend is stateless (docs/DECISIONS.md, D1): the browser keeps the session and sends
@@ -17,6 +18,7 @@ export interface SessionState {
   onboarded: boolean
   goal: string | null // onboarding answers (shown in the app, not used by the rules)
   sports: string[]
+  profile: Profile | null // the rest of the onboarding: training, sleep, week, device (lib/profile.ts)
   lang: Lang
   done: Record<ISODate, Recommendation> // days the user marked today's advice as done
   clues: Record<ISODate, DayClues> // answers to the follow-up cards (tips only, never sent to the API)
@@ -33,6 +35,7 @@ export const DEFAULT_SESSION: SessionState = {
   onboarded: false,
   goal: null,
   sports: [],
+  profile: null,
   lang: 'en',
   done: {},
   clues: {},

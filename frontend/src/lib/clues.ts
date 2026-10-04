@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 
 import { addDays, daysBetween } from './dates'
+import { shareProfile, type SharedProfile } from './profile'
 import type { SessionState } from './session'
 import type { CauseId, ISODate } from './types'
 
@@ -109,6 +110,7 @@ export function cluePattern(session: SessionState) {
 export interface Observations {
   plan: Record<Adherence, number> // mission check answers
   clues: Record<string, number> // clue id -> how many mornings it was named
+  profile?: SharedProfile // the onboarding answers a doctor might use (lib/profile.ts)
 }
 
 const OBSERVATION_DAYS = 28
@@ -124,8 +126,9 @@ export function observationsFor(session: SessionState): Observations | null {
       if (CLUE_IDS.has(id)) clues[id] = (clues[id] ?? 0) + 1
     }
   }
-  const empty = plan.yes + plan.partly + plan.no === 0 && Object.keys(clues).length === 0
-  return empty ? null : { plan, clues }
+  const profile = shareProfile(session.sports, session.profile)
+  const empty = plan.yes + plan.partly + plan.no === 0 && Object.keys(clues).length === 0 && !profile
+  return empty ? null : { plan, clues, ...(profile ? { profile } : {}) }
 }
 
 export const clueById = (id: string) => [...SLEEP_CLUES, ...STRESS_CLUES].find((c) => c.id === id)

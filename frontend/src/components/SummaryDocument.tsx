@@ -2,6 +2,7 @@ import { LogoMark } from '@/components/Logo'
 import { MiniChart } from '@/components/MiniChart'
 import { clueById, type Observations } from '@/lib/clues'
 import { formatLongIn, formatShortIn } from '@/lib/dates'
+import { profileLine } from '@/lib/profile'
 import type { DoctorSummary, Lang } from '@/lib/types'
 
 // Section headings (Polish from Berken's doctor-brief texts).
@@ -18,6 +19,7 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     bring: 'Co zabrać na wizytę',
     inShort: 'W skrócie',
     noticed: 'Zgłoszone przez osobę (nie zmierzone)',
+    profile: 'Profil',
     plan: 'Plan',
     fully: 'dni w pełni',
     partly: 'częściowo',
@@ -36,6 +38,7 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     bring: 'What to bring',
     inShort: 'In short',
     noticed: 'Self-reported (not measured)',
+    profile: 'Profile',
     plan: 'Plan',
     fully: 'days fully',
     partly: 'partly',
@@ -134,8 +137,9 @@ export function SummaryDocument({
   )
 }
 
-// What the person reported in the app (mission checks, clue cards). One short paragraph so the
-// printed summary stays one A4 page; the heading says it is self-reported, not measured.
+// What the person reported in the app (onboarding profile, mission checks, clue cards). Short
+// lines so the printed summary stays one A4 page; the heading says it is self-reported, not
+// measured.
 function Noticed({ observations, lang }: { observations: Observations; lang: Lang }) {
   const h = HEADINGS[lang]
   const { yes, partly, no } = observations.plan
@@ -156,9 +160,16 @@ function Noticed({ observations, lang }: { observations: Observations; lang: Lan
   return (
     <>
       <h2 className="doc-heading pt-2">{h.noticed}</h2>
-      <p>
-        {plan} {clues}
-      </p>
+      {observations.profile && (
+        <p>
+          {h.profile}: {profileLine(observations.profile, lang)}.
+        </p>
+      )}
+      {(plan || clues) && (
+        <p>
+          {plan} {clues}
+        </p>
+      )}
     </>
   )
 }
