@@ -21,14 +21,21 @@ const watchErrors = () => evaluate(`window.__errs = []; window.addEventListener(
 const errors = async () => (await evaluate('JSON.stringify(window.__errs || [])'))
 const results = []
 const check = async (name, ok) => { results.push(`${ok ? 'PASS' : 'FAIL'}  ${name}`) }
-async function checkIn(energy = '2: Low') {
+// pulse: a number to type on the optional pulse card (no-watch check-ins only).
+async function checkIn(energy = '2: Low', pulse = null) {
   await waitFor('How much energy do you have?', 90000)
   await clickSel(`[aria-label="${energy}"]`); await sleep(700)
   await click('That’s right'); await sleep(500)
   await clickSel('[aria-label="3: OK"]'); await sleep(700)
   if (await text('What got in the way')) { await click('Nothing special'); await click('Next'); await sleep(500) }
   await clickSel('[aria-label="2: A little"]'); await sleep(700)
-  await clickSel('[aria-label="4: Very"]'); await sleep(300)
+  // Without a watch, soreness moves on (280 ms) to the optional pulse card, which has the Finish button.
+  await clickSel('[aria-label="4: Very"]'); await waitFor('Finish check-in', 5000)
+  if (pulse !== null) {
+    await click('Enter a number instead'); await sleep(300)
+    await evaluate(`document.querySelector('input[type="number"]').focus()`)
+    await send('Input.insertText', { text: String(pulse) }); await sleep(200)
+  }
   await click('Finish check-in'); await sleep(1500)
 }
 const restart = async () => { await click('Restart the demo'); await sleep(600) }
@@ -70,8 +77,9 @@ try {
 
   // Tomek full flow
   await restart(); await click('Tomek · no watch'); await sleep(300); await btn('Check-in'); await sleep(400)
-  await checkIn('1: Empty')
+  await checkIn('1: Empty', 64)
   await check('Tomek check-in lands on Today with Find out why', (await path()) === '/' && await text('Find out why'))
+  await check('Tomek (no watch) typed pulse shows on Today', await text('64 bpm'))
   await click('Find out why'); await waitFor('The suspects', 90000)
   await check('Tomek detective basic level, no High confidence', await text('Basic data') && !(await text('High confidence')))
   await click('Accept the mission'); await waitFor('Starts tomorrow', 90000)

@@ -34,7 +34,7 @@ try {
   await waitFor('WhyTired')
   await evaluate(`localStorage.setItem('whytired.session.v1', JSON.stringify({
     personaId: 'kasia', today: '2026-10-04', scenario: 'not_improved', dataLevel: 'full',
-    checkins: { '2026-10-04': { energy: 2, sleep_hours: 7, sleep_quality: 3, stress: 2, soreness: 4, ill: false } },
+    checkins: { '2026-10-04': { energy: 2, sleep_hours: 7, sleep_quality: 3, stress: 2, soreness: 4, ill: false, pulse: 62 } },
     experiment: null, onboarded: true, goal: 'Train for a race', sports: ['Running'], lang: 'en',
     profile: { perWeek: '3-4', minutes: '30-60', level: 'regular', sleep: 7, context: ['Studies'], device: 'watch', brand: 'Garmin' } }))`)
 
