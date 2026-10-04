@@ -24,6 +24,7 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     fully: 'dni w pełni',
     partly: 'częściowo',
     not: 'wcale',
+    pulse: 'Poranny puls (mierzony samodzielnie)',
     inShortAi: 'W skrócie (tekst napisany przez AI wyłącznie na podstawie liczb z tego podsumowania)',
   },
   en: {
@@ -43,6 +44,7 @@ const HEADINGS: Record<Lang, Record<string, string>> = {
     fully: 'days fully',
     partly: 'partly',
     not: 'not at all',
+    pulse: 'Morning pulse (self-measured)',
     inShortAi: 'In short (written by AI, using only the numbers in this summary)',
   },
 }
@@ -137,9 +139,9 @@ export function SummaryDocument({
   )
 }
 
-// What the person reported in the app (onboarding profile, mission checks, clue cards). Short
-// lines so the printed summary stays one A4 page; the heading says it is self-reported, not
-// measured.
+// What the person reported in the app (onboarding profile, mission checks, clue cards, and the
+// pulse they took themselves without a watch). Short lines so the printed summary stays one A4
+// page; the heading says it is self-reported, not measured.
 function Noticed({ observations, lang }: { observations: Observations; lang: Lang }) {
   const h = HEADINGS[lang]
   const { yes, partly, no } = observations.plan
@@ -170,6 +172,11 @@ function Noticed({ observations, lang }: { observations: Observations; lang: Lan
           {plan} {clues}
         </p>
       )}
+      {observations.pulse?.length ? (
+        <p>
+          {h.pulse}: {observations.pulse.join(', ')} bpm
+        </p>
+      ) : null}
     </>
   )
 }
