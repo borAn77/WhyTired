@@ -87,6 +87,15 @@ const tomekMission = session({
   experiment: { cause_id: 'sleep_debt', start: '2026-10-05', days: 7 },
 })
 const tomekNextMorning = session({ ...tomekMission, today: '2026-10-06' })
+// The same morning with the check-in answered, so the scene opens on its last card (the pulse).
+// Answers copied from his persona data (backend/data/tomek.json, not_improved, 6 Oct), so the rule
+// engine sees nothing new; stress 4 brings the follow-up card, answered like his exam weeks.
+const TOMEK_MORNING_2: CheckIn = { energy: 2, sleep_hours: 6.5, sleep_quality: 4, stress: 4, soreness: 2, ill: false }
+const tomekPulse = session({
+  ...tomekNextMorning,
+  checkins: { '2026-10-06': TOMEK_MORNING_2 },
+  clues: { ...TOMEK_CLUES_PAST, '2026-10-06': { mission: 'yes', stress: ['exams'] } },
+})
 const tomekVerdict = session({
   ...tomekMission,
   today: VERDICT_DAY,
@@ -189,6 +198,16 @@ export const SCENES: Scene[] = [
     seconds: 10,
     state: tomekNextMorning,
     route: '/check-in',
+  },
+  {
+    title: 'Next morning: pulse without a watch',
+    headline: 'A pulse without a watch',
+    caption: 'The check-in ends with an optional pulse: fingers on the neck, tap the heart on every beat. Try it.',
+    say: 'No watch, so the check-in ends with an optional pulse: fingers on the neck, tap the heart on every beat for 30 seconds. A few taps already give an estimate.',
+    tap: 'The heart, 4–5 times (an estimate appears)',
+    seconds: 10,
+    state: tomekPulse,
+    route: '/check-in?step=pulse',
   },
   {
     title: 'A week later: the verdict',
