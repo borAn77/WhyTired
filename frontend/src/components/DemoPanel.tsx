@@ -91,7 +91,6 @@ export function DemoPanel() {
                   dataLevel: personaId === 'tomek' ? 'basic' : 'full',
                   checkins: {},
                   done: {},
-                  missions: [],
                   clues: {},
                   closed: [],
                   experiment: null,

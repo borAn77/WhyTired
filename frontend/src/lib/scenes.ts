@@ -86,7 +86,6 @@ const tomekMission = session({
   ...tomek,
   clues: TOMEK_CLUES_PAST,
   experiment: { cause_id: 'sleep_debt', start: '2026-10-05', days: 7 },
-  missions: [DEMO_DAY],
 })
 const tomekNextMorning = session({ ...tomekMission, today: '2026-10-06' })
 const tomekVerdict = session({
@@ -103,7 +102,6 @@ const kasiaClosed = session({
   checkins: { ...KASIA_PAST, [DEMO_DAY]: KASIA_TODAY },
   clues: { ...KASIA_CLUES_PAST, ...MISSION_WEEK },
   experiment: { cause_id: 'load_spike', start: '2026-10-05', days: 7 },
-  missions: [DEMO_DAY],
 })
 
 export const SCENES: Scene[] = [

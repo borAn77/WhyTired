@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 
-import { CluePattern, DayComplete, DetectiveRadar, StreakChip } from '@/components/progress'
+import { CaseClosed, CluePattern, DayComplete, DetectiveRadar, StreakChip } from '@/components/progress'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { ErrorState, LoadingState } from '@/components/states'
@@ -131,6 +131,8 @@ function Today() {
         </div>
         {session.goal && <p className="mt-1 text-muted-foreground">Goal: {session.goal.toLowerCase()}</p>}
       </section>
+
+      {session.closed.includes(session.today) && <CaseClosed />}
 
       {checkedIn && coach.loading && <LoadingState label="Getting today's advice" />}
       {checkedIn && coach.error ? (

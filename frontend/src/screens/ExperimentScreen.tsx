@@ -45,8 +45,13 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   const { data, error, loading, retry } = useApi(`experiment:${JSON.stringify(ctx)}`, () => api.experiment(ctx))
 
   // Stopping early and keeping the change both end the mission and go back to daily advice.
+  // Keeping the change also closes the case, which Today confirms.
   const end = () => {
     update({ experiment: null })
+    navigate('/')
+  }
+  const closeCase = () => {
+    update({ experiment: null, closed: [...session.closed, session.today] })
     navigate('/')
   }
   const restart = () => update({ experiment: { ...experiment, start: addDays(session.today, 1) } })
@@ -73,7 +78,7 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
     )
   else if (data?.status === 'improved')
     footer = (
-      <PrimaryButton onClick={end}>
+      <PrimaryButton onClick={closeCase}>
         <Trophy aria-hidden />
         Keep the change
       </PrimaryButton>

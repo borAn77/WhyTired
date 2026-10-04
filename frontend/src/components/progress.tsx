@@ -1,4 +1,4 @@
-import { BatteryLow, CircleCheck, Flame, Lightbulb, Search } from 'lucide-react'
+import { BatteryLow, CircleCheck, Flame, Lightbulb, Search, Trophy } from 'lucide-react'
 
 import type { ClueOption } from '@/lib/clues'
 import { checkinStreak } from '@/lib/progress'
@@ -75,6 +75,22 @@ export function DayComplete() {
       <CircleCheck aria-hidden className="mx-auto size-10 text-green-700" />
       <h2 className="mt-2 text-xl font-semibold">Day complete</h2>
       <p className="text-muted-foreground">See you at tomorrow's check-in.</p>
+    </section>
+  )
+}
+
+/** The morning after a mission that worked: the case is closed and daily advice is back. */
+export function CaseClosed() {
+  return (
+    <section
+      role="status"
+      className="flex animate-in items-start gap-3 rounded-3xl bg-green-50 p-5 ring-1 ring-green-700/30 fade-in zoom-in-95 duration-500 motion-reduce:animate-none"
+    >
+      <Trophy aria-hidden className="mt-0.5 size-6 shrink-0 text-green-700" />
+      <div>
+        <h2 className="text-lg font-semibold">Case closed</h2>
+        <p className="text-muted-foreground">Keep the change. Your daily advice is back.</p>
+      </div>
     </section>
   )
 }

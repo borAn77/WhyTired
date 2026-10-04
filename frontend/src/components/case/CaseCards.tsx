@@ -13,8 +13,9 @@ const FAKE_METRICS: Record<string, { name: string; unit: string; icon: LucideIco
 
 const firstSentence = (text: string) => text.split(/(?<=\.)\s+/)[0] ?? text
 
-// Unreliable sensor readings the engine threw out, grouped by night. The headline stays in view;
-// the values and the short reason for each one open with "Why?".
+// Unreliable sensor readings the engine threw out, grouped by night. The headline and one short
+// reason per night stay in view (the rule: excluded data is always shown with why); the values and
+// the reason for each reading open with "Details".
 export function FakeClues({ points }: { points: ExcludedPoint[] }) {
   const [open, setOpen] = useState(false)
   const listId = useId()
@@ -41,6 +42,11 @@ export function FakeClues({ points }: { points: ExcludedPoint[] }) {
       <h2 className="mt-1 pr-28 text-lg font-semibold leading-snug">
         {nights.length === 1 ? '1 night' : `${nights.length} nights`} of sensor glitches thrown out
       </h2>
+      {nights.map(([date, items]) => (
+        <p key={date} className="mt-1.5">
+          <span className="font-semibold">{formatDay(date)}:</span> {firstSentence(items[0].reason)}
+        </p>
+      ))}
       <button
         type="button"
         aria-expanded={open}
@@ -48,7 +54,7 @@ export function FakeClues({ points }: { points: ExcludedPoint[] }) {
         onClick={() => setOpen(!open)}
         className="mt-1 inline-flex min-h-11 items-center gap-1 rounded-lg font-semibold text-navy-700 underline-offset-4 hover:underline focus-visible:outline-2"
       >
-        Why?
+        Details
         <ChevronDown aria-hidden className={cn('size-5 transition-transform', open && 'rotate-180')} />
       </button>
 

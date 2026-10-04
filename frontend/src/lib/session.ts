@@ -18,10 +18,9 @@ export interface SessionState {
   goal: string | null // onboarding answers (shown in the app, not used by the rules)
   sports: string[]
   lang: Lang
-  done: Record<ISODate, Recommendation> // days the user marked today's advice as done (XP only)
-  missions: ISODate[] // start dates of accepted experiments (XP only)
+  done: Record<ISODate, Recommendation> // days the user marked today's advice as done
   clues: Record<ISODate, DayClues> // answers to the follow-up cards (tips only, never sent to the API)
-  closed: ISODate[] // days a case was closed because the experiment worked (XP only)
+  closed: ISODate[] // days a case was closed because the experiment worked
 }
 
 export const DEFAULT_SESSION: SessionState = {
@@ -36,7 +35,6 @@ export const DEFAULT_SESSION: SessionState = {
   sports: [],
   lang: 'en',
   done: {},
-  missions: [],
   clues: {},
   closed: [],
 }

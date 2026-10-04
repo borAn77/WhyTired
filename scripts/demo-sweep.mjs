@@ -62,7 +62,7 @@ try {
   await click('Improved'); await sleep(500); await waitFor('The suspects', 90000); await click('Accept the mission'); await waitFor('Starts tomorrow', 90000)
   await click('+7 days'); await waitFor('Mystery solved', 90000)
   await click('Keep the change'); await sleep(1500)
-  await check('Improved -> Keep the change -> Today with +100 XP toast', (await path()) === '/' && await text('case closed'))
+  await check('Improved -> Keep the change -> Today says case closed', (await path()) === '/' && await text('Case closed'))
 
   // Kasia medium data
   await restart(); await btn('Detective'); await sleep(300); await click('Medium'); await waitFor('The suspects', 90000)
@@ -122,6 +122,32 @@ try {
   }
   await key('ArrowLeft', 37)
   await check('← goes back a scene (from the bonus to the doctor page)', await until(async () => (await path()).startsWith('/s/')))
+
+  // A judge opening the link cold: no presenter tools, the guided tour, then the app on their own.
+  const tourNext = () => evaluate(`(document.querySelector('.stage__story .stage-tour__primary') ?? document.querySelector('[aria-label="Next step"], [aria-label="Finish the tour"]')).click()`)
+  await goto(SITE + '/?presenter=0'); await sleep(800)
+  await evaluate(`localStorage.removeItem('whytired.session.v1'); true`)
+  await goto(SITE + '/'); await sleep(1500); await watchErrors()
+  await check('Judge: welcome offers the tour, presenter tools hidden', (await has('Take the 2-min tour')) && !(await has('Demo controls')))
+  await click('Take the 2-min tour')
+  await check('Judge: tour step 1 is the check-in', await until(async () => (await path()) === '/check-in' && (await has('Step 1 of 13'))))
+  for (let i = 0; i < 11; i++) { await tourNext(); await sleep(400) }
+  await check('Judge: step 12 is the doctor page with the tour bar', await until(async () => (await path()).startsWith('/s/') && (await has('Step 12 of 13')) && (await has('Pytania do lekarza'))))
+  await tourNext()
+  await check('Judge: step 13 shows case closed', await until(async () => (await path()) === '/experiment' && (await has('Mystery solved')) && (await has('Finish'))))
+  await tourNext(); await sleep(600)
+  await check('Judge: finish shows the end card', await has('That’s WhyTired.'))
+  await click('Try it yourself'); await sleep(800)
+  await check('Judge: try it yourself starts onboarding', (await path()) === '/onboarding')
+  await click('Get started'); await click('Train for a race'); await click('Continue'); await click('Running'); await click('Continue')
+  await click('Yes, I wear one'); await sleep(300); await click('Start my first check-in')
+  await checkIn('2: Low')
+  await check('Judge: own check-in opens the detective', await until(async () => (await path()) === '/' && (await text('Find out why'))))
+  await click('Find out why'); await waitFor('The suspects', 90000)
+  await click('Accept the mission'); await waitFor('Starts tomorrow', 90000)
+  await click('Demo: skip to day 7'); await waitFor('No clear improvement', 90000)
+  await click('Prepare my doctor summary')
+  await check('Judge: skip to day 7 reaches the doctor summary', await until(() => text('Pytania do lekarza')))
 
   results.push('JS errors: ' + (await errors()))
 } catch (e) {
