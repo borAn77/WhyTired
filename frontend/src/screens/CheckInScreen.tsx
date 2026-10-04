@@ -22,7 +22,7 @@ import {
   Watch,
   type LucideIcon,
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { ChoiceGroup } from '@/components/ChoiceGroup'
 import { PrimaryButton } from '@/components/PrimaryButton'
@@ -98,12 +98,20 @@ const ADVANCE_MS = 280
 // tap-along pulse card comes last (components/PulseTap.tsx).
 export function CheckInScreen() {
   const { session } = useSession()
-  // A new day (time travel) or a removed check-in (demo script) starts a fresh set of cards
-  // instead of keeping the previous answers.
-  return <CheckInCards key={`${session.today}:${session.checkins[session.today] ? 'edit' : 'new'}`} />
+  // The demo script and the guided tour can open the check-in on one card: ?step=pulse.
+  const [searchParams] = useSearchParams()
+  const openAt = searchParams.get('step')
+  // A new day (time travel), a removed check-in (demo script) or another card to open on starts
+  // a fresh set of cards instead of keeping the previous answers.
+  return (
+    <CheckInCards
+      key={`${session.today}:${session.checkins[session.today] ? 'edit' : 'new'}:${openAt}`}
+      openAt={openAt}
+    />
+  )
 }
 
-function CheckInCards() {
+function CheckInCards({ openAt }: { openAt: string | null }) {
   const { session, update } = useSession()
   const navigate = useNavigate()
   const ctx = toCtx(session)
@@ -111,7 +119,6 @@ function CheckInCards() {
 
   const [answers, setAnswers] = useState<Partial<CheckIn>>(session.checkins[session.today] ?? {})
   const [clues, setClues] = useState<DayClues>(session.clues[session.today] ?? {})
-  const [index, setIndex] = useState(0)
   const measured = data?.measured_sleep_hours ?? null
   const sleep = answers.sleep_hours ?? (measured !== null ? Math.round(measured * 2) / 2 : 7.5)
   const mission = missionQuestion(session)
@@ -130,6 +137,7 @@ function CheckInCards() {
     'soreness',
     session.dataLevel !== 'full' && 'pulse',
   ].filter(Boolean) as Step[]
+  const [index, setIndex] = useState(() => Math.max(0, steps.indexOf(openAt as Step)))
   const stepCount = useRef(steps.length)
   useEffect(() => {
     stepCount.current = steps.length
@@ -140,9 +148,12 @@ function CheckInCards() {
   const heading = useRef<HTMLHeadingElement>(null)
   const advanceTimer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(advanceTimer.current), [])
+  // Move keyboard and screen-reader focus to the new question, but not when the check-in opens
+  // (it may open on a later card: the guided tour's "Next" button keeps the focus).
+  const shownIndex = useRef(index)
   useEffect(() => {
-    // Move keyboard and screen-reader focus to the new question.
-    if (index > 0) heading.current?.focus()
+    if (index !== shownIndex.current && index > 0) heading.current?.focus()
+    shownIndex.current = index
   }, [index])
 
   const answered = (key: Step) => {

@@ -130,12 +130,13 @@ try {
     ['Tomek detective', async () => (await has('Basic data')) && (await has('sleeping less'))],
     ['Tomek mission', async () => (await path()) === '/experiment' && (await has('Starts tomorrow'))],
     ['Mission check card', async () => (await path()) === '/check-in' && (await has('Did you keep your sleep window'))],
+    ['Pulse card', async () => (await path()) === '/check-in' && (await has('Tap on every beat'))],
     ['Verdict: to your doctor', async () => (await path()) === '/experiment' && (await has('No clear improvement'))],
     ['Summary screen', async () => (await path()) === '/summary' && (await has('Your doctor summary is ready'))],
     ['Doctor page (PL)', async () => (await path()).startsWith('/s/') && (await has('Zgłoszone przez osobę'))],
     ['Bonus: case closed', async () => (await path()) === '/experiment' && (await has('Mystery solved'))],
   ]
-  await click('Take the 2-min tour') // the script starts from the stage's tour button
+  await click('Take the 2-min tour') // starts the same script; the presenter tools show its notes
   for (let i = 0; i < SCENE_CHECKS.length; i++) {
     if (i > 0) await key('ArrowRight', 39)
     await check(`Scene ${i + 1}: ${SCENE_CHECKS[i][0]}`, await until(SCENE_CHECKS[i][1]))
@@ -150,11 +151,19 @@ try {
   await goto(SITE + '/'); await sleep(1500); await watchErrors()
   await check('Judge: welcome offers the tour, presenter tools hidden', (await has('Take the 2-min tour')) && !(await has('Demo controls')))
   await click('Take the 2-min tour')
-  await check('Judge: tour step 1 is the check-in', await until(async () => (await path()) === '/check-in' && (await has('Step 1 of 13'))))
-  for (let i = 0; i < 11; i++) { await tourNext(); await sleep(400) }
-  await check('Judge: step 12 is the doctor page with the tour bar', await until(async () => (await path()).startsWith('/s/') && (await has('Step 12 of 13')) && (await has('Pytania do lekarza'))))
+  // The tour walks the same scenes as the demo script, so the step numbers come from that list.
+  const STEPS = SCENE_CHECKS.length
+  const PULSE_STEP = SCENE_CHECKS.findIndex(([name]) => name === 'Pulse card') + 1
+  await check('Judge: tour step 1 is the check-in', await until(async () => (await path()) === '/check-in' && (await has(`Step 1 of ${STEPS}`))))
+  for (let step = 2; step < STEPS; step++) {
+    await tourNext(); await sleep(400)
+    if (step !== PULSE_STEP) continue
+    await until(() => has('Tap on every beat'), 10000); await tapHeart(); await sleep(300)
+    await check(`Judge: step ${step} is the pulse card, and a real tap counts`, (await has(`Step ${step} of ${STEPS}`)) && (await has('1 tap')))
+  }
+  await check(`Judge: step ${STEPS - 1} is the doctor page with the tour bar`, await until(async () => (await path()).startsWith('/s/') && (await has(`Step ${STEPS - 1} of ${STEPS}`)) && (await has('Pytania do lekarza'))))
   await tourNext()
-  await check('Judge: step 13 shows case closed', await until(async () => (await path()) === '/experiment' && (await has('Mystery solved')) && (await has('Finish'))))
+  await check(`Judge: step ${STEPS} shows case closed`, await until(async () => (await path()) === '/experiment' && (await has('Mystery solved')) && (await has('Finish'))))
   await tourNext(); await sleep(600)
   await check('Judge: finish shows the end card', await has('That’s WhyTired.'))
   await click('Try it yourself'); await sleep(800)
