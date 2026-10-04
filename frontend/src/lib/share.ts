@@ -4,7 +4,8 @@ import type { Ctx, Experiment, Lang } from './types'
 // The read-only share link encodes what the summary is computed from (docs/DECISIONS.md, D6):
 // no database, and opening the link again gives the same summary. App check-ins are left out
 // to keep the link (and its QR code) short; the synthetic data covers those days. What the user
-// noticed (mission checks, clues) travels as a few counts, not as raw daily answers.
+// noticed (mission checks, clues) travels as a few counts, not as raw daily answers, plus up to
+// 7 self-measured morning pulses.
 
 interface SharePayload {
   p: string // persona

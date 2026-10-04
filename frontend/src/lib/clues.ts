@@ -111,24 +111,33 @@ export interface Observations {
   plan: Record<Adherence, number> // mission check answers
   clues: Record<string, number> // clue id -> how many mornings it was named
   profile?: SharedProfile // the onboarding answers a doctor might use (lib/profile.ts)
+  pulse?: number[] // the last (up to 7) self-measured morning pulses, bpm, oldest first
 }
 
 const OBSERVATION_DAYS = 28
+const PULSE_VALUES = 7
 const CLUE_IDS = new Set([...SLEEP_CLUES, ...STRESS_CLUES].filter((c) => c.tip).map((c) => c.id))
 
 export function observationsFor(session: SessionState): Observations | null {
   const plan: Record<Adherence, number> = { yes: 0, partly: 0, no: 0 }
   const clues: Record<string, number> = {}
+  const pulse: number[] = [] // newest first while collecting
   for (let i = 0; i < OBSERVATION_DAYS; i++) {
-    const day = session.clues[addDays(session.today, -i)]
+    const date = addDays(session.today, -i)
+    const day = session.clues[date]
     if (day?.mission) plan[day.mission] += 1
     for (const id of [...(day?.sleep ?? []), ...(day?.stress ?? [])]) {
       if (CLUE_IDS.has(id)) clues[id] = (clues[id] ?? 0) + 1
     }
+    const measured = session.checkins[date]?.pulse
+    if (measured != null && pulse.length < PULSE_VALUES) pulse.push(measured)
   }
   const profile = shareProfile(session.sports, session.profile)
-  const empty = plan.yes + plan.partly + plan.no === 0 && Object.keys(clues).length === 0 && !profile
-  return empty ? null : { plan, clues, ...(profile ? { profile } : {}) }
+  const empty =
+    plan.yes + plan.partly + plan.no === 0 && Object.keys(clues).length === 0 && !profile && pulse.length === 0
+  return empty
+    ? null
+    : { plan, clues, ...(profile ? { profile } : {}), ...(pulse.length ? { pulse: pulse.reverse() } : {}) }
 }
 
 export const clueById = (id: string) => [...SLEEP_CLUES, ...STRESS_CLUES].find((c) => c.id === id)

@@ -4,6 +4,7 @@ import {
   CircleCheck,
   FlaskConical,
   Footprints,
+  HeartPulse,
   Pencil,
   Search,
   Sunrise,
@@ -79,6 +80,7 @@ function Today() {
   // Today counts as checked in only when the user answered in the app. The synthetic data has
   // check-ins for almost every day, but every new morning should ask again.
   const checkedIn = !!session.checkins[session.today]
+  const pulse = session.checkins[session.today]?.pulse // tapped or typed in on the check-in (no watch)
   const needsRadar = checkedIn && !!result && !result.detective_triggered
   const radar = useApi(`radar:${needsRadar}:${JSON.stringify(request)}`, () =>
     needsRadar ? api.detective(toCtx(session)) : Promise.resolve(null),
@@ -130,6 +132,12 @@ function Today() {
           <StreakChip session={session} />
         </div>
         {session.goal && <p className="mt-1 text-muted-foreground">Goal: {session.goal.toLowerCase()}</p>}
+        {pulse != null && (
+          <p className="mt-1 flex items-center gap-1.5 text-muted-foreground">
+            <HeartPulse aria-hidden className="size-4 shrink-0 text-coral-700" />
+            Morning pulse {pulse} bpm
+          </p>
+        )}
       </section>
 
       {session.closed.includes(session.today) && <CaseClosed />}
