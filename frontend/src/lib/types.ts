@@ -26,6 +26,7 @@ export interface CheckIn {
   stress: number // 1–5
   soreness: number // 1–5
   ill?: boolean // "I feel ill" → the coach always says rest
+  pulse?: number | null // tap-measured morning pulse, bpm (no-watch users; not used by the rules)
 }
 
 export interface Experiment {

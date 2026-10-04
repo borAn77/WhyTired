@@ -25,6 +25,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import { PrimaryButton } from '@/components/PrimaryButton'
+import { PulseTap } from '@/components/PulseTap'
 import { Screen } from '@/components/Screen'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
@@ -74,7 +75,7 @@ const SCALES: Record<ScaleKey, { question: string; options: Option[] }> = {
   },
 }
 
-type Step = ScaleKey | 'sleep_hours' | 'mission' | 'sleep_clue' | 'stress_clue'
+type Step = ScaleKey | 'sleep_hours' | 'mission' | 'sleep_clue' | 'stress_clue' | 'pulse'
 
 // For judges trying the app on their own (never during the presenter's script): on the demo day,
 // before any mission, the energy card says which answer opens a case. Checked against the rule
@@ -92,7 +93,8 @@ const ADVANCE_MS = 280
 // The 15-second morning check-in: one question per card, a tap answers and moves on.
 // Sleep hours are prefilled from the watch when there is one. Follow-up cards appear by
 // simple rules (lib/clues.ts): the mission card while an experiment runs, and a "what's behind
-// it" card after a short or bad night or a high stress answer.
+// it" card after a short or bad night or a high stress answer. Without a watch, an optional
+// tap-along pulse card comes last (components/PulseTap.tsx).
 export function CheckInScreen() {
   const { session } = useSession()
   // A new day (time travel) or a removed check-in (demo script) starts a fresh set of cards
@@ -125,6 +127,7 @@ function CheckInCards() {
     'stress',
     needsStressClue(answers.stress) && 'stress_clue',
     'soreness',
+    session.dataLevel !== 'full' && 'pulse',
   ].filter(Boolean) as Step[]
   const stepCount = useRef(steps.length)
   useEffect(() => {
@@ -142,7 +145,7 @@ function CheckInCards() {
   }, [index])
 
   const answered = (key: Step) => {
-    if (key === 'sleep_hours') return true
+    if (key === 'sleep_hours' || key === 'pulse') return true // the pulse is optional
     if (key === 'mission') return clues.mission !== undefined
     if (key === 'sleep_clue') return (clues.sleep?.length ?? 0) > 0
     if (key === 'stress_clue') return (clues.stress?.length ?? 0) > 0
@@ -172,6 +175,7 @@ function CheckInCards() {
       stress: answers.stress!,
       soreness: answers.soreness!,
       ill: answers.ill ?? false,
+      ...(steps.includes('pulse') && answers.pulse != null ? { pulse: answers.pulse } : {}),
     }
     // Keep only follow-up answers whose card was actually part of today's check-in.
     const kept: DayClues = {
@@ -222,6 +226,14 @@ function CheckInCards() {
         }}
       />
     )
+  else if (step === 'pulse')
+    card = (
+      <PulseTap
+        heading={heading}
+        value={answers.pulse}
+        onChange={(pulse) => setAnswers((current) => ({ ...current, pulse }))}
+      />
+    )
   else if (step === 'sleep_clue' || step === 'stress_clue') {
     const kind = step === 'sleep_clue' ? 'sleep' : 'stress'
     card = (
@@ -236,7 +248,9 @@ function CheckInCards() {
   } else
     card = (
       <ScaleCard heading={heading} scale={SCALES[step]} value={answers[step]} onChange={(value) => choose(step, value)}>
-        {last && <IllSwitch on={answers.ill ?? false} onToggle={() => setAnswers({ ...answers, ill: !answers.ill })} />}
+        {step === 'soreness' && (
+          <IllSwitch on={answers.ill ?? false} onToggle={() => setAnswers({ ...answers, ill: !answers.ill })} />
+        )}
         {step === 'energy' && demoTip && <DemoTip text={demoTip} />}
       </ScaleCard>
     )
