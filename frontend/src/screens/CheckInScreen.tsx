@@ -25,7 +25,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import { PrimaryButton } from '@/components/PrimaryButton'
-import { XpPill } from '@/components/progress'
 import { Screen } from '@/components/Screen'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
@@ -41,7 +40,6 @@ import {
   type DayClues,
 } from '@/lib/clues'
 import { DEMO_DAY } from '@/lib/dates'
-import { XP } from '@/lib/progress'
 import { useScenes } from '@/lib/sceneContext'
 import { toCtx, useSession } from '@/lib/session'
 import type { CheckIn } from '@/lib/types'
@@ -113,7 +111,6 @@ function CheckInCards() {
   const [index, setIndex] = useState(0)
   const measured = data?.measured_sleep_hours ?? null
   const sleep = answers.sleep_hours ?? (measured !== null ? Math.round(measured * 2) / 2 : 7.5)
-  const isNew = !session.checkins[session.today]
   const mission = missionQuestion(session)
   const scriptRunning = useScenes().index !== null
   const demoTip =
@@ -188,14 +185,13 @@ function CheckInCards() {
       checkins: { ...session.checkins, [session.today]: checkin },
       clues: { ...session.clues, [session.today]: kept },
     })
-    navigate('/', { state: isNew ? { gained: 'checkin' } : null })
+    navigate('/')
   }
 
   const footer = last ? (
     <PrimaryButton disabled={!complete} onClick={submit}>
       <Check aria-hidden />
       Finish check-in
-      {isNew && <XpPill amount={XP.checkin} />}
     </PrimaryButton>
   ) : (
     <PrimaryButton disabled={!answered(step)} onClick={() => setIndex(index + 1)}>

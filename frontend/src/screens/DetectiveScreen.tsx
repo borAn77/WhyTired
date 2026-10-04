@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState } from '@/components/states'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
-import { addDays, formatDay } from '@/lib/dates'
+import { addDays } from '@/lib/dates'
 import { toCtx, useSession } from '@/lib/session'
 import type { DetectiveResult } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -48,10 +48,7 @@ export function DetectiveScreen() {
   const fakeNights = new Set(data.excluded.map((point) => point.date)).size
   const startMission = () => {
     if (!plan) return
-    update({
-      experiment: { cause_id: plan.cause_id, start: addDays(session.today, 1), days: plan.days },
-      missions: [...session.missions, session.today],
-    })
+    update({ experiment: { cause_id: plan.cause_id, start: addDays(session.today, 1), days: plan.days } })
     navigate('/experiment')
   }
 
@@ -64,9 +61,7 @@ export function DetectiveScreen() {
               <Target aria-hidden />
               Accept the mission
             </PrimaryButton>
-            <p className="mt-2 text-center text-sm text-muted-foreground">
-              Starts tomorrow, {formatDay(addDays(session.today, 1))} · stop any time
-            </p>
+            <p className="mt-2 text-center text-sm text-muted-foreground">Starts tomorrow · stop any time</p>
           </>
         )
       }

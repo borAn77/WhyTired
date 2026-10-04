@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   BedDouble,
   CircleCheck,
@@ -11,16 +11,15 @@ import {
   Zap,
   type LucideIcon,
 } from 'lucide-react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 
-import { CluePattern, DayComplete, DetectiveRadar, ProgressCard, XpPill, XpToast } from '@/components/progress'
+import { CluePattern, DayComplete, DetectiveRadar, StreakChip } from '@/components/progress'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
 import { ErrorState, LoadingState } from '@/components/states'
 import { api } from '@/lib/api'
 import { cluePattern } from '@/lib/clues'
 import { daysBetween } from '@/lib/dates'
-import { XP, levelFor, totalXp } from '@/lib/progress'
 import { toCtx, useSession } from '@/lib/session'
 import type { CoachRequest, Recommendation } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -37,14 +36,14 @@ const ADVICE: Record<Recommendation, { title: string; detail: string; icon: Luci
   },
   easy: {
     title: 'Keep it easy today',
-    detail: 'Short and light: effort 5 out of 10 or lower.',
+    detail: 'Effort 5 out of 10 or lower.',
     icon: Footprints,
     card: 'bg-amber-50 ring-amber-800/30',
     badge: 'bg-amber-800',
   },
   rest: {
     title: 'Rest today',
-    detail: 'No training today. A short walk is fine.',
+    detail: 'A short walk is fine.',
     icon: BedDouble,
     card: 'bg-navy-50 ring-navy-900/20',
     badge: 'bg-navy-900',
@@ -59,7 +58,7 @@ export function TodayScreen() {
   return <Today />
 }
 
-// What "done" means per recommendation. A rest day earns the same XP as a hard day.
+// What "done" means per recommendation. Following the advice counts the same on a rest day.
 const DONE_LABEL: Record<Recommendation, string> = {
   hard: 'Training done',
   easy: 'Easy day done',
@@ -69,7 +68,6 @@ const DONE_LABEL: Record<Recommendation, string> = {
 function Today() {
   const { session, update } = useSession()
   const navigate = useNavigate()
-  const location = useLocation()
   const request: CoachRequest = { ...toCtx(session), planned_session: null }
   const coach = useApi(`coach:${JSON.stringify(request)}`, () => api.coach(request))
   const personas = useApi('personas', () => api.personas())
@@ -86,27 +84,12 @@ function Today() {
     needsRadar ? api.detective(toCtx(session)) : Promise.resolve(null),
   )
 
-  const [levelUp, setLevelUp] = useState<string | null>(null)
-  const [toast, setToast] = useState(() => (location.state as { gained?: string } | null)?.gained ?? null)
-  useEffect(() => {
-    if (!toast) return
-    // Clear the router state so a reload doesn't show the reward again.
-    navigate('.', { replace: true, state: null })
-    const timer = window.setTimeout(() => setToast(null), 3500)
-    return () => window.clearTimeout(timer)
-  }, [toast, navigate])
-
   const experimentDay = session.experiment ? daysBetween(session.experiment.start, session.today) + 1 : null
   const doneToday = session.done[session.today]
   const pattern = cluePattern(session)
 
   const markDone = () => {
-    if (!result) return
-    const before = levelFor(totalXp(session))
-    const next = { ...session, done: { ...session.done, [session.today]: result.recommendation } }
-    const after = levelFor(totalXp(next))
-    setLevelUp(after.number > before.number ? after.name : null)
-    update({ done: next.done })
+    if (result) update({ done: { ...session.done, [session.today]: result.recommendation } })
   }
 
   let footer = null
@@ -115,7 +98,6 @@ function Today() {
       <PrimaryButton onClick={() => navigate('/check-in')}>
         <Sunrise aria-hidden />
         Start my check-in
-        <XpPill amount={XP.checkin} />
       </PrimaryButton>
     )
   else if (result?.detective_triggered && !session.experiment)
@@ -137,21 +119,18 @@ function Today() {
       <PrimaryButton onClick={markDone}>
         <CircleCheck aria-hidden />
         {DONE_LABEL[result.recommendation]}
-        <XpPill amount={XP.done} />
       </PrimaryButton>
     )
 
   return (
     <Screen footer={footer}>
       <section>
-        <h1 className="text-2xl font-semibold tracking-tight">Good morning{name ? `, ${name}` : ''}</h1>
-        {session.goal && <p className="mt-1 text-muted-foreground">Your goal: {session.goal.toLowerCase()}</p>}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+          <h1 className="text-2xl font-semibold tracking-tight">Good morning{name ? `, ${name}` : ''}</h1>
+          <StreakChip session={session} />
+        </div>
+        {session.goal && <p className="mt-1 text-muted-foreground">Goal: {session.goal.toLowerCase()}</p>}
       </section>
-
-      <ProgressCard session={session} />
-      {toast && (
-        <XpToast text={toast === 'closed' ? `+${XP.closed} XP: case closed!` : `+${XP.checkin} XP: check-in done`} />
-      )}
 
       {checkedIn && coach.loading && <LoadingState label="Getting today's advice" />}
       {checkedIn && coach.error ? (
@@ -166,11 +145,11 @@ function Today() {
         <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
           <Sunrise aria-hidden className="size-7 text-coral-700" />
           <h2 className="mt-2 text-xl font-semibold">How are you this morning?</h2>
-          <p className="mt-1 text-muted-foreground">5 taps, 15 seconds. Then you get today's advice.</p>
+          <p className="mt-1 text-muted-foreground">5 taps, then today's advice.</p>
         </section>
       )}
 
-      {doneToday && !session.experiment && <DayComplete levelUp={levelUp} />}
+      {doneToday && !session.experiment && <DayComplete />}
 
       {checkedIn && result && (
         <>
@@ -259,7 +238,7 @@ function PlannedSession() {
   return (
     <section className="rounded-2xl bg-card p-5 ring-1 ring-border">
       <h2 className="font-semibold">Planning a session today?</h2>
-      <p className="mt-0.5 text-muted-foreground">Pick its length and we'll check it against the last 30 days.</p>
+      <p className="mt-0.5 text-muted-foreground">We'll check its length against your last 30 days.</p>
       <div role="radiogroup" aria-label="Planned session length" className="mt-3 flex flex-wrap gap-2">
         {DURATIONS.map((duration) => (
           <button
