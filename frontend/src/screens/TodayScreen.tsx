@@ -5,6 +5,7 @@ import {
   FlaskConical,
   Footprints,
   HeartPulse,
+  Lightbulb,
   Pencil,
   Search,
   Sunrise,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 
+import { ChoiceGroup } from '@/components/ChoiceGroup'
 import { CaseClosed, CluePattern, DayComplete, DetectiveRadar, StreakChip } from '@/components/progress'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { Screen } from '@/components/Screen'
@@ -21,6 +23,7 @@ import { ErrorState, LoadingState } from '@/components/states'
 import { api } from '@/lib/api'
 import { cluePattern } from '@/lib/clues'
 import { daysBetween } from '@/lib/dates'
+import { habitTip } from '@/lib/profile'
 import { toCtx, useSession } from '@/lib/session'
 import type { CoachRequest, Recommendation } from '@/lib/types'
 import { useApi } from '@/lib/useApi'
@@ -89,6 +92,7 @@ function Today() {
   const experimentDay = session.experiment ? daysBetween(session.experiment.start, session.today) + 1 : null
   const doneToday = session.done[session.today]
   const pattern = cluePattern(session)
+  const tip = habitTip(session.profile)
 
   const markDone = () => {
     if (result) update({ done: { ...session.done, [session.today]: result.recommendation } })
@@ -136,6 +140,15 @@ function Today() {
           <p className="mt-1 flex items-center gap-1.5 text-muted-foreground">
             <HeartPulse aria-hidden className="size-4 shrink-0 text-coral-700" />
             Morning pulse {pulse} bpm
+          </p>
+        )}
+        {tip && (
+          <p className="mt-2 flex items-start gap-2">
+            <Lightbulb aria-hidden className="mt-0.5 size-5 shrink-0 text-coral-700" />
+            <span>
+              <span className="sr-only">Habit tip. </span>
+              <span className="font-semibold">{tip.because}:</span> {tip.tip}
+            </span>
           </p>
         )}
       </section>
@@ -249,7 +262,7 @@ function PlannedSession() {
     <section className="rounded-2xl bg-card p-5 ring-1 ring-border">
       <h2 className="font-semibold">Planning a session today?</h2>
       <p className="mt-0.5 text-muted-foreground">We'll check its length against your last 30 days.</p>
-      <div role="radiogroup" aria-label="Planned session length" className="mt-3 flex flex-wrap gap-2">
+      <ChoiceGroup label="Planned session length" className="mt-3 flex flex-wrap gap-2">
         {DURATIONS.map((duration) => (
           <button
             key={duration}
@@ -265,7 +278,7 @@ function PlannedSession() {
             {duration} min
           </button>
         ))}
-      </div>
+      </ChoiceGroup>
       {minutes && check.data && (
         <p
           role="status"

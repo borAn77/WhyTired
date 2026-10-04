@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import { ChoiceGroup } from '@/components/ChoiceGroup'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { PulseTap } from '@/components/PulseTap'
 import { Screen } from '@/components/Screen'
@@ -306,7 +307,7 @@ function MissionCheck({
       <h1 ref={heading} tabIndex={-1} className="text-2xl font-semibold leading-tight tracking-tight outline-none">
         {question}
       </h1>
-      <div role="radiogroup" aria-label={question} className="grid gap-2.5">
+      <ChoiceGroup label={question} className="grid gap-2.5">
         {ADHERENCE.map(({ id, label, icon: Icon }) => {
           const selected = value === id
           return (
@@ -327,7 +328,7 @@ function MissionCheck({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
       <p className="text-muted-foreground">Honest answers make the result fair. Partly is fine.</p>
     </section>
   )
@@ -363,7 +364,7 @@ function ClueCard({
         {question}
       </h1>
       <p className="text-muted-foreground">Pick all that apply.</p>
-      <div role="group" aria-label={question} className="grid grid-cols-2 gap-2.5">
+      <ChoiceGroup multiple label={question} className="grid grid-cols-2 gap-2.5">
         {options.map((option) => {
           const on = selected.includes(option.id)
           return (
@@ -385,7 +386,7 @@ function ClueCard({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
     </section>
   )
 }
@@ -408,7 +409,7 @@ function ScaleCard({
       <h1 ref={heading} tabIndex={-1} className="text-2xl font-semibold leading-tight tracking-tight outline-none">
         {scale.question}
       </h1>
-      <div role="radiogroup" aria-label={scale.question} className="grid gap-2.5">
+      <ChoiceGroup label={scale.question} className="grid gap-2.5">
         {scale.options.map(({ label, icon: Icon }, i) => {
           const option = i + 1
           const selected = value === option
@@ -434,7 +435,7 @@ function ScaleCard({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
       {children}
     </section>
   )

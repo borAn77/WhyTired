@@ -9,7 +9,7 @@ WhyTired works in three steps:
 
 Built at HackYeah 2026 (Sport & Healthcare).
 
-**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
+**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan that sleeps when idle; a scheduled GitHub Action pings it every 5 minutes to keep it awake, and if it still fell asleep, the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
 
 ## Screenshots
 <img src="docs/screenshots/00-welcome.png" width="720" alt="First screen: a welcome beside the phone with one action, Take the 2-min tour">
@@ -129,6 +129,7 @@ Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https:
 | `docs/PLAN.md` | Build plan, rules, timeline, ownership |
 | `docs/DECISIONS.md` | Architecture decisions |
 | `docs/DISCLOSURE.md` | AI tools, APIs, libraries, research sources, data statement |
+| `.github/workflows/keep-api-awake.yml` | Pings the demo API every 5 minutes so it doesn't sleep during judging |
 
 ## Team workflow
 - `main` is the live demo: every push deploys on Render (static site + API, see `render.yaml`). Run `uv run pytest` and `npm run build` before pushing.

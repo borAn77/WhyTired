@@ -1,10 +1,10 @@
 import type { DataLevel, Lang } from './types'
 
 // The onboarding profile: what the user tells us once, beyond the daily check-in. It never goes
-// to the rule engine (the synthetic data drives the numbers). It sets the data level, and the
-// doctor summary repeats it as one self-reported line, so a GP sees the training and the week
-// around the tiredness. Answers are stored as English labels; the summary translates known
-// labels to Polish and shows the user's own "Other" text as typed.
+// to the rule engine (the synthetic data drives the numbers). It sets the data level, Today shows
+// one habit tip from it, and the doctor summary repeats it as one self-reported line, so a GP
+// sees the training and the week around the tiredness. Answers are stored as English labels; the
+// summary translates known labels to Polish and shows the user's own "Other" text as typed.
 
 export interface Option {
   label: string
@@ -115,6 +115,32 @@ export function shareProfile(sports: string[], profile: Profile | null): SharedP
     ...(profile?.sleep ? { h: profile.sleep } : {}),
     ...(profile?.context.length ? { c: profile.context } : {}),
   }
+}
+
+export interface HabitTip {
+  because: string // the onboarding answer the tip comes from, shown with it
+  tip: string
+}
+
+// One habit tip for Today from the onboarding answers, so what the user told us shows up in the
+// app and not only on the doctor summary. Everyday habits only, never medical advice, and the
+// rule engine never sees it (docs/DECISIONS.md, D19). The first match wins, most specific first.
+export function habitTip(profile: Profile | null): HabitTip | null {
+  if (!profile) return null
+  const has = (label: string) => profile.context.includes(label)
+  if (has('Night shifts')) return { because: 'Night shifts', tip: 'Plan hard sessions after a full sleep, not straight after a shift.' }
+  if (has('Exams soon')) return { because: 'Exams soon', tip: 'Keep the same sleep window every night, even before an exam.' }
+  if (profile.sleep !== null && profile.sleep < 7)
+    return { because: `About ${profile.sleep} h of sleep`, tip: 'Try going to bed 30 minutes earlier this week.' }
+  if (has('Caring for someone')) return { because: 'Caring for someone', tip: 'That is tiring too. On heavy days, an easy session still counts.' }
+  if (has('Part-time job')) return { because: 'Part-time job', tip: 'Put your hard sessions on days you don’t work.' }
+  if (profile.perWeek === '5-6' || profile.perWeek === '7+') {
+    const sessions = PER_WEEK.find((o) => o.id === profile.perWeek)?.en ?? 'Lots of training'
+    return { because: sessions, tip: 'Keep at least one full rest day every week.' }
+  }
+  if (has('Long commute')) return { because: 'Long commute', tip: 'Pack your kit the night before, so training doesn’t start in a rush.' }
+  if (has('Studies')) return { because: 'Studies', tip: 'Put training in your calendar like a lecture: same days, same time.' }
+  return null
 }
 
 const translate = (list: Option[], label: string, lang: Lang) =>
