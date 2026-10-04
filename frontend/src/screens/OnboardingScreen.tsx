@@ -12,10 +12,10 @@ const GOALS = ['Feel less tired', 'Train for a race', 'Get stronger', 'Stay cons
 const SPORTS = ['Running', 'Gym', 'Team sports', 'Cycling', 'Swimming', 'Other']
 
 const PROMISES: { icon: LucideIcon; text: string }[] = [
-  { icon: Sunrise, text: 'A 15-second check-in each morning' },
-  { icon: Search, text: 'When your energy stays low, we look for the cause in your own data' },
-  { icon: FlaskConical, text: 'You try one safe change for 7 days' },
-  { icon: Stethoscope, text: "If it doesn't help, you see your doctor well prepared" },
+  { icon: Sunrise, text: '15-second morning check-in' },
+  { icon: Search, text: 'Low energy? We look for causes in your data' },
+  { icon: FlaskConical, text: 'Try one safe change for 7 days' },
+  { icon: Stethoscope, text: 'Still tired? See your doctor well prepared' },
 ]
 
 // Under a minute: welcome, then three questions. The watch answer sets the data level.
@@ -49,8 +49,7 @@ export function OnboardingScreen() {
         </ul>
         <p className="mt-6 flex items-start gap-2.5 text-muted-foreground">
           <Lock aria-hidden className="mt-1 size-4 shrink-0" />
-          No account, no database. Your history stays in this browser; our server only computes your result. The AI
-          sees computed numbers, never your name.
+          No account. Your history is stored only in this browser.
         </p>
         {/* Sticky, so "Get started" stays in view where the welcome is taller than the screen
             (720p projectors, small phones), with a short fade above it for the text scrolling
@@ -58,9 +57,7 @@ export function OnboardingScreen() {
         <div className="sticky bottom-0 -mx-6 mt-auto bg-app/95 px-6 pb-6 pt-4 backdrop-blur">
           <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-full h-8 bg-linear-to-t from-app to-transparent" />
           <PrimaryButton onClick={() => setStep(1)}>Get started</PrimaryButton>
-          <p className="mt-3 text-center text-sm text-muted-foreground">
-            Takes under a minute. WhyTired gives no diagnoses.
-          </p>
+          <p className="mt-3 text-center text-sm text-muted-foreground">Takes under a minute. No diagnoses.</p>
         </div>
       </div>
     )

@@ -1,35 +1,8 @@
 import { addDays } from './dates'
 import type { SessionState } from './session'
 
-// Motivation layer, kept in the browser only: the rule engine never sees XP or streaks.
-// XP rewards the habit (checking in, following the advice, trying the experiment), never more
-// training, and a rest day earns exactly as much as a hard day. Closing a case (the experiment
-// worked) is the biggest reward.
-export const XP = { checkin: 10, done: 20, mission: 50, closed: 100 } as const
-
-const LEVELS = ['Rookie', 'Sleuth', 'Detective', 'Inspector', 'Chief inspector']
-const XP_PER_LEVEL = 100
-
-export function totalXp(session: SessionState): number {
-  return (
-    Object.keys(session.checkins).length * XP.checkin +
-    Object.keys(session.done).length * XP.done +
-    session.missions.length * XP.mission +
-    session.closed.length * XP.closed
-  )
-}
-
-export function levelFor(xp: number) {
-  const index = Math.min(Math.floor(xp / XP_PER_LEVEL), LEVELS.length - 1)
-  const maxed = index === LEVELS.length - 1
-  return {
-    number: index + 1,
-    name: LEVELS[index],
-    next: maxed ? null : LEVELS[index + 1],
-    inLevel: maxed ? XP_PER_LEVEL : xp - index * XP_PER_LEVEL,
-    perLevel: XP_PER_LEVEL,
-  }
-}
+// Motivation layer, kept in the browser only: the rule engine never sees the streak.
+// It counts the habit (checking in), never training, so a rest day keeps it going too.
 
 /** Check-ins on consecutive days up to today. Today not checked in yet doesn't break it. */
 export function checkinStreak(session: SessionState): number {

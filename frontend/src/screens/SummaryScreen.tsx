@@ -48,9 +48,7 @@ export function SummaryScreen() {
           For your family doctor
         </p>
         <h1 className="text-2xl font-semibold leading-tight tracking-tight">Your doctor summary is ready</h1>
-        <p className="text-muted-foreground">
-          One page for your family doctor (POZ): what happened, what you tried, and questions to ask. No diagnoses.
-        </p>
+        <p className="text-muted-foreground">One page for your family doctor (POZ). No diagnoses.</p>
       </section>
 
       <ToggleGroup

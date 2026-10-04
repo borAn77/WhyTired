@@ -98,11 +98,30 @@ export function CaseHeader({
       {dataLevel === 'basic' && (
         <p className="mt-1.5 flex items-center gap-2 text-navy-100">
           <Info aria-hidden className="size-4 shrink-0" />
-          No watch, so no finding goes above medium confidence.
+          No watch: medium confidence at most.
         </p>
       )}
       <CaseProgress current={step} className="mt-5" />
     </section>
+  )
+}
+
+const KEY_MARKS = {
+  bar: 'h-3.5 w-2.5 rounded-t-[3px] bg-coral-600',
+  dashed: 'w-4 border-t-2 border-dashed border-navy-700',
+} as const
+
+/** A one-line chart key: each entry pairs a shape (a bar or a dashed line) with words. */
+export function ChartKey({ items }: { items: { mark: keyof typeof KEY_MARKS; label: string }[] }) {
+  return (
+    <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+      {items.map(({ mark, label }) => (
+        <span key={label} className="inline-flex items-center gap-1.5">
+          <span aria-hidden className={KEY_MARKS[mark]} />
+          {label}
+        </span>
+      ))}
+    </p>
   )
 }
 

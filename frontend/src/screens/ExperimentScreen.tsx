@@ -1,20 +1,19 @@
-import { FileText, RotateCcw, Stethoscope, Sunrise, Target, TriangleAlert, Trophy } from 'lucide-react'
+import { FastForward, FileText, RotateCcw, Stethoscope, Sunrise, Target, TriangleAlert, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { CaseHeader, CaseStat } from '@/components/case/CaseParts'
+import { CaseHeader, CaseStat, ChartKey } from '@/components/case/CaseParts'
 import { MissionMap } from '@/components/case/MissionMap'
 import { MiniChart } from '@/components/MiniChart'
 import { PrimaryButton } from '@/components/PrimaryButton'
-import { XpPill } from '@/components/progress'
 import { Screen } from '@/components/Screen'
 import { EmptyState, ErrorState, LoadingState } from '@/components/states'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { adherenceFor } from '@/lib/clues'
-import { addDays, formatDay } from '@/lib/dates'
+import { DEMO_DAY, LAST_ALLOWED_DAY, addDays, formatDay } from '@/lib/dates'
+import { useScenes } from '@/lib/sceneContext'
 import { toCtx, useSession } from '@/lib/session'
 import type { Experiment, ExperimentResult } from '@/lib/types'
-import { XP } from '@/lib/progress'
 import { useApi } from '@/lib/useApi'
 import { cn } from '@/lib/utils'
 
@@ -41,18 +40,20 @@ export function ExperimentScreen() {
 function ExperimentStatus({ experiment }: { experiment: Experiment }) {
   const { session, update } = useSession()
   const navigate = useNavigate()
+  const scriptRunning = useScenes().index !== null
   const ctx = toCtx(session, { experiment })
   const { data, error, loading, retry } = useApi(`experiment:${JSON.stringify(ctx)}`, () => api.experiment(ctx))
 
-  const stop = () => {
+  // Stopping early and keeping the change both end the mission and go back to daily advice.
+  const end = () => {
     update({ experiment: null })
     navigate('/')
   }
-  const closeCase = () => {
-    update({ experiment: null, closed: [...session.closed, session.today] })
-    navigate('/', { state: { gained: 'closed' } })
-  }
   const restart = () => update({ experiment: { ...experiment, start: addDays(session.today, 1) } })
+  // Demo only: jump to the verdict day, but never past the last day the synthetic data covers.
+  const verdictDay = addDays(experiment.start, experiment.days)
+  const lastDay = addDays(DEMO_DAY, LAST_ALLOWED_DAY)
+  const skipTo = verdictDay < lastDay ? verdictDay : lastDay
 
   const checkedIn = !!session.checkins[session.today]
   let footer = null
@@ -61,7 +62,6 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
       <PrimaryButton onClick={() => navigate('/check-in')}>
         <Sunrise aria-hidden />
         Start today’s check-in
-        <XpPill amount={XP.checkin} />
       </PrimaryButton>
     )
   else if (data?.status === 'not_improved')
@@ -73,10 +73,9 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
     )
   else if (data?.status === 'improved')
     footer = (
-      <PrimaryButton onClick={closeCase}>
+      <PrimaryButton onClick={end}>
         <Trophy aria-hidden />
         Keep the change
-        <XpPill amount={XP.closed} />
       </PrimaryButton>
     )
   else if (data?.status === 'not_enough_data')
@@ -88,6 +87,8 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
     )
 
   const finished = data && data.status !== 'running'
+  // Before day 1 the map and the chart would be empty, so they appear once the mission starts.
+  const started = !!data && !(data.status === 'running' && data.day === 0)
   const answers = data
     ? Array.from({ length: data.days_total }, (_, i) => adherenceFor(session, experiment.start, i + 1)).filter(Boolean)
     : []
@@ -123,23 +124,23 @@ function ExperimentStatus({ experiment }: { experiment: Experiment }) {
           {data.status === 'running' ? (
             <>
               <RunningCard result={data} checkedIn={checkedIn} />
+              {!scriptRunning && session.today < skipTo && (
+                <DemoSkip days={experiment.days} onClick={() => update({ today: skipTo })} />
+              )}
               <WarningSigns />
             </>
           ) : (
             <Verdict result={data} />
           )}
-          <MissionMap result={data} experiment={experiment} />
-          {data.chart && data.chart.points.length > 1 && (
-            <section className="rounded-3xl bg-card p-5 ring-1 ring-border">
-              <MiniChart
-                chart={data.chart}
-                title="Your energy, before and during"
-                caption="Dashed line = your energy in the 5 days before the mission."
-              />
+          {started && <MissionMap result={data} experiment={experiment} />}
+          {started && data.chart && data.chart.points.length > 1 && (
+            <section className="space-y-2 rounded-3xl bg-card p-5 ring-1 ring-border">
+              <MiniChart chart={data.chart} title="Your energy, before and during" caption="" />
+              <ChartKey items={[{ mark: 'dashed', label: 'Before the mission' }]} />
             </section>
           )}
           {data.status === 'running' && (
-            <Button variant="ghost" className="h-11 w-full" onClick={stop}>
+            <Button variant="ghost" className="h-11 w-full" onClick={end}>
               Stop the mission
             </Button>
           )}
@@ -172,6 +173,22 @@ function RunningCard({ result, checkedIn }: { result: ExperimentResult; checkedI
   )
 }
 
+// For judges exploring on their own (hidden while the presenter's script runs): time travel to
+// the verdict, the only way to reach it and the doctor summary without waiting a week. Dashed and
+// labelled "Demo" so it never reads as part of the product.
+function DemoSkip({ days, onClick }: { days: number; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-navy-500 px-4 py-2 font-medium text-navy-700 hover:bg-navy-50 focus-visible:outline-2 focus-visible:outline-offset-2"
+    >
+      <FastForward aria-hidden className="size-5" />
+      Demo: skip to day {days}
+    </button>
+  )
+}
+
 // While the mission runs: when not to wait out the 7 days. The same fixed card for everyone, so
 // it never turns into a personal triage or diagnosis. Copy by Berken, also in Polish.
 function WarningSigns() {
@@ -200,6 +217,7 @@ function WarningSigns() {
   )
 }
 
+// The engine's summary carries the numbers; the note only adds what to take from it.
 const VERDICTS = {
   improved: {
     stamp: 'Case closed',
@@ -207,7 +225,7 @@ const VERDICTS = {
     icon: Trophy,
     card: 'bg-green-50 ring-green-700/30',
     stampColor: 'border-green-700 text-green-700',
-    note: 'Keep the change. Your mornings got better while you made it.',
+    note: null,
   },
   not_improved: {
     stamp: 'To your doctor',
@@ -215,7 +233,7 @@ const VERDICTS = {
     icon: Stethoscope,
     card: 'bg-navy-50 ring-navy-900/20',
     stampColor: 'border-coral-700 text-coral-700',
-    note: 'You did the right thing: you tried a safe change first. Your doctor now gets a one-page summary instead of a guess.',
+    note: 'You did the right thing: you tried a safe change first.',
   },
   not_enough_data: {
     stamp: 'On hold',
@@ -265,7 +283,7 @@ function Verdict({ result }: { result: ExperimentResult }) {
           )}
         </dl>
       )}
-      <p className="mt-4 font-medium">{verdict.note}</p>
+      {verdict.note && <p className="mt-4 font-medium">{verdict.note}</p>}
     </section>
   )
 }
