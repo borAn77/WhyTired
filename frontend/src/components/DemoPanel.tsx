@@ -17,6 +17,7 @@ const JUMPS: [string, string][] = [
   ['Check-in', '/check-in'],
   ['Today', '/'],
   ['Detective', '/detective'],
+  ['Eye check', '/detective?eye=1'], // opens the eye-check sheet (components/evidence/EyeCheckCard)
   ['Experiment', '/experiment'],
   ['Summary', '/summary'],
 ]
