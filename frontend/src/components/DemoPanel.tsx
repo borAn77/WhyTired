@@ -57,11 +57,6 @@ export function DemoPanel() {
 
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-lg ring-1 ring-border">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-coral-700">Demo controls</p>
-        <p className="text-sm text-muted-foreground">For the presenter only. Not part of the app.</p>
-      </div>
-
       <ScenePanel />
 
       {scriptRunning && (
