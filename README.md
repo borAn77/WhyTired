@@ -20,6 +20,36 @@ Built at HackYeah 2026 (Sport & Healthcare).
 
 All screens are in `docs/screenshots/`. To regenerate them with both servers running locally, run `node scripts/screenshots.mjs http://localhost:5173 docs/screenshots`.
 
+## Eye check: a new clue from your camera
+
+When sleep or stress is a suspect, the detective asks for one more clue: 30 seconds in front of the camera. WhyTired measures how you blink and compares it with your usual. The result joins the case as extra evidence. It never changes a suspect's rank or confidence.
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/screenshots/18-eye-check-card.png" width="230" alt="Detective screen: a New clue card, check your eyes, with a Start the eye check button"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/18b-eye-check-start.png" width="230" alt="Eye check sheet: look at the screen for 30 seconds; the video stays on your device"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/18c-eye-check-result.png" width="230" alt="Result on the card: blinks 25% slower than usual, eyes closed 12% of the time, supports the sleep finding"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>1. A new clue</b><br>A card under the case file offers the check. The sleep and stress suspects also have "Check it yourself".</td>
+    <td align="center"><b>2. 30 seconds, on the device</b><br>Look at the screen and blink normally. Best at the same time each morning.</td>
+    <td align="center"><b>3. Evidence for the case</b><br>The result shows on the card and on the matching suspect. A signal, not a diagnosis.</td>
+  </tr>
+</table>
+
+| Measure | What we compute | Why it matters |
+|---|---|---|
+| **Blink duration** | The average length of a blink (eyes more than half closed for 50–500 ms) | Blinks get longer when you are sleepy (Caffier et al., 2003) |
+| **PERCLOS** | The share of the 30 seconds with the eyes more than 80% closed | A standard measure of drowsiness (Dinges & Grace, 1998) |
+| **Blinks** | How many blinks | Shown for context |
+
+Either measure more than 10% above your usual reads as a sign of sleepiness. How open the eyes are in each frame is the eye aspect ratio (Soukupová & Čech, 2016), computed from the eye points that MediaPipe Face Landmarker finds. The math is in `frontend/src/components/evidence/logic.ts`, with a self-check: `node frontend/src/components/evidence/logic.check.ts`.
+
+> [!NOTE]
+> **Nothing is recorded or sent.** The video never leaves the browser. The face model ships with the app (`frontend/public/models/`), and `@mediapipe/tasks-vision` is pinned to 0.10.21 because later versions send usage logs to Google (DECISIONS D22). The camera turns off as soon as the check ends. The "usual" values are an example baseline per persona (demo).
+
+No camera, camera access denied, or no face found? The app says what happened and offers **Show demo result**, so the demo never gets stuck. To open the check directly: Presenter tools → Jump to → **Eye check**.
+
 ## Architecture
 
 ```mermaid
@@ -91,7 +121,7 @@ The full story, step by step:
 1. **Onboarding: open your case file (under a minute).** Five tap-only steps with emoji tiles and a detective mascot that reacts to each answer: goal, sports, training rhythm (sessions per week, session length, how seriously), sleep and the week around it (studies, exams, a job, night shifts…), and what you track with. "Other" takes free text. The device sets the data level (watch → full, phone → medium, nothing → basic). It ends on a case-file card, and the answers reach the doctor summary as one self-reported line.
 2. **Morning check-in, one card per question.** Energy, hours slept (prefilled from the watch), sleep quality, stress, soreness, and "I feel ill". A tap answers and moves on. After a short or bad night a follow-up card asks what got in the way (screens, coffee after 2 pm, studying late, worries, alcohol, noise); high stress gets a similar card. Without a watch, an optional last card takes the morning pulse: feel it on your neck and tap the heart on every beat for 30 seconds (or type in a number from a monitor); it shows on Today and as a self-measured line on the doctor summary. Each check-in keeps the streak going (the only reward in the app).
 3. **Today.** One verdict (hard / easy / rest) with one-line reasons, a small streak chip, a "detective radar" (low-energy mornings in a row, out of 3), a "Clue spotted" tip when the same clue comes up twice in a week, and an injury-risk check for a planned session (more than 10% longer than the longest one in 30 days). With nothing else due, the primary action is "Rest day done" / "Easy day done" / "Training done" (a rest day counts as much as a hard day).
-4. **Detective mode: a case file.** After 3 low-energy mornings, "Find out why" opens *The case of the missing energy*. The suspects (training load spike, sleep debt, stress spike, elevated resting heart rate) are ranked with clue tiles from Kasia's own numbers, an evidence meter with the written confidence (never colour alone), and an "Alibi check" against her own past (her holiday week: energy +1.1, resting HR −6 bpm). The artifact night is stamped "Dismissed" with the reason.
+4. **Detective mode: a case file.** After 3 low-energy mornings, "Find out why" opens *The case of the missing energy*. The suspects (training load spike, sleep debt, stress spike, elevated resting heart rate) are ranked with clue tiles from Kasia's own numbers, an evidence meter with the written confidence (never colour alone), and an "Alibi check" against her own past (her holiday week: energy +1.1, resting HR −6 bpm). The artifact night is stamped "Dismissed" with the reason. A "New clue" card offers the optional 30-second [Eye check](#eye-check-a-new-clue-from-your-camera).
 5. **The mission.** The prime suspect proposes one 7-day change (cut training load by 40%). "Accept the mission".
 6. **Every new day asks again.** "+1 day" opens the check-in, which now starts with a mission check ("Did you keep yesterday's training light?"). The mission map shows each day as stuck to it / partly / skipped.
 7. **The verdict (+7 days).** Days skipped with time travel run on the persona's recorded data and are marked "Demo data". In the not-improved branch the verdict is stamped "To your doctor" and leads to a one-page summary in Polish: complaint timeline, small trend charts, what was tried and how well the plan was followed, what the user noticed (e.g. coffee after 2 pm), and questions to ask. No diagnoses, no recommended tests. Print → PDF fits one A4 page; "Share" gives a read-only link and a QR code. Switch the outcome to "Improved" to see "Case closed" instead; "Keep the change" ends the mission.
