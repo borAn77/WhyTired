@@ -65,7 +65,7 @@ try {
   await check('Improved -> Keep the change -> Today says case closed', (await path()) === '/' && await text('Case closed'))
 
   // Kasia medium data
-  await restart(); await btn('Detective'); await sleep(300); await click('Medium'); await waitFor('The suspects', 90000)
+  await restart(); await btn('Detective'); await sleep(300); await btn('Medium'); await waitFor('The suspects', 90000)
   await check('Kasia medium data level detective', await text('Medium data'))
 
   // Tomek full flow
