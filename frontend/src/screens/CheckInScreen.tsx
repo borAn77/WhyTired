@@ -22,8 +22,9 @@ import {
   Watch,
   type LucideIcon,
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
+import { ChoiceGroup } from '@/components/ChoiceGroup'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { PulseTap } from '@/components/PulseTap'
 import { Screen } from '@/components/Screen'
@@ -97,12 +98,20 @@ const ADVANCE_MS = 280
 // tap-along pulse card comes last (components/PulseTap.tsx).
 export function CheckInScreen() {
   const { session } = useSession()
-  // A new day (time travel) or a removed check-in (demo script) starts a fresh set of cards
-  // instead of keeping the previous answers.
-  return <CheckInCards key={`${session.today}:${session.checkins[session.today] ? 'edit' : 'new'}`} />
+  // The demo script and the guided tour can open the check-in on one card: ?step=pulse.
+  const [searchParams] = useSearchParams()
+  const openAt = searchParams.get('step')
+  // A new day (time travel), a removed check-in (demo script) or another card to open on starts
+  // a fresh set of cards instead of keeping the previous answers.
+  return (
+    <CheckInCards
+      key={`${session.today}:${session.checkins[session.today] ? 'edit' : 'new'}:${openAt}`}
+      openAt={openAt}
+    />
+  )
 }
 
-function CheckInCards() {
+function CheckInCards({ openAt }: { openAt: string | null }) {
   const { session, update } = useSession()
   const navigate = useNavigate()
   const ctx = toCtx(session)
@@ -110,7 +119,6 @@ function CheckInCards() {
 
   const [answers, setAnswers] = useState<Partial<CheckIn>>(session.checkins[session.today] ?? {})
   const [clues, setClues] = useState<DayClues>(session.clues[session.today] ?? {})
-  const [index, setIndex] = useState(0)
   const measured = data?.measured_sleep_hours ?? null
   const sleep = answers.sleep_hours ?? (measured !== null ? Math.round(measured * 2) / 2 : 7.5)
   const mission = missionQuestion(session)
@@ -129,6 +137,7 @@ function CheckInCards() {
     'soreness',
     session.dataLevel !== 'full' && 'pulse',
   ].filter(Boolean) as Step[]
+  const [index, setIndex] = useState(() => Math.max(0, steps.indexOf(openAt as Step)))
   const stepCount = useRef(steps.length)
   useEffect(() => {
     stepCount.current = steps.length
@@ -139,9 +148,12 @@ function CheckInCards() {
   const heading = useRef<HTMLHeadingElement>(null)
   const advanceTimer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(advanceTimer.current), [])
+  // Move keyboard and screen-reader focus to the new question, but not when the check-in opens
+  // (it may open on a later card: the guided tour's "Next" button keeps the focus).
+  const shownIndex = useRef(index)
   useEffect(() => {
-    // Move keyboard and screen-reader focus to the new question.
-    if (index > 0) heading.current?.focus()
+    if (index !== shownIndex.current && index > 0) heading.current?.focus()
+    shownIndex.current = index
   }, [index])
 
   const answered = (key: Step) => {
@@ -306,7 +318,7 @@ function MissionCheck({
       <h1 ref={heading} tabIndex={-1} className="text-2xl font-semibold leading-tight tracking-tight outline-none">
         {question}
       </h1>
-      <div role="radiogroup" aria-label={question} className="grid gap-2.5">
+      <ChoiceGroup label={question} className="grid gap-2.5">
         {ADHERENCE.map(({ id, label, icon: Icon }) => {
           const selected = value === id
           return (
@@ -327,7 +339,7 @@ function MissionCheck({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
       <p className="text-muted-foreground">Honest answers make the result fair. Partly is fine.</p>
     </section>
   )
@@ -363,7 +375,7 @@ function ClueCard({
         {question}
       </h1>
       <p className="text-muted-foreground">Pick all that apply.</p>
-      <div role="group" aria-label={question} className="grid grid-cols-2 gap-2.5">
+      <ChoiceGroup multiple label={question} className="grid grid-cols-2 gap-2.5">
         {options.map((option) => {
           const on = selected.includes(option.id)
           return (
@@ -385,7 +397,7 @@ function ClueCard({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
     </section>
   )
 }
@@ -408,7 +420,7 @@ function ScaleCard({
       <h1 ref={heading} tabIndex={-1} className="text-2xl font-semibold leading-tight tracking-tight outline-none">
         {scale.question}
       </h1>
-      <div role="radiogroup" aria-label={scale.question} className="grid gap-2.5">
+      <ChoiceGroup label={scale.question} className="grid gap-2.5">
         {scale.options.map(({ label, icon: Icon }, i) => {
           const option = i + 1
           const selected = value === option
@@ -434,7 +446,7 @@ function ScaleCard({
             </button>
           )
         })}
-      </div>
+      </ChoiceGroup>
       {children}
     </section>
   )

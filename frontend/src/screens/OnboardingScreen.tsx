@@ -1,8 +1,9 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { ArrowLeft, Check, FlaskConical, Lock, Minus, Plus, Search, Stethoscope, Sunrise, type LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import { AnimatedLogo } from '@/components/AnimatedLogo'
+import { ChoiceGroup } from '@/components/ChoiceGroup'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { LogoCharacter } from '@/components/stage/LogoCharacter'
 import { Button } from '@/components/ui/button'
@@ -75,11 +76,25 @@ export function OnboardingScreen() {
     navigate('/check-in')
   }
 
+  // As on the check-in: a new step starts at the top, and keyboard and screen-reader focus moves
+  // to its heading, so the new question is read out and Tab continues from there. Not on the
+  // first load (the ref also keeps React's dev double-run from focusing it).
+  const heading = useRef<HTMLHeadingElement>(null)
+  const shownStep = useRef(step)
+  useEffect(() => {
+    if (shownStep.current === step) return
+    shownStep.current = step
+    heading.current?.closest('[data-phone-scroll]')?.scrollTo({ top: 0 })
+    heading.current?.focus({ preventScroll: true })
+  }, [step])
+
   if (step === 0) {
     return (
       <div className="flex min-h-full flex-col px-6 pt-14">
         <AnimatedLogo className="self-center" />
-        <h1 className="mt-10 text-3xl font-semibold leading-tight tracking-tight">Find out why you're tired.</h1>
+        <h1 ref={heading} tabIndex={-1} className="mt-10 text-3xl font-semibold leading-tight tracking-tight outline-none">
+          Find out why you're tired.
+        </h1>
         <ul className="mt-6 space-y-4">
           {PROMISES.map(({ icon: Icon, text }) => (
             <li key={text} className="flex items-start gap-3">
@@ -114,12 +129,12 @@ export function OnboardingScreen() {
       done: !!goalValue && goalValue.length >= 2,
       body: (
         <>
-          <div role="radiogroup" aria-label="Your goal" className="grid grid-cols-2 gap-3">
+          <ChoiceGroup label="Your goal" className="grid grid-cols-2 gap-3">
             {GOALS.map((g) => (
               <Tile key={g.label} emoji={g.emoji} label={g.label} selected={goal === g.label} onClick={() => setGoal(g.label)} />
             ))}
             <Tile wide span emoji="✏️" label={OTHER} selected={goal === OTHER} onClick={() => setGoal(OTHER)} />
-          </div>
+          </ChoiceGroup>
           {goal === OTHER && (
             <OtherInput label="Your goal" value={goalOther} onChange={setGoalOther} placeholder="e.g. Sleep better before matches" />
           )}
@@ -138,7 +153,7 @@ export function OnboardingScreen() {
       done: allSports.length > 0,
       body: (
         <>
-          <div role="group" aria-label="Your sports" className="grid grid-cols-3 gap-2.5">
+          <ChoiceGroup multiple label="Your sports" className="grid grid-cols-3 gap-2.5">
             {SPORTS.map((s) => (
               <Tile
                 key={s.label}
@@ -159,7 +174,7 @@ export function OnboardingScreen() {
               selected={sportOther !== null}
               onClick={() => setSportOther(sportOther === null ? '' : null)}
             />
-          </div>
+          </ChoiceGroup>
           {sportOther !== null && (
             <OtherInput label="Your sport" value={sportOther} onChange={setSportOther} placeholder="e.g. Rowing" />
           )}
@@ -179,29 +194,29 @@ export function OnboardingScreen() {
       body: (
         <div className="space-y-5">
           <Field label="Sessions per week">
-            <div role="radiogroup" aria-label="Sessions per week" className="grid grid-cols-4 gap-2">
+            <ChoiceGroup label="Sessions per week" className="grid grid-cols-4 gap-2">
               {PER_WEEK.map((o) => (
                 <Chip key={o.id} selected={perWeek === o.id} onClick={() => setPerWeek(o.id)}>
                   {o.label}
                 </Chip>
               ))}
-            </div>
+            </ChoiceGroup>
           </Field>
           <Field label="A usual session">
-            <div role="radiogroup" aria-label="A usual session" className="grid grid-cols-2 gap-2">
+            <ChoiceGroup label="A usual session" className="grid grid-cols-2 gap-2">
               {MINUTES.map((o) => (
                 <Chip key={o.id} selected={minutes === o.id} onClick={() => setMinutes(o.id)}>
                   {o.label}
                 </Chip>
               ))}
-            </div>
+            </ChoiceGroup>
           </Field>
           <Field label="How seriously?">
-            <div role="radiogroup" aria-label="How seriously" className="grid grid-cols-3 gap-2.5">
+            <ChoiceGroup label="How seriously" className="grid grid-cols-3 gap-2.5">
               {LEVELS.map((o) => (
                 <Tile key={o.id} compact emoji={o.emoji} label={o.label} selected={level === o.id} onClick={() => setLevel(o.id)} />
               ))}
-            </div>
+            </ChoiceGroup>
           </Field>
         </div>
       ),
@@ -234,7 +249,7 @@ export function OnboardingScreen() {
             </div>
           </Field>
           <Field label="What else fills your week?" hint="Optional. Pick any.">
-            <div role="group" aria-label="What else fills your week" className="flex flex-wrap gap-2">
+            <ChoiceGroup multiple label="What else fills your week" className="flex flex-wrap gap-2">
               {CONTEXT.map((o) => (
                 <Chip key={o.label} multiple selected={context.includes(o.label)} onClick={() => setContext(toggle(context, o.label))}>
                   <span aria-hidden>{o.emoji}</span> {o.label}
@@ -243,7 +258,7 @@ export function OnboardingScreen() {
               <Chip multiple selected={contextOther !== null} onClick={() => setContextOther(contextOther === null ? '' : null)}>
                 <span aria-hidden>✏️</span> {OTHER}
               </Chip>
-            </div>
+            </ChoiceGroup>
             {contextOther !== null && (
               <OtherInput label="What else" value={contextOther} onChange={setContextOther} placeholder="e.g. Volunteering" />
             )}
@@ -258,20 +273,20 @@ export function OnboardingScreen() {
       done: device !== null && (device !== 'watch' || brand !== OTHER || brandOther.trim().length >= 2),
       body: (
         <div className="space-y-5">
-          <div role="radiogroup" aria-label="What you track with" className="grid gap-2.5">
+          <ChoiceGroup label="What you track with" className="grid gap-2.5">
             {DEVICES.map((d) => (
               <Tile key={d.id} wide emoji={d.emoji} label={d.label} selected={device === d.id} onClick={() => setDevice(d.id)} />
             ))}
-          </div>
+          </ChoiceGroup>
           {device === 'watch' && (
             <Field label="Which one?" hint="Optional.">
-              <div role="radiogroup" aria-label="Which watch" className="flex flex-wrap gap-2">
+              <ChoiceGroup label="Which watch" className="flex flex-wrap gap-2">
                 {[...BRANDS, OTHER].map((b) => (
                   <Chip key={b} selected={brand === b} onClick={() => setBrand(brand === b ? null : b)}>
                     {b}
                   </Chip>
                 ))}
-              </div>
+              </ChoiceGroup>
               {brand === OTHER && (
                 <OtherInput label="Your watch" value={brandOther} onChange={setBrandOther} placeholder="e.g. Coros" />
               )}
@@ -294,6 +309,7 @@ export function OnboardingScreen() {
           </Button>
         </div>
         <CaseFile
+          heading={heading}
           goal={goalValue ?? ''}
           sports={allSports}
           rhythm={[PER_WEEK.find((o) => o.id === perWeek)?.en, MINUTES.find((o) => o.id === minutes)?.label, LEVELS.find((o) => o.id === level)?.label]}
@@ -333,7 +349,9 @@ export function OnboardingScreen() {
       </div>
 
       <Mascot say={current.say} />
-      <h1 className="mt-4 text-2xl font-semibold leading-tight tracking-tight">{current.title}</h1>
+      <h1 ref={heading} tabIndex={-1} className="mt-4 text-2xl font-semibold leading-tight tracking-tight outline-none">
+        {current.title}
+      </h1>
       <p className="mt-1 text-muted-foreground">{current.hint}</p>
       <div className="mt-5">{current.body}</div>
 
@@ -561,6 +579,7 @@ function DataMeter({ level }: { level: DataLevel }) {
 
 // The reveal at the end: every answer on one card, stamped like the detective's other files.
 function CaseFile({
+  heading,
   goal,
   sports,
   rhythm,
@@ -570,6 +589,7 @@ function CaseFile({
   brand,
   dataLevel,
 }: {
+  heading: RefObject<HTMLHeadingElement | null>
   goal: string
   sports: string[]
   rhythm: (string | undefined)[]
@@ -598,7 +618,12 @@ function CaseFile({
     <section aria-labelledby="case-file" className="mt-4">
       <div className="flex flex-col items-center text-center">
         <LogoCharacter scanning className="w-24" />
-        <h1 id="case-file" className="mt-3 text-2xl font-semibold leading-tight tracking-tight">
+        <h1
+          ref={heading}
+          id="case-file"
+          tabIndex={-1}
+          className="mt-3 text-2xl font-semibold leading-tight tracking-tight outline-none"
+        >
           Your case file is open
         </h1>
         <p className="mt-1 text-muted-foreground">Everything the detective starts with.</p>

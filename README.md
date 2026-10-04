@@ -9,7 +9,7 @@ WhyTired works in three steps:
 
 Built at HackYeah 2026 (Sport & Healthcare).
 
-**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
+**Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan that sleeps when idle; a scheduled GitHub Action pings it every 5 minutes to keep it awake, and if it still fell asleep, the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
 
 ## Screenshots
 <img src="docs/screenshots/00-welcome.png" width="720" alt="First screen: a welcome beside the phone with one action, Take the 2-min tour">
@@ -80,7 +80,7 @@ And every path a presenter might take (restart, skipping onboarding, both person
 
 ## Demo walkthrough
 
-**The 2-minute tour.** On desktop the first screen is a welcome beside the phone with one action: **Take the 2-min tour**. It steps through every screen with one caption each (Next / Back, the arrow keys or a clicker): Kasia (watch) first, then Tomek (no watch), the doctor's page, and the "case closed" ending. It ends with "Try it yourself" or "Watch again". On a phone the tour is a bar above the app.
+**The 2-minute tour.** On desktop the first screen is a welcome beside the phone with one action: **Take the 2-min tour**. It steps through every screen with one caption each (Next / Back, the arrow keys or a clicker): Kasia (watch) first, then Tomek (no watch, including the tap-along pulse), the doctor's page, and the "case closed" ending. It ends with "Try it yourself" or "Watch again". On a phone the tour is a bar above the app.
 
 **On your own.** Tap *Get started* in the phone. A demo tip on the first check-in question says which answer opens the detective, and on the mission screen *Demo: skip to day 7* shows the verdict without waiting a week.
 
@@ -97,24 +97,24 @@ The full story, step by step:
 7. **The verdict (+7 days).** Days skipped with time travel run on the persona's recorded data and are marked "Demo data". In the not-improved branch the verdict is stamped "To your doctor" and leads to a one-page summary in Polish: complaint timeline, small trend charts, what was tried and how well the plan was followed, what the user noticed (e.g. coffee after 2 pm), and questions to ask. No diagnoses, no recommended tests. Print → PDF fits one A4 page; "Share" gives a read-only link and a QR code. Switch the outcome to "Improved" to see "Case closed" instead; "Keep the change" ends the mission.
 8. **Switch persona to Tomek (no watch, basic data).** The same detective runs on check-ins and logged sessions only. A note explains that without a watch no finding goes above medium confidence; his prime suspect is sleep debt during exams.
 
-### Presenting with the demo script (12 scenes, under 2½ minutes)
+### Presenting with the demo script (13 scenes, under 2½ minutes)
 
-"Demo script" at the top of the presenter tools runs a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same. The guided tour is the same script with a caption for the audience beside the phone, so on stage the presenter tools are optional: start the tour and click through it.
+The demo script is a scripted version of the story above: Kasia (watch) carries the first half, Tomek (no watch) the second, so every screen is shown once. Each scene loads a complete state, so it always looks the same. **Take the 2-min tour** starts it: the guided tour is the same script with a caption for the audience beside the phone, and with the presenter tools open they also show what to say in each scene.
 
 - **→ / PageDown** next scene, **← / PageUp** previous. A presentation clicker sends these keys.
-- The card shows what to say, what to tap live (only the first check-in and the mission check), and the elapsed time against the planned pace (it turns coral when you are more than 10 seconds behind).
+- The card shows what to say, what to tap live (only the first check-in, the mission check and the pulse), and the elapsed time against the planned pace (it turns coral when you are more than 10 seconds behind).
 - `?scene=N` opens scene N directly, e.g. `https://whytired-vnvu.onrender.com/?scene=5` to recover mid-demo.
 - The scenes and the notes live in `frontend/src/lib/scenes.ts`.
 
 | # | Scene | # | Scene |
 |---|---|---|---|
-| 1 | Kasia's check-in (live) | 7 | Tomek, no watch: same detective, medium confidence |
-| 2 | Today: rest, with reasons | 8 | Tomek's mission |
-| 3 | Clue spotted + detective radar | 9 | Next morning: mission check (live) |
-| 4 | Detective: case file | 10 | A week later: "To your doctor" |
-| 5 | Alibi check | 11 | Doctor summary + QR |
-| 6 | Fake clue dismissed | 12 | The doctor's page (Polish) |
-| ★ | Bonus for Q&A: Kasia's case closed | | |
+| 1 | Kasia's check-in (live) | 8 | Tomek's mission |
+| 2 | Today: rest, with reasons | 9 | Next morning: mission check (live) |
+| 3 | Clue spotted + detective radar | 10 | Same check-in: tap-along pulse, no watch (live) |
+| 4 | Detective: case file | 11 | A week later: "To your doctor" |
+| 5 | Alibi check | 12 | Doctor summary + QR |
+| 6 | Fake clue dismissed | 13 | The doctor's page (Polish) |
+| 7 | Tomek, no watch: same detective, medium confidence | ★ | Bonus for Q&A: Kasia's case closed |
 
 Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https://whytired-vnvu.onrender.com` walks 15 presenter paths plus every scene of the script and reports any failure.
 
@@ -129,6 +129,7 @@ Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https:
 | `docs/PLAN.md` | Build plan, rules, timeline, ownership |
 | `docs/DECISIONS.md` | Architecture decisions |
 | `docs/DISCLOSURE.md` | AI tools, APIs, libraries, research sources, data statement |
+| `.github/workflows/keep-api-awake.yml` | Pings the demo API every 5 minutes so it doesn't sleep during judging |
 
 ## Team workflow
 - `main` is the live demo: every push deploys on Render (static site + API, see `render.yaml`). Run `uv run pytest` and `npm run build` before pushing.

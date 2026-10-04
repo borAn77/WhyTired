@@ -7,7 +7,7 @@
 We are building WhyTired for HackYeah, "Sport & Healthcare" open task. The official brief asks for a solution that helps people take an informed, active role in their health, physical activity or wellbeing, for a specific user group with a concrete need. Judges want a clear user journey, practical value, accessibility, low effort for regular use, and an achievable next step for the user.
 
 Time available: LESS THAN 24 HOURS in total, including slides and demo prep.
-Deadline: **Sunday 4 Oct 2026, 10:00 CEST**. Feature freeze: **Sunday 06:00**. Submit by 09:00.
+Deadline: **Sunday 4 Oct 2026, 11:00 CEST** (final submission).
 
 Team: 2 people.
 - **Boran**: backend (FastAPI + rule engine), synthetic data generator, frontend, app integration, deploy.
@@ -104,7 +104,6 @@ No real patient data. Build a synthetic data generator:
 
 ## Time plan
 See `docs/PLAN.md` for the timeline adjusted to the real deadline (milestones M0–M6).
-**Feature freeze 4 hours before the deadline.** After that: design polish, bug fixes, 10-slide PDF, demo rehearsal.
 
 ## Working style
 - After each milestone, make sure the app runs end to end, then commit with a clear message.

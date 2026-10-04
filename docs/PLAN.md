@@ -2,7 +2,7 @@
 
 ## Context
 The repo `borAn77/WhyTired` is pushed with `main` and `dev` and only holds a README and a .gitignore. We are building the app described in the brief for the HackYeah "Sport & Healthcare" task.
-- **Deadline:** Sun 10:00 CEST. It is now Sat ~11:30, so there are ~18.5 h until the feature freeze at Sun 06:00.
+- **Deadline:** Sun 11:00 CEST (final submission). This plan was written on Sat ~11:30.
 - **Team (2):** Boran owns the backend, the frontend and the app, working with Claude in this session. The teammate owns the synthetic data and the AI layer.
 - **LLM:** Anthropic.
 - **Accent color:** coral on deep navy.
@@ -126,8 +126,8 @@ Also: `.gitignore` gets `!.env.example`, because `.env.*` currently hides it.
 | 23:30–02:30 | **M4:**<br>• DemoPanel<br>• experiment and result screens<br>• `/api/experiment`, `/api/summary`<br>• summary page + print + share/QR | validator tests, Tomek tuning, README walkthrough text | DoD 2–4 locally |
 | 02:30–04:00 | **M5:** Tomek / no-watch UI, empty/loading/error states | rules bug bash, screenshots | DoD 5 |
 | 04:00–06:00 | **M6:** production deploy, README (Mermaid), DECISIONS.md, buffer | slides outline | DoD 6 on the demo URL |
-| **Sun 06:00** | **FEATURE FREEZE.** Then: polish, bug fixes, 10-slide PDF, 2 rehearsals | | |
-| Sun 09:00 | Submit on Challenge Rocket (1 h margin) | | |
+| Sun 06:00–11:00 | Polish, bug fixes, 10-slide PDF, 2 rehearsals | | |
+| **Sun 11:00** | **Final submission** on Challenge Rocket | | |
 
 **Cut order** (apply when a step runs more than 45 min over):
 1. manual-pulse timer

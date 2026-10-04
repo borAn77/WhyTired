@@ -17,7 +17,7 @@ Berken's first commit (`1b7fc6c`) shows 09:33 CEST, but it builds on the team's 
 |---|---|---|
 | Anthropic API, `claude-haiku-4-5` (configurable via `ANTHROPIC_MODEL`) | Turns rule-engine findings into plain-language text (EN/PL): the detective explanation and the "In short" paragraph of the doctor summary | Only a JSON of computed findings: no name, no dates, no raw time series. With `LLM_PROVIDER=none` nothing is sent. |
 | Ollama (optional, local, e.g. `gemma3:4b`) | The same, for offline development; not used on Render | The same JSON; it stays on the local machine |
-| MediaPipe Face Landmarker model (`face_landmarker.task`, float16, served from `frontend/public/models/`) | Eye check: finds the eyes in the front-camera video, in the browser | Nothing. The video stays on the device and is not recorded or sent. The library is pinned to 0.10.21, which sends no usage logs (DECISIONS D19). |
+| MediaPipe Face Landmarker model (`face_landmarker.task`, float16, served from `frontend/public/models/`) | Eye check: finds the eyes in the front-camera video, in the browser | Nothing. The video stays on the device and is not recorded or sent. The library is pinned to 0.10.21, which sends no usage logs (DECISIONS D22). |
 
 ## Libraries and licences
 ### Frontend (npm)
