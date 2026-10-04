@@ -12,6 +12,8 @@ Built at HackYeah 2026 (Sport & Healthcare).
 **Live demo:** https://whytired-vnvu.onrender.com (desktop Chrome works best). Start with **Take the 2-min tour**. The API runs on a free plan and sleeps when idle, so the first screen that needs it can take up to a minute. All data is synthetic: two fictional personas.
 
 ## Screenshots
+<img src="docs/screenshots/00-welcome.png" width="720" alt="First screen: a welcome beside the phone with one action, Take the 2-min tour">
+
 | Morning coach | Detective mode | Experiment result | Doctor summary (PL) |
 |---|---|---|---|
 | <img src="docs/screenshots/04-today-coach.png" width="200" alt="Today: rest, with reasons"> | <img src="docs/screenshots/05-detective.png" width="200" alt="Detective: ranked causes with confidence"> | <img src="docs/screenshots/12-experiment-not-improved.png" width="200" alt="Experiment: no clear improvement"> | <img src="docs/screenshots/15-doctor-page.png" width="200" alt="One-page summary for the family doctor"> |

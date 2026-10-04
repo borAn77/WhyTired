@@ -139,9 +139,25 @@ try {
   await waitFor('Medium confidence')
   await phone('16-no-watch-detective')
 
-  // The whole demo setup (phone + presenter controls)
-  await browser.screenshot(`${OUT}/00-demo-setup.png`)
-  console.log('✓ 00-demo-setup')
+  // What a judge sees first (no presenter tools): the welcome beside the phone, then a tour step.
+  await goto(`${SITE}/?presenter=0`)
+  await waitFor('WhyTired')
+  await sleep(500) // let the page store "presenter off" before leaving it
+  await evaluate(`localStorage.removeItem('whytired.session.v1'); true`)
+  await goto(`${SITE}/`)
+  await waitFor('Take the 2-min tour')
+  await sleep(1500)
+  await browser.screenshot(`${OUT}/00-welcome.png`)
+  console.log('✓ 00-welcome')
+  await click('Take the 2-min tour')
+  for (let i = 0; i < 3; i++) {
+    await sleep(800)
+    await clickSelector('.stage__story .stage-tour__primary')
+  }
+  await waitFor('The detective ranks the causes')
+  await sleep(2500) // the magnifier finds the cause
+  await browser.screenshot(`${OUT}/00-tour.png`)
+  console.log('✓ 00-tour')
 } catch (error) {
   console.log(`FAILED: ${error.message}`)
   await browser.screenshot(`${OUT}/failure.png`).catch(() => {})
