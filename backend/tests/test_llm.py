@@ -537,6 +537,12 @@ def test_kasia_history_names_the_compared_week_and_the_direction():
     assert not [key for key in history if "delta" in key or "spike" in key]
 
 
+def test_one_energy_point_is_singular():
+    """Tomek's summer break: energy +1.0, which the template writes as "1", so "1 point"."""
+    assert "energy was 1 point higher" in templates.detective_text(persona_on("tomek", "2026-10-04"), "en")
+    assert "energy was 1.1 points higher" in templates.detective_text(persona_on("kasia", "2026-10-04"), "en")
+
+
 def test_tomek_history_has_no_resting_hr_key():
     result = persona_on("tomek", "2026-10-04")
     for cause in detective_facts(result)["causes"]:
