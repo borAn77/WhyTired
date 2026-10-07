@@ -234,7 +234,7 @@ The checks are strict on purpose, because a false alarm only costs a template. E
 
 Validated answers are cached in memory by a hash of the prompt, so switching screens is instant and costs nothing. `GET /api/health` shows the active setup, e.g. `anthropic/claude-haiku-4-5`, or `anthropic/claude-haiku-4-5 (no API key, templates only)`.
 
-**Tested.** `backend/tests/test_llm.py` covers the validator (invented numbers, blocked terms in both languages, whole-word matching) and the fallback for every failure (no key, refusal, timeout, a bad answer, an English answer to a Polish request). It also checks that names, dates and chart points never reach the payload, and that both demo personas get safe explanations. The whole backend suite has 178 tests: `cd backend && uv run pytest`.
+**Tested.** `backend/tests/test_llm.py` covers the validator (invented numbers, blocked terms in both languages, whole-word matching) and the fallback for every failure (no key, refusal, timeout, a bad answer, an English answer to a Polish request). It also checks that names, dates and chart points never reach the payload, and that both demo personas get safe explanations. The whole backend suite has 179 tests: `cd backend && uv run pytest`.
 
 ## The data: synthetic, deterministic, built to test every rule
 
@@ -340,7 +340,7 @@ Rehearse on the live site before presenting: `node scripts/demo-sweep.mjs https:
 | `backend/app/llm/` | Plain-language explanations with validation and template fallback |
 | `backend/scripts/` | Synthetic persona generator |
 | `backend/data/` | Generated persona data (committed JSON) |
-| `backend/tests/` | 178 pytest tests: every rule, the LLM layer, the persona story |
+| `backend/tests/` | 179 pytest tests: every rule, the LLM layer, the persona story |
 | `frontend/` | Vite + React + TypeScript + Tailwind + shadcn/ui |
 | `docs/PLAN.md` | Build plan, rules, timeline, ownership |
 | `docs/DECISIONS.md` | Architecture decisions |

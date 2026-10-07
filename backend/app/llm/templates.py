@@ -96,7 +96,7 @@ HISTORY = {
     "en": "Your own history backs this up: in your {week}, {changes} than normal.",
     "pl": "Potwierdza to Twoja historia: w {week} {changes} niż zwykle.",
 }
-HISTORY_ENERGY = {"en": "your energy was {delta} points higher", "pl": "energia była wyższa o {delta} pkt"}
+HISTORY_ENERGY = {"en": "your energy was {delta} {points} higher", "pl": "energia była wyższa o {delta} pkt"}
 HISTORY_RHR = {
     "en": "your resting heart rate was {delta} bpm lower",
     "pl": "tętno spoczynkowe było niższe o {delta} uderzeń/min",
@@ -218,7 +218,8 @@ def _history_sentence(cause: Cause, lang: Lang) -> str | None:
         return None
     changes = []
     if history.energy_delta is not None and history.energy_delta > 0:
-        changes.append(HISTORY_ENERGY[lang].format(delta=number(history.energy_delta, lang)))
+        delta = number(history.energy_delta, lang)  # 1.0 is written "1": "1 point", not "1 points"
+        changes.append(HISTORY_ENERGY[lang].format(delta=delta, points="point" if delta == "1" else "points"))
     if history.rhr_delta is not None and history.rhr_delta < 0:
         changes.append(HISTORY_RHR[lang].format(delta=number(abs(history.rhr_delta), lang)))
     if not changes:
